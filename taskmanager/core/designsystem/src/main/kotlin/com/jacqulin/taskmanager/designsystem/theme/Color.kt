@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.ui.theme
+package com.jacqulin.taskmanager.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
