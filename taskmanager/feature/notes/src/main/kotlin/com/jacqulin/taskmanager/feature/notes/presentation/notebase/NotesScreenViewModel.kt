@@ -2,8 +2,8 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNotesUseCase
+import com.jacqulin.taskmanager.feature.notes.presentation.mappers.toUiModel
 import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,11 +36,11 @@ class NotesScreenViewModel @Inject constructor(
         }
     }
 
-    fun onAction(action: NotesEvent) {
-        when (action) {
+    fun onEvent(event: NotesEvent) {
+        when (event) {
             is NotesEvent.OnSearchQueryChanged -> {
                 _uiState.update { current ->
-                    current.copy(searchQueryInput = action.query)
+                    current.copy(searchQueryInput = event.query)
                 }
             }
 
@@ -52,7 +52,7 @@ class NotesScreenViewModel @Inject constructor(
             }
 
             is NotesEvent.OnSortChanged -> {
-                _uiState.update { current -> current.copy(sortType = action.sortType) }
+                _uiState.update { current -> current.copy(sortType = event.sortType) }
                 recomputeVisibleNotes()
             }
 
@@ -61,11 +61,11 @@ class NotesScreenViewModel @Inject constructor(
             }
 
             is NotesEvent.OnDeleteNoteClicked -> {
-                deleteNote(action.noteId)
+                deleteNote(event.noteId)
             }
 
             is NotesEvent.OnNoteClicked -> {
-                handleNoteClick(action.noteId)
+                handleNoteClick(event.noteId)
             }
 
             NotesEvent.OnCreateNoteClicked -> {
@@ -118,11 +118,4 @@ class NotesScreenViewModel @Inject constructor(
             _effects.emit(effect)
         }
     }
-
-    private fun Note.toUiModel(): NoteListItemUi = NoteListItemUi(
-        id = id,
-        title = title,
-        createdAtMillis = createdAtMillis,
-        hasPreviewImage = hasPreviewImage
-    )
 }

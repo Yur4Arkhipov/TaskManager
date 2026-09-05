@@ -43,7 +43,7 @@ fun NavGraphBuilder.notesSection(
         composable<NoteEditorRoute> { backStackEntry ->
             val route = backStackEntry.toRoute<NoteEditorRoute>()
             NoteEditorScreen(
-//                noteId = route.noteId
+                noteId = route.noteId,
                 onBack = onBackClick
             )
         }

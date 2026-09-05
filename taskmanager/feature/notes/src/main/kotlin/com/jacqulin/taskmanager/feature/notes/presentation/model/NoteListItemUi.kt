@@ -4,5 +4,6 @@ data class NoteListItemUi(
     val id: String,
     val title: String,
     val createdAtMillis: Long,
-    val hasPreviewImage: Boolean
+    val hasPreviewImage: Boolean,
+    val content: String = ""
 )
