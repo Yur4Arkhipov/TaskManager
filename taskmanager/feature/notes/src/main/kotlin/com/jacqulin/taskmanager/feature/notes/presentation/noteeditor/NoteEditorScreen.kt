@@ -48,11 +48,12 @@ fun NoteEditorScreen(
 
     Scaffold(
         topBar = {
-CenterAlignedAppBar(
-    titleRes = screenTitleRes,
-    navigationIcon = painterResource(R.drawable.ic_arrow_back),
-    onNavigationClick = onBack,
-)
+            CenterAlignedAppBar(
+                titleRes = screenTitleRes,
+                navigationIcon = painterResource(R.drawable.ic_arrow_back),
+                onNavigationClick = onBack,
+                onSaveClick = { }
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
