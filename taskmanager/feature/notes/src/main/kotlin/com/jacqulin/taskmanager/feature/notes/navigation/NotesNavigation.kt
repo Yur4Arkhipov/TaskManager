@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.jacqulin.taskmanager.feature.notes.presentation.NotesScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +19,8 @@ fun NavController.navigateToNotes(navOptions: NavOptions) = navigate(route = Not
 fun NavGraphBuilder.notesSection(
 ) {
     navigation<NotesBaseRoute>(startDestination = NotesRoute) {
-        composable< NotesRoute>() {
+        composable<NotesRoute> {
+            NotesScreen()
         }
     }
 }

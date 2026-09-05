@@ -12,6 +12,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNotes
+import com.jacqulin.taskmanager.feature.settings.navigation.navigateToSettings
+import com.jacqulin.taskmanager.feature.tasks.navigation.navigateToTasks
 import com.jacqulin.taskmanager.navigation.TopLevelDestination
 
 @Composable
@@ -70,12 +72,8 @@ class AppState(
 
             when (topLevelDestination) {
                 TopLevelDestination.NOTES -> navController.navigateToNotes(topLevelNavOptions)
-                TopLevelDestination.TASKS -> {
-
-                }
-                TopLevelDestination.SETTINGS -> {
-
-                }
+                TopLevelDestination.TASKS -> navController.navigateToTasks(topLevelNavOptions)
+                TopLevelDestination.SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
             }
         }
     }

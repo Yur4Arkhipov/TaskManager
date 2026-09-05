@@ -5,27 +5,11 @@ import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.icon.AppIcons
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
+import com.jacqulin.taskmanager.feature.settings.navigation.SettingsBaseRoute
+import com.jacqulin.taskmanager.feature.settings.navigation.SettingsRoute
+import com.jacqulin.taskmanager.feature.tasks.navigation.TasksBaseRoute
+import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
 import kotlin.reflect.KClass
-
-//data class TopLevelNavItem(
-//    val icon: Int,
-//    @StringRes val titleTextId: Int
-//)
-//
-//val NOTES = TopLevelNavItem(
-//    icon = AppIcons.Notes,
-//    titleTextId = R.string.notes_title
-//)
-//
-//val TASKS = TopLevelNavItem(
-//    icon = AppIcons.Tasks,
-//    titleTextId = R.string.tasks_title
-//)
-//
-//val SETTINGS = TopLevelNavItem(
-//    icon = AppIcons.Settings,
-//    titleTextId = R.string.settings_title
-//)
 
 enum class TopLevelDestination(
     val icon: Int,
@@ -33,20 +17,22 @@ enum class TopLevelDestination(
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
+    TASKS(
+        icon = AppIcons.Tasks,
+        titleTextId = R.string.tasks_title,
+        route = TasksRoute::class,
+        baseRoute = TasksBaseRoute::class
+    ),
     NOTES(
         icon = AppIcons.Notes,
         titleTextId = R.string.notes_title,
         route = NotesRoute::class,
         baseRoute = NotesBaseRoute::class
     ),
-    TASKS(
-        icon = AppIcons.Tasks,
-        titleTextId = R.string.tasks_title,
-        route = Any::class
-    ),
     SETTINGS(
         icon = AppIcons.Settings,
         titleTextId = R.string.settings_title,
-        route = Any::class
+        route = SettingsRoute::class,
+        baseRoute = SettingsBaseRoute::class
     )
 }

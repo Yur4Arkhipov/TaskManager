@@ -24,8 +24,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "Task Manager"
 include(":app")
+
 include(":core")
 include(":core:designsystem")
+include(":core:domain")
+
 include(":feature")
 include(":feature:notes")
-include(":core:domain")
+include(":feature:settings")
+include(":feature:tasks")

@@ -43,6 +43,8 @@ detekt {
 dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":feature:notes"))
+    implementation(project(":feature:tasks"))
+    implementation(project(":feature:settings"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

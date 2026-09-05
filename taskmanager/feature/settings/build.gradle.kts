@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jacqulin.taskmanager.feature.notes"
+    namespace = "com.jacqulin.taskmanager.feature.settings"
     compileSdk {
         version = release(37)
     }
