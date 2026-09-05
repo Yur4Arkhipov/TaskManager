@@ -3,9 +3,14 @@
 
     // Notes
     <string name="notes_title">Заметки</string>
-<!--    <string name="notes_add_note">Add Note</string>-->
-<!--    <string name="notes_edit_note">Edit Note</string>-->
-<!--    <string name="notes_delete_note">Delete Note</string>-->
+    <string name="notes_add_note">Новая заметка</string>
+    <string name="notes_edit_note">Редактировать заметку</string>
+    <string name="notes_view_note">просмотр заметки</string>
+    <string name="notes_create_note">Новая заметка</string>
+    <string name="notes_title_placeholder">Заголовок…</string>
+    <string name="notes_content_placeholder">Текст заметки…</string>
+    <string name="notes_add_from_files">Файлы</string>
+    <string name="notes_add_from_camera">Камера</string>
 
     // Tasks
     <string name="tasks_title">Задачи</string>

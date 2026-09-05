@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
+import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
 import com.jacqulin.taskmanager.feature.settings.navigation.settingsSection
 import com.jacqulin.taskmanager.feature.tasks.navigation.tasksSection
@@ -20,7 +21,14 @@ fun AppNavHost(
         startDestination = NotesBaseRoute,
         modifier = modifier
     ) {
-        notesSection()
+        notesSection(
+            onNavigateToNoteEditor = {
+                navController.navigateToNoteEditor()
+            },
+//            onNavigateToExistingNote = {
+//
+//            }
+        )
         tasksSection()
         settingsSection()
     }

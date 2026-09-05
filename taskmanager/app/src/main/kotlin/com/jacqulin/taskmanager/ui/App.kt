@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.jacqulin.taskmanager.designsystem.component.BottomNavigationBar
+import com.jacqulin.taskmanager.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.designsystem.model.BottomBarItem
 import com.jacqulin.taskmanager.navigation.AppNavHost
 
@@ -26,8 +27,21 @@ internal fun App(
         )
     }
 
+    val topAppBarConfig = appState.currentTopAppBarConfig
+
     Scaffold(
         modifier = modifier,
+        topBar = {
+            topAppBarConfig?.let { config ->
+                TopAppBar(
+                    titleRes = config.titleRes,
+                    navigationIcon = config.navigationIcon,
+                    onNavigationClick = config.onNavigationClick,
+                    actionIcon = config.actionIcon,
+                    onActionClick = config.onActionClick,
+                )
+            }
+        },
         bottomBar = { BottomNavigationBar(items = bottomBarItems) }
     ) { paddingValues ->
         Box(
