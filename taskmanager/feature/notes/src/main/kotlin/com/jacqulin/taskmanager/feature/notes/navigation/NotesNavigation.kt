@@ -31,6 +31,8 @@ fun NavController.navigateToNoteEditor(noteId: String) = navigate(route = NoteEd
 fun NavGraphBuilder.notesSection(
     onNavigateToNoteEditor: () -> Unit,
 //    onNavigateToExistingNote: (String) -> Unit,
+    onBackClick: () -> Unit
+
 ) {
     navigation<NotesBaseRoute>(startDestination = NotesRoute) {
         composable<NotesRoute> {
@@ -44,6 +46,7 @@ fun NavGraphBuilder.notesSection(
             val route = backStackEntry.toRoute<NoteEditorRoute>()
             NoteEditorScreen(
 //                noteId = route.noteId
+                onBack = onBackClick
             )
         }
     }

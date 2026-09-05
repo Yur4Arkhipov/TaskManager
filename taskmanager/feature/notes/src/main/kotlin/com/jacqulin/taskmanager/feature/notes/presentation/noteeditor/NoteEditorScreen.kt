@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.designsystem.component.CenterAlignedAppBar
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.ImagePickerButton
@@ -30,11 +31,11 @@ import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
 
 @NavDestination(route = NoteEditorRoute::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NoteEditorScreen(
 //    noteId: String?,
-//    onBack: () -> Unit = {},
+    onBack: () -> Unit,
 //    onSave: () -> Unit = {},
     onAddImage: () -> Unit = {},
 //    onRemoveImage: () -> Unit = {},
@@ -47,18 +48,27 @@ fun NoteEditorScreen(
     var content by remember { mutableStateOf(initialContent) }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+        topBar = {
+            CenterAlignedAppBar(
+                titleRes = R.string.notes_add_note,
+                navigationIcon = painterResource(R.drawable.ic_arrow_back),
+                onNavigationClick = onBack,
+            )
+        },
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(
+                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                )
         ) {
             NoteTitleField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = { title = it }
             )
 
             Spacer(Modifier.height(16.dp))
@@ -138,6 +148,7 @@ fun NoteEditorScreen(
 fun NoteEditorScreenPreview() {
     TaskManagerTheme {
         NoteEditorScreen(
+            onBack = { },
 //            noteId = null
         )
     }
@@ -150,6 +161,7 @@ fun NoteEditorScreenWithImagePreview() {
 //        val sampleBytes = ByteArrayOutputStream().toByteArray()
         NoteEditorScreen(
 //            noteId = "123",
+            onBack = { },
             initialTitle = "Заголовок",
             initialContent = "Текст заметки",
 //            initialImageBytes = sampleBytes
