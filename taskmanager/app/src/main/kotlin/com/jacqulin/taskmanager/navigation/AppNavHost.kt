@@ -25,12 +25,12 @@ fun AppNavHost(
             onNavigateToNoteEditor = {
                 navController.navigateToNoteEditor()
             },
+            onNavigateToExistingNote = { noteId ->
+                navController.navigateToNoteEditor(noteId)
+            },
             onBackClick = {
                 navController.popBackStack()
             }
-//            onNavigateToExistingNote = {
-//
-//            }
         )
         tasksSection()
         settingsSection()

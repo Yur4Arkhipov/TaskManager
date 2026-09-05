@@ -18,8 +18,7 @@ data object NotesRoute
 
 @Serializable
 data class NoteEditorRoute(
-    val noteId: String? = null,
-//    val mode: NoteEditorMode = NoteEditorMode.VIEW
+    val noteId: String? = null
 )
 
 fun NavController.navigateToNotes(navOptions: NavOptions) = navigate(route = NotesRoute, navOptions)
@@ -30,15 +29,14 @@ fun NavController.navigateToNoteEditor(noteId: String) = navigate(route = NoteEd
 
 fun NavGraphBuilder.notesSection(
     onNavigateToNoteEditor: () -> Unit,
-//    onNavigateToExistingNote: (String) -> Unit,
+    onNavigateToExistingNote: (String) -> Unit,
     onBackClick: () -> Unit
-
 ) {
     navigation<NotesBaseRoute>(startDestination = NotesRoute) {
         composable<NotesRoute> {
             NotesScreen(
                 onAddClick = onNavigateToNoteEditor,
-//                onNoteClick = onNavigateToExistingNote
+                onNoteClick = onNavigateToExistingNote
             )
         }
 
