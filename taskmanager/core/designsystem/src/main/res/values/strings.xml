@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Task Manager</string>
+
+    // Notes
+    <string name="notes_title">Заметки</string>
+<!--    <string name="notes_add_note">Add Note</string>-->
+<!--    <string name="notes_edit_note">Edit Note</string>-->
+<!--    <string name="notes_delete_note">Delete Note</string>-->
+
+    // Tasks
+    <string name="tasks_title">Задачи</string>
+
+    // Settings
+
+    <string name="settings_title">Настройки</string>
+<!--    <string name="settings_language">Язык</string>-->
+<!--    <string name="settings_theme">Тема</string>-->
+<!--    <string name="settings_dark_theme">Темная тема</string>-->
+<!--    <string name="settings_light_theme">Светлая тема</string>-->
+<!--    -->
+
 </resources>

@@ -26,3 +26,6 @@ rootProject.name = "Task Manager"
 include(":app")
 include(":core")
 include(":core:designsystem")
+include(":feature")
+include(":feature:notes")
+include(":core:domain")
