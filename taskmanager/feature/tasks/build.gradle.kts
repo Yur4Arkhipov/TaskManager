@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.navgraph)
 }
 
 android {
@@ -45,4 +47,8 @@ dependencies {
 
     // Compose navigation
     implementation(libs.androidx.navigation.compose)
+
+    // For preview
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

@@ -7,8 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.tooling.preview.Preview
+import com.github.skydoves.navgraph.annotations.NavDestination
+import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
 
+@NavDestination(route = TasksRoute::class)
 @Composable
 fun TasksScreen() {
     Column(
@@ -20,4 +24,12 @@ fun TasksScreen() {
             text = "Tasks",
         )
     }
+}
+
+
+@NavPreview(route = TasksRoute::class, primary = true)
+@Preview
+@Composable
+fun TasksScreenPreview() {
+    TasksScreen()
 }
