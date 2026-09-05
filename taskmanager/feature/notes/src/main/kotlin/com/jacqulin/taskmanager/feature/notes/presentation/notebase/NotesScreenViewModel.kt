@@ -2,7 +2,10 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.feature.notes.domain.model.Note
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNotesUseCase
 import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -11,16 +14,27 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NotesScreenViewModel : ViewModel() {
+@HiltViewModel
+class NotesScreenViewModel @Inject constructor(
+    private val getNotesUseCase: GetNotesUseCase
+) : ViewModel() {
 
     private val allNotes = MutableStateFlow<List<NoteListItemUi>>(emptyList())
-
     private val _uiState = MutableStateFlow(NotesUiState())
     val uiState: StateFlow<NotesUiState> = _uiState.asStateFlow()
 
     private val _effects = MutableSharedFlow<NotesEffect>()
     val effects: SharedFlow<NotesEffect> = _effects.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            getNotesUseCase().collect { notes ->
+                setNotes(notes.map { it.toUiModel() })
+            }
+        }
+    }
 
     fun onAction(action: NotesEvent) {
         when (action) {
@@ -104,4 +118,11 @@ class NotesScreenViewModel : ViewModel() {
             _effects.emit(effect)
         }
     }
+
+    private fun Note.toUiModel(): NoteListItemUi = NoteListItemUi(
+        id = id,
+        title = title,
+        createdAtMillis = createdAtMillis,
+        hasPreviewImage = hasPreviewImage
+    )
 }

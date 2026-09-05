@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.ui.App
 import com.jacqulin.taskmanager.ui.rememberAppState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
