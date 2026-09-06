@@ -5,7 +5,7 @@ import com.jacqulin.taskmanager.feature.notes.domain.repository.NotesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetNotesUseCase @Inject constructor(
+class ObserveNotesUseCase @Inject constructor(
     private val repository: NotesRepository
 ) {
     operator fun invoke(): Flow<List<Note>> = repository.getAllNotes()

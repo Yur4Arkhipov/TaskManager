@@ -14,6 +14,7 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,11 +39,22 @@ import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components
 fun NoteEditorScreen(
     noteId: Int? = null,
     onBack: () -> Unit,
-    onAddImage: () -> Unit = {},
-    onRemoveImage: () -> Unit = {},
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                NoteEditorEffect.NavigateBack -> {
+                    onBack()
+                }
+                is NoteEditorEffect.ShowError -> {
+
+                }
+            }
+        }
+    }
 
     val screenTitleRes = if (noteId == null) {
         R.string.notes_add_note
@@ -55,12 +67,17 @@ fun NoteEditorScreen(
             CenterAlignedAppBar(
                 titleRes = screenTitleRes,
                 navigationIcon = painterResource(R.drawable.ic_arrow_back),
-                onNavigationClick = onBack,
-                onSaveClick = { }
+                onNavigationClick = {
+                    viewModel.onEvent(NoteEditorEvent.BackClicked)
+                },
+                onSaveClick = {
+                    viewModel.onEvent(NoteEditorEvent.SaveClicked)
+                }
             )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,16 +89,20 @@ fun NoteEditorScreen(
         ) {
             NoteTitleField(
                 value = uiState.title,
-                onValueChange = viewModel::onTitleChanged
+                onValueChange = { newTitle ->
+                    viewModel.onEvent(NoteEditorEvent.TitleChanged(newTitle))
+                },
+                errorMessage = uiState.titleError
             )
 
             Spacer(Modifier.height(16.dp))
 
             NoteContentField(
                 value = uiState.content,
-                onValueChange = viewModel::onContentChanged,
-                onVoiceInputClick = {
+                onValueChange = { newContent ->
+                    viewModel.onEvent(NoteEditorEvent.ContentChanged(newContent))
                 },
+                onVoiceInputClick = { },
             )
 
             Spacer(Modifier.height(16.dp))
@@ -95,8 +116,7 @@ fun NoteEditorScreen(
 
                     FilledIconButton(
                         onClick = {
-                            viewModel.onImageRemoved()
-                            onRemoveImage()
+                            viewModel.onEvent(NoteEditorEvent.ImageRemoved)
                         },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -117,8 +137,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_image),
                         text = stringResource(R.string.notes_add_from_files),
                         onClick = {
-                            viewModel.onImageAdded()
-                            onAddImage()
+                            viewModel.onEvent(NoteEditorEvent.ImageAdded)
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -127,7 +146,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_camera),
                         text = stringResource(R.string.notes_add_from_camera),
                         onClick = {
-                            viewModel.onImageAdded()
+                            viewModel.onEvent(NoteEditorEvent.ImageAdded)
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -143,7 +162,8 @@ fun NoteEditorScreen(
 fun NoteEditorScreenPreview() {
     TaskManagerTheme {
         NoteEditorScreen(
-onBack = { }
+            noteId = 1,
+            onBack = { }
         )
     }
 }
