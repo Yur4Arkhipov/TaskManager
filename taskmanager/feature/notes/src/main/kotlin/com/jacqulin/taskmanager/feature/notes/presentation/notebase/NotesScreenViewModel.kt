@@ -80,12 +80,12 @@ class NotesScreenViewModel @Inject constructor(
         recomputeVisibleNotes()
     }
 
-    private fun deleteNote(noteId: String) {
+    private fun deleteNote(noteId: Int) {
         allNotes.update { notes -> notes.filterNot { it.id == noteId } }
         recomputeVisibleNotes()
     }
 
-    private fun handleNoteClick(noteId: String) {
+    private fun handleNoteClick(noteId: Int) {
         if (_uiState.value.isDeleteModeEnabled) return
         emitEffect(NotesEffect.NavigateToExistingNote(noteId))
     }

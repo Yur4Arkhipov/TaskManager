@@ -18,7 +18,7 @@ class NoteEditorViewModel @Inject constructor(
     private val getNotesUseCase: GetNotesUseCase
 ) : ViewModel() {
 
-    private val noteId: String? = savedStateHandle.get<String>("noteId")
+    private val noteId: Int? = savedStateHandle.get<Int>("noteId")
 
     private val _uiState = MutableStateFlow(NoteEditorUiState())
     val uiState: StateFlow<NoteEditorUiState> = _uiState.asStateFlow()

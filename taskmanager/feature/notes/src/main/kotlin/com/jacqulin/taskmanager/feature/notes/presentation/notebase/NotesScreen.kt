@@ -39,7 +39,7 @@ import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.N
 @Composable
 fun NotesScreen(
     onAddClick: () -> Unit,
-    onNoteClick: (String) -> Unit = {},
+    onNoteClick: (Int) -> Unit = {},
     viewModel: NotesScreenViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -135,7 +135,7 @@ fun NotesScreen(
                                 viewModel.onEvent(NotesEvent.OnDeleteNoteClicked(note.id))
                             },
                             onNoteClick = {
-                               /* onAction(NotesEvent.OnNoteClicked(note.id))*/
+                                viewModel.onEvent(NotesEvent.OnNoteClicked(note.id))
                             }
                         )
                     }

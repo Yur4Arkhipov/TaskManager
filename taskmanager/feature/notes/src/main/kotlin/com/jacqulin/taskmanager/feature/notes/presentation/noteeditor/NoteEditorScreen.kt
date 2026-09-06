@@ -1,6 +1,5 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,10 +29,9 @@ import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
 
 @NavDestination(route = NoteEditorRoute::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NoteEditorScreen(
-    noteId: String? = null,
+    noteId: Int? = null,
     onBack: () -> Unit,
     onAddImage: () -> Unit = {},
     viewModel: NoteEditorViewModel = hiltViewModel()
@@ -58,50 +56,50 @@ fun NoteEditorScreen(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Column(
-modifier = Modifier
-    .fillMaxSize()
-    .padding(
-        top = paddingValues.calculateTopPadding() + 16.dp,
-        start = 16.dp,
-        end = 16.dp,
-    )
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                )
         ) {
-NoteTitleField(
-    value = uiState.title,
-    onValueChange = viewModel::onTitleChanged
-)
+            NoteTitleField(
+                value = uiState.title,
+                onValueChange = viewModel::onTitleChanged
+            )
 
-Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-NoteContentField(
-    value = uiState.content,
-    onValueChange = viewModel::onContentChanged,
-    onVoiceInputClick = {
-    },
-)
+            NoteContentField(
+                value = uiState.content,
+                onValueChange = viewModel::onContentChanged,
+                onVoiceInputClick = {
+                },
+            )
 
-Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(12.dp),
-) {
-    ImagePickerButton(
-        icon = painterResource(R.drawable.ic_image),
-        text = stringResource(R.string.notes_add_from_files),
-        onClick = onAddImage,
-        modifier = Modifier.weight(1f),
-    )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                ImagePickerButton(
+                    icon = painterResource(R.drawable.ic_image),
+                    text = stringResource(R.string.notes_add_from_files),
+                    onClick = onAddImage,
+                    modifier = Modifier.weight(1f),
+                )
 
-    ImagePickerButton(
-        icon = painterResource(R.drawable.ic_camera),
-        text = stringResource(R.string.notes_add_from_camera),
-        onClick = {
-            // TODO
-        },
-        modifier = Modifier.weight(1f),
-    )
-}
+                ImagePickerButton(
+                    icon = painterResource(R.drawable.ic_camera),
+                    text = stringResource(R.string.notes_add_from_camera),
+                    onClick = {
+                        // TODO
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
     }
 }

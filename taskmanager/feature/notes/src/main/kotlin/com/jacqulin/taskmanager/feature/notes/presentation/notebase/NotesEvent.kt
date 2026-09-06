@@ -5,7 +5,7 @@ sealed interface NotesEvent {
     data object OnSearchSubmitted : NotesEvent
     data class OnSortChanged(val sortType: NotesSortType) : NotesEvent
     data object OnDeleteModeToggled : NotesEvent
-    data class OnDeleteNoteClicked(val noteId: String) : NotesEvent
-    data class OnNoteClicked(val noteId: String) : NotesEvent
+    data class OnDeleteNoteClicked(val noteId: Int) : NotesEvent
+    data class OnNoteClicked(val noteId: Int) : NotesEvent
     data object OnCreateNoteClicked : NotesEvent
 }

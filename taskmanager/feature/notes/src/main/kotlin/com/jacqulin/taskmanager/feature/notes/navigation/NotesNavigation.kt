@@ -18,18 +18,18 @@ data object NotesRoute
 
 @Serializable
 data class NoteEditorRoute(
-    val noteId: String? = null
+    val noteId: Int? = null
 )
 
 fun NavController.navigateToNotes(navOptions: NavOptions) = navigate(route = NotesRoute, navOptions)
 
 fun NavController.navigateToNoteEditor() = navigate(route = NoteEditorRoute())
 
-fun NavController.navigateToNoteEditor(noteId: String) = navigate(route = NoteEditorRoute(noteId = noteId))
+fun NavController.navigateToNoteEditor(noteId: Int) = navigate(route = NoteEditorRoute(noteId = noteId))
 
 fun NavGraphBuilder.notesSection(
     onNavigateToNoteEditor: () -> Unit,
-    onNavigateToExistingNote: (String) -> Unit,
+    onNavigateToExistingNote: (Int) -> Unit,
     onBackClick: () -> Unit
 ) {
     navigation<NotesBaseRoute>(startDestination = NotesRoute) {
