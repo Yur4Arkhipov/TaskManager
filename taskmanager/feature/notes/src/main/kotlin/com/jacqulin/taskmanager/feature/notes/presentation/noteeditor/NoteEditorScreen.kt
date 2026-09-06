@@ -1,6 +1,8 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +39,7 @@ fun NoteEditorScreen(
     noteId: Int? = null,
     onBack: () -> Unit,
     onAddImage: () -> Unit = {},
+    onRemoveImage: () -> Unit = {},
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -80,25 +86,52 @@ fun NoteEditorScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                ImagePickerButton(
-                    icon = painterResource(R.drawable.ic_image),
-                    text = stringResource(R.string.notes_add_from_files),
-                    onClick = onAddImage,
-                    modifier = Modifier.weight(1f),
-                )
+            if (uiState.hasImage) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_image),
+                        contentDescription = null
+                    )
 
-                ImagePickerButton(
-                    icon = painterResource(R.drawable.ic_camera),
-                    text = stringResource(R.string.notes_add_from_camera),
-                    onClick = {
-                        // TODO
-                    },
-                    modifier = Modifier.weight(1f),
-                )
+                    FilledIconButton(
+                        onClick = {
+                            viewModel.onImageRemoved()
+                            onRemoveImage()
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_cross),
+                            contentDescription = null
+                        )
+                    }
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    ImagePickerButton(
+                        icon = painterResource(R.drawable.ic_image),
+                        text = stringResource(R.string.notes_add_from_files),
+                        onClick = {
+                            viewModel.onImageAdded()
+                            onAddImage()
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+
+                    ImagePickerButton(
+                        icon = painterResource(R.drawable.ic_camera),
+                        text = stringResource(R.string.notes_add_from_camera),
+                        onClick = {
+                            viewModel.onImageAdded()
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
         }
     }

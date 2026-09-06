@@ -32,6 +32,7 @@ class NoteEditorViewModel @Inject constructor(
                         it.copy(
                             title = note.title,
                             content = note.content,
+                            hasImage = note.hasPreviewImage,
                             isLoading = false
                         )
                     }
@@ -46,5 +47,13 @@ class NoteEditorViewModel @Inject constructor(
 
     fun onContentChanged(value: String) {
         _uiState.update { it.copy(content = value) }
+    }
+
+    fun onImageAdded() {
+        _uiState.update { it.copy(hasImage = true) }
+    }
+
+    fun onImageRemoved() {
+        _uiState.update { it.copy(hasImage = false) }
     }
 }
