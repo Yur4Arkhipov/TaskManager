@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteNoteUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNotesUseCase
 import com.jacqulin.taskmanager.feature.notes.presentation.mappers.toUiModel
 import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesScreenViewModel @Inject constructor(
-    private val getNotesUseCase: GetNotesUseCase
+    private val getNotesUseCase: GetNotesUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
 
     private val allNotes = MutableStateFlow<List<NoteListItemUi>>(emptyList())
@@ -81,8 +83,9 @@ class NotesScreenViewModel @Inject constructor(
     }
 
     private fun deleteNote(noteId: Int) {
-        allNotes.update { notes -> notes.filterNot { it.id == noteId } }
-        recomputeVisibleNotes()
+        viewModelScope.launch {
+            deleteNoteUseCase(noteId)
+        }
     }
 
     private fun handleNoteClick(noteId: Int) {

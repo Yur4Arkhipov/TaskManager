@@ -1,12 +1,10 @@
 package com.jacqulin.taskmanager.feature.notes.domain.usecase
 
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
 import com.jacqulin.taskmanager.feature.notes.domain.repository.NotesRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetNotesUseCase @Inject constructor(
+class DeleteNoteUseCase @Inject constructor(
     private val repository: NotesRepository
 ) {
-    operator fun invoke(): Flow<List<Note>> = repository.getAllNotes()
+    suspend operator fun invoke(id: Int) = repository.deleteNote(id)
 }
