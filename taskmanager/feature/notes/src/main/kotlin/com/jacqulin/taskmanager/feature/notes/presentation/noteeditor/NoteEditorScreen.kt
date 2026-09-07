@@ -1,7 +1,8 @@
-package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
+﻿package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
 import android.Manifest
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -89,6 +90,17 @@ fun NoteEditorScreen(
         }
     }
 
+    val voicePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        Log.d("note screen", "permission: $granted")
+        if (granted) {
+            viewModel.onEvent(NoteEditorEvent.VoicePermissionGranted)
+        } else {
+            viewModel.onEvent(NoteEditorEvent.VoicePermissionDenied)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
@@ -105,6 +117,11 @@ fun NoteEditorScreen(
                 }
                 NoteEditorEffect.RequestCameraPermission -> {
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+                NoteEditorEffect.RequestVoicePermission -> {
+                    Log.d("note screen", "request permission")
+                    voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    Log.d("note screen", "request permission end")
                 }
                 NoteEditorEffect.NavigateBack -> {
                     onBack()
@@ -168,7 +185,18 @@ fun NoteEditorScreen(
                 onValueChange = { newContent ->
                     viewModel.onEvent(NoteEditorEvent.ContentChanged(newContent))
                 },
-                onVoiceInputClick = { },
+                onVoiceInputClick = {
+//                    if (uiState.voiceRecordingState is VoiceState.Recording) {
+//                        viewModel.stopVoiceInput()
+//                    } else {
+                    Log.d("NoteEditorScreen", "click voice recognizer")
+                        viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
+//                    }
+                },
+                onStopVoice = {
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
+                },
+                voiceRecordingState = uiState.voiceRecordingState
             )
 
             Spacer(Modifier.height(16.dp))

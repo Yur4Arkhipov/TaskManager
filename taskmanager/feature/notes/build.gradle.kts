@@ -34,6 +34,7 @@ dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:database"))
+    implementation(project(":core:voice"))
 
     // Core
     implementation(libs.androidx.core.ktx)

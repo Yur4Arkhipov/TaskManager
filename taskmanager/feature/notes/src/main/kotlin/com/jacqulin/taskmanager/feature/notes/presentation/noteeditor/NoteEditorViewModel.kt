@@ -1,9 +1,13 @@
-package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
+﻿package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.voice.domain.VoiceError
+import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
+import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.feature.notes.domain.model.Note
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.CreateTempImageUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteTempImageUseCase
@@ -27,6 +31,7 @@ class NoteEditorViewModel @Inject constructor(
     private val saveNoteUseCase: SaveNoteUseCase,
     private val createTempImageUseCase: CreateTempImageUseCase,
     private val deleteTempImageUseCase: DeleteTempImageUseCase,
+    private val voiceRecognizer: VoiceRecognizer,
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
@@ -41,6 +46,7 @@ class NoteEditorViewModel @Inject constructor(
 
     init {
         loadNote()
+        observeVoiceState()
     }
 
     fun onEvent(event: NoteEditorEvent) {
@@ -96,6 +102,27 @@ class NoteEditorViewModel @Inject constructor(
                     )
                 }
             }
+            NoteEditorEvent.VoiceInputStartClicked -> {
+                Log.d("NoteEditorVM", "request permission voice recognizer")
+                emitEffect(NoteEditorEffect.RequestVoicePermission)
+            }
+            NoteEditorEvent.VoiceInputStopClicked -> {
+                viewModelScope.launch {
+                    voiceRecognizer.stop()
+                }
+            }
+            NoteEditorEvent.VoicePermissionGranted -> {
+                Log.d("NoteEditorVM", "start voice recognizer")
+                voiceRecognizer.start()
+            }
+            NoteEditorEvent.VoicePermissionDenied -> {
+                emitEffect(
+                    NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио"),
+                )
+            }
+            is NoteEditorEvent.VoiceTextRecognized -> {
+                appendRecognizedText(event.text)
+            }
             NoteEditorEvent.SaveClicked -> {
                 saveNote()
             }
@@ -110,6 +137,62 @@ class NoteEditorViewModel @Inject constructor(
                     emitEffect(NoteEditorEffect.NavigateBack)
                 }
             }
+        }
+    }
+
+    private fun observeVoiceState() {
+        viewModelScope.launch {
+            voiceRecognizer.state.collect { state ->
+                _uiState.update {
+                    it.copy(
+                        voiceRecordingState = state,
+                        voiceError = when (state) {
+                            is VoiceState.Error -> when (state.error) {
+                                VoiceError.RecordingFailed -> "Не удалось начать запись"
+                                VoiceError.RecognitionFailed -> "Не удалось распознать речь"
+                                VoiceError.Network -> "Проблема с сетью"
+                                VoiceError.Unauthorized -> "Неверный токен или API-ключ распознавания речи"
+                                VoiceError.EmptyResult -> "Результат распознавания пустой"
+                                VoiceError.Unknown -> "Неизвестная ошибка распознавания речи"
+                            }
+                            else -> null
+                        },
+                    )
+                }
+
+                if (state is VoiceState.Success) {
+                    val text = state.text.trim()
+                    if (text.isNotBlank()) {
+                        appendRecognizedText(text)
+                    }
+                    voiceRecognizer.cancel()
+                }
+            }
+        }
+    }
+
+    private fun appendRecognizedText(text: String) {
+        _uiState.update { current ->
+            val separator = if (current.content.isBlank()) "" else "\n"
+            current.copy(content = current.content + separator + text.trim())
+        }
+    }
+
+    fun onVoicePermissionResult(granted: Boolean) {
+        if (granted) {
+            voiceRecognizer.start()
+        } else {
+            emitEffect(
+                NoteEditorEffect.ShowError(
+                    "Для распознавания речи необходимо предоставить разрешение на запись аудио",
+                ),
+            )
+        }
+    }
+
+    fun stopVoiceInput() {
+        viewModelScope.launch {
+            voiceRecognizer.stop()
         }
     }
 
@@ -181,9 +264,7 @@ class NoteEditorViewModel @Inject constructor(
                 emitEffect(NoteEditorEffect.NavigateBack)
             } catch (_: Exception) {
                 emitEffect(
-                    NoteEditorEffect.ShowError(
-                        "Не удалось сохранить заметку",
-                    ),
+                    NoteEditorEffect.ShowError("Не удалось сохранить заметку")
                 )
             }
         }
@@ -191,7 +272,7 @@ class NoteEditorViewModel @Inject constructor(
 
     private fun deleteTempImage(uri: Uri) {
         viewModelScope.launch {
-            deleteTempImage(uri)
+            deleteTempImageUseCase(uri)
             if (currentTempImageUri == uri) {
                 currentTempImageUri = null
             }

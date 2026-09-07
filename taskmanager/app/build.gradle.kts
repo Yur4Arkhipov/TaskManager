@@ -45,6 +45,7 @@ detekt {
 
 dependencies {
     implementation(project(":core:designsystem"))
+    implementation(project(":core:voice"))
     implementation(project(":feature:notes"))
     implementation(project(":feature:tasks"))
     implementation(project(":feature:settings"))

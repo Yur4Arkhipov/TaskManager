@@ -7,5 +7,6 @@ sealed interface NoteEditorEffect {
     data object LaunchGallery : NoteEditorEffect
     data class LaunchCamera(val uri: Uri) : NoteEditorEffect
     data object RequestCameraPermission : NoteEditorEffect
+    data object RequestVoicePermission : NoteEditorEffect
     data class ShowError(val message: String) : NoteEditorEffect
 }
