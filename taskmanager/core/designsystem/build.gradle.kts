@@ -22,10 +22,6 @@ android {
 
 }
 
-detekt {
-    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
-}
-
 dependencies {
 
     implementation(libs.androidx.activity.compose)

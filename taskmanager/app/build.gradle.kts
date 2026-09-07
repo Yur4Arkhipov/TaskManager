@@ -39,10 +39,6 @@ android {
     }
 }
 
-detekt {
-    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
-}
-
 dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:voice"))

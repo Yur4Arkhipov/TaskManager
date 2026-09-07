@@ -117,7 +117,7 @@ class NoteEditorViewModel @Inject constructor(
             }
             NoteEditorEvent.VoicePermissionDenied -> {
                 emitEffect(
-                    NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио"),
+                    NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио")
                 )
             }
             is NoteEditorEvent.VoiceTextRecognized -> {

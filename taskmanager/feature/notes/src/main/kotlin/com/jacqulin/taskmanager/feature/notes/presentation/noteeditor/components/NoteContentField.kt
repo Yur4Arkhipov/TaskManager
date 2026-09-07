@@ -39,7 +39,7 @@ fun NoteContentField(
     onVoiceInputClick: () -> Unit,
     onStopVoice: () -> Unit,
     voiceRecordingState: VoiceState = VoiceState.Idle,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val isRecording = voiceRecordingState is VoiceState.Recording
     val isProcessing = voiceRecordingState is VoiceState.Processing
