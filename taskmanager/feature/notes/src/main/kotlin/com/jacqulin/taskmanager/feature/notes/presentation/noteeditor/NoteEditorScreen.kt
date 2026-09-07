@@ -1,5 +1,8 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
+import android.Manifest
+import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,9 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,12 +53,39 @@ fun NoteEditorScreen(
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var cameraSessionUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
             viewModel.onEvent(NoteEditorEvent.ImageSelected(uri))
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        val uri = cameraSessionUri
+        if (uri != null) {
+            if (success) {
+                viewModel.onEvent(NoteEditorEvent.ImageSelected(uri))
+            } else {
+                viewModel.onEvent(NoteEditorEvent.CameraCancelled(uri))
+            }
+        }
+        cameraSessionUri = null
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            viewModel.onEvent(NoteEditorEvent.CameraPermissionGranted)
+        } else {
+            viewModel.onEvent(NoteEditorEvent.CameraPermissionDenied)
         }
     }
 
@@ -65,17 +99,18 @@ fun NoteEditorScreen(
                         )
                     )
                 }
-
-                NoteEditorEffect.LaunchCamera -> {
-                    // позже
+                is NoteEditorEffect.LaunchCamera -> {
+                    cameraSessionUri = effect.uri
+                    cameraLauncher.launch(effect.uri)
                 }
-
+                NoteEditorEffect.RequestCameraPermission -> {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
                 NoteEditorEffect.NavigateBack -> {
                     onBack()
                 }
-
                 is NoteEditorEffect.ShowError -> {
-
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.notes.data.repository
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.FileProvider
 import com.jacqulin.taskmanager.feature.notes.domain.repository.NoteImageStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,31 @@ class NoteImageStorageImpl @Inject constructor(
     override suspend fun deleteImage(path: String) {
         withContext(Dispatchers.IO) {
             File(path).delete()
+        }
+    }
+
+    override suspend fun createTempImageUri(): Uri =
+        withContext(Dispatchers.IO) {
+            val file = File(
+                context.cacheDir,
+                "${UUID.randomUUID()}.jpg"
+            )
+            file.createNewFile()
+
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file,
+            )
+        }
+
+    override suspend fun deleteTempImage(uri: Uri) {
+        withContext(Dispatchers.IO) {
+            val fileName = uri.lastPathSegment ?: return@withContext
+            val file = File(context.cacheDir, fileName)
+            if (file.exists()) {
+                file.delete()
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.feature.notes.domain.model.Note
+import com.jacqulin.taskmanager.feature.notes.domain.repository.NoteImageStorage
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNoteByIdUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.SaveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +23,16 @@ import javax.inject.Inject
 class NoteEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getNoteUseCase: GetNoteByIdUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase
+    private val saveNoteUseCase: SaveNoteUseCase,
+    private val noteImageStorage: NoteImageStorage
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
 
     private val _uiState = MutableStateFlow(NoteEditorUiState())
     val uiState: StateFlow<NoteEditorUiState> = _uiState.asStateFlow()
+
+    private var currentTempImageUri: Uri? = null
 
     private val _effects = MutableSharedFlow<NoteEditorEffect>()
     val effects: SharedFlow<NoteEditorEffect> = _effects.asSharedFlow()
@@ -59,34 +64,56 @@ class NoteEditorViewModel @Inject constructor(
                     )
                 }
             }
+            is NoteEditorEvent.CameraCancelled -> {
+                deleteTempImage(event.uri)
+            }
             NoteEditorEvent.ImageAddFromGalleryClicked -> {
                 emitEffect(NoteEditorEffect.LaunchGallery)
             }
             NoteEditorEvent.ImageAddFromCameraClicked -> {
-                emitEffect(NoteEditorEffect.LaunchCamera)
+                emitEffect(NoteEditorEffect.RequestCameraPermission)
+            }
+            NoteEditorEvent.CameraPermissionGranted -> {
+                viewModelScope.launch {
+                    currentTempImageUri = noteImageStorage.createTempImageUri()
+                    emitEffect(NoteEditorEffect.LaunchCamera(currentTempImageUri!!))
+                }
+            }
+            NoteEditorEvent.CameraPermissionDenied -> {
+                emitEffect(
+                    NoteEditorEffect.ShowError(
+                        "Для использования камеры необходимо предоставить разрешение",
+                    ),
+                )
             }
             NoteEditorEvent.ImageRemoved -> {
                 _uiState.update {
                     it.copy(
                         selectedImageUri = null,
-                        isImageRemoved = true,
+                        isImageRemoved = true
                     )
                 }
             }
             NoteEditorEvent.SaveClicked -> {
                 saveNote()
             }
-            NoteEditorEvent.BackClicked -> {
-                emitEffect(NoteEditorEffect.NavigateBack)
+            is NoteEditorEvent.BackClicked -> {
+                viewModelScope.launch {
+                    currentTempImageUri?.let { uri ->
+                        noteImageStorage.deleteTempImage(uri)
+                    }
+
+                    currentTempImageUri = null
+
+                    emitEffect(NoteEditorEffect.NavigateBack)
+                }
             }
         }
     }
 
     private fun loadNote() {
         val id = noteId ?: run {
-            _uiState.update {
-                it.copy(isLoading = false)
-            }
+            _uiState.update { it.copy(isLoading = false) }
             return
         }
 
@@ -94,14 +121,8 @@ class NoteEditorViewModel @Inject constructor(
             val note = getNoteUseCase(id)
 
             if (note == null) {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
-
-                emitEffect(
-                    NoteEditorEffect.ShowError("Не удалось загрузить заметку")
-                )
-
+                _uiState.update { it.copy(isLoading = false) }
+                emitEffect(NoteEditorEffect.ShowError("Не удалось загрузить заметку"))
                 return@launch
             }
 
@@ -111,7 +132,7 @@ class NoteEditorViewModel @Inject constructor(
                     content = note.content,
                     imagePath = note.imagePath,
                     createdAtMillis = note.createdAtMillis,
-                    isLoading = false,
+                    isLoading = false
                 )
             }
         }
@@ -150,13 +171,27 @@ class NoteEditorViewModel @Inject constructor(
                     isNewNote = noteId == null,
                 )
 
+                if (currentTempImageUri != null) {
+                    deleteTempImage(currentTempImageUri!!)
+                    currentTempImageUri = null
+                }
+
                 emitEffect(NoteEditorEffect.NavigateBack)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emitEffect(
                     NoteEditorEffect.ShowError(
-                        "Не удалось сохранить заметку"
-                    )
+                        "Не удалось сохранить заметку",
+                    ),
                 )
+            }
+        }
+    }
+
+    private fun deleteTempImage(uri: Uri) {
+        viewModelScope.launch {
+            noteImageStorage.deleteTempImage(uri)
+            if (currentTempImageUri == uri) {
+                currentTempImageUri = null
             }
         }
     }
