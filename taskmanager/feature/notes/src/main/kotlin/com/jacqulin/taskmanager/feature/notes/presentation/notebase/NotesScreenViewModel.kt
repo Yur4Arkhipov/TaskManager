@@ -75,12 +75,15 @@ class NotesScreenViewModel @Inject constructor(
     fun onEvent(event: NotesEvent) {
         when (event) {
             is NotesEvent.OnSearchQueryChanged -> {
+                if (isDeleteModeEnabled.value) return
                 searchQueryInput.value = event.query
             }
             NotesEvent.OnSearchSubmitted -> {
+                if (isDeleteModeEnabled.value) return
                 appliedSearchQuery.value = searchQueryInput.value
             }
             is NotesEvent.OnSortChanged -> {
+                if (isDeleteModeEnabled.value) return
                 sortType.value = event.sortType
             }
             NotesEvent.OnDeleteModeToggled -> {
@@ -90,7 +93,8 @@ class NotesScreenViewModel @Inject constructor(
                 deleteNote(event.noteId)
             }
             is NotesEvent.OnNoteClicked -> {
-                handleNoteClick(event.noteId)
+                if (isDeleteModeEnabled.value) return
+                emitEffect(NotesEffect.NavigateToExistingNote(event.noteId))
             }
             NotesEvent.OnCreateNoteClicked -> {
                 if (isDeleteModeEnabled.value) return
@@ -104,12 +108,6 @@ class NotesScreenViewModel @Inject constructor(
             deleteNoteUseCase(noteId)
         }
     }
-
-    private fun handleNoteClick(noteId: Int) {
-        if (isDeleteModeEnabled.value) return
-        emitEffect(NotesEffect.NavigateToExistingNote(noteId))
-    }
-
     private fun emitEffect(effect: NotesEffect) {
         viewModelScope.launch {
             _effects.emit(effect)

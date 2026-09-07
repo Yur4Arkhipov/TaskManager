@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.jacqulin.taskmanager.core.database.TaskManagerDatabase
 import com.jacqulin.taskmanager.core.database.dao.NoteDao
+import com.jacqulin.taskmanager.core.database.dao.TaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,5 +33,12 @@ object DatabaseModule {
         database: TaskManagerDatabase,
     ): NoteDao {
         return database.noteDao()
+    }
+
+    @Provides
+    fun provideTaskDao(
+        database: TaskManagerDatabase,
+    ): TaskDao {
+        return database.taskDao()
     }
 }
