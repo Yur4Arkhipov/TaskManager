@@ -1,5 +1,6 @@
 ﻿package com.jacqulin.taskmanager.core.voice.data
 
+import android.util.Log
 import com.jacqulin.taskmanager.core.voice.domain.AudioRecorder
 import com.jacqulin.taskmanager.core.voice.domain.SpeechToText
 import com.jacqulin.taskmanager.core.voice.domain.VoiceError
@@ -29,6 +30,7 @@ class VoiceRecognizerImpl @Inject constructor(
         try {
             audioRecorder.start()
             _state.value = VoiceState.Recording
+            Log.d("Recognizer", "VoiceState: ${_state.value}")
         } catch (e: Exception) {
             audioRecorder.cancel()
             _state.value = VoiceState.Error(VoiceError.RecordingFailed)

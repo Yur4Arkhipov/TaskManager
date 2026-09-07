@@ -14,4 +14,8 @@ sealed interface TasksEvent {
     data object OnDraftTaskSaveClicked : TasksEvent
     data object OnDraftTaskDeleteClicked : TasksEvent
     data class UpdateTaskStatus(val task: TaskItemUi) : TasksEvent
+    data object VoiceInputStopClicked : TasksEvent
+    data object VoicePermissionGranted : TasksEvent
+    data object VoicePermissionDenied : TasksEvent
+    data class VoiceTextRecognized(val text: String) : TasksEvent
 }

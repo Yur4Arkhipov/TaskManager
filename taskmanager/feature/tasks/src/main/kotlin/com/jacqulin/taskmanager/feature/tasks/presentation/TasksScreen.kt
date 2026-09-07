@@ -1,5 +1,10 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
+import android.Manifest
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,12 +36,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceProcessingItem
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceRecordingItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 
 @NavDestination(route = TasksRoute::class)
@@ -44,10 +54,36 @@ fun TasksScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val context = LocalContext.current
+
     var isCreateMenuExpanded by rememberSaveable { mutableStateOf(false) }
 
     val activeTasksCount = uiState.visibleTasks.count { !it.isCompleted }
     val completedTasksCount = uiState.visibleTasks.count { it.isCompleted }
+
+    val voicePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        Log.d("note screen", "permission: $granted")
+        if (granted) {
+            viewModel.onEvent(TasksEvent.VoicePermissionGranted)
+        } else {
+            viewModel.onEvent(TasksEvent.VoicePermissionDenied)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                TasksEffect.RequestVoicePermission -> {
+                    voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                }
+                is TasksEffect.ShowError -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -127,6 +163,32 @@ fun TasksScreen(
                     viewModel.onEvent(TasksEvent.OnSortChanged(sortType))
                 }
             )
+
+            when (uiState.voiceState) {
+                VoiceState.Idle -> Unit
+
+                VoiceState.Recording -> {
+                    VoiceRecordingItem(
+                        onStopClick = {
+                            viewModel.onEvent(
+                                TasksEvent.VoiceInputStopClicked
+                            )
+                        }
+                    )
+                }
+
+                VoiceState.Processing -> {
+                    VoiceProcessingItem()
+                }
+
+                is VoiceState.Success -> {
+                    // позже
+                }
+
+                is VoiceState.Error -> {
+                    // позже
+                }
+            }
 
             if (uiState.draftTask != null) {
                 TaskItem(
