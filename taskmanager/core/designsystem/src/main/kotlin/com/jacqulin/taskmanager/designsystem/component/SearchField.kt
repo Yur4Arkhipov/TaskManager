@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.notes.presentation.notebase.components
+package com.jacqulin.taskmanager.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
-fun NotesSearchField(
+fun SearchField(
     value: String,
+    placeholderText: String,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
@@ -75,7 +76,7 @@ fun NotesSearchField(
                 ) {
                     if (value.isEmpty()) {
                         Text(
-                            text = "Поиск заметок...",
+                            text = placeholderText,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 16.sp,
                         )

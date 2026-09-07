@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteNoteUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.ObserveNotesUseCase
 import com.jacqulin.taskmanager.feature.notes.presentation.mapper.toUiModel
@@ -26,7 +27,7 @@ class NotesScreenViewModel @Inject constructor(
 
     private val searchQueryInput = MutableStateFlow("")
     private val appliedSearchQuery = MutableStateFlow("")
-    private val sortType = MutableStateFlow(NotesSortType.NEW_TO_OLD)
+    private val sortType = MutableStateFlow(SortType.NEW_TO_OLD)
     private val isDeleteModeEnabled = MutableStateFlow(false)
 
     private val _effects = MutableSharedFlow<NotesEffect>()
@@ -45,18 +46,14 @@ class NotesScreenViewModel @Inject constructor(
                 .map { it.toUiModel() }
                 .filter { note ->
                     val query = appliedQuery.trim()
-
                     query.isBlank() ||
-                            note.title.contains(
-                                query,
-                                ignoreCase = true,
-                            )
+                        note.title.contains(query, ignoreCase = true)
                 }
                 .let { notes ->
                     when (sortType) {
-                        NotesSortType.NEW_TO_OLD ->
+                        SortType.NEW_TO_OLD ->
                             notes.sortedByDescending { it.createdAtMillis }
-                        NotesSortType.OLD_TO_NEW ->
+                        SortType.OLD_TO_NEW ->
                             notes.sortedBy { it.createdAtMillis }
                     }
                 }
@@ -67,12 +64,12 @@ class NotesScreenViewModel @Inject constructor(
                 sortType = sortType,
                 visibleNotes = visibleNotes,
                 isEmpty = visibleNotes.isEmpty(),
-                isDeleteModeEnabled = isDeleteModeEnabled,
+                isDeleteModeEnabled = isDeleteModeEnabled
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
-            NotesUiState(),
+            NotesUiState()
         )
 
     fun onEvent(event: NotesEvent) {
