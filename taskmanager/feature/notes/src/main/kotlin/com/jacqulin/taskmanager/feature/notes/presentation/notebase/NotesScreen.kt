@@ -45,7 +45,6 @@ fun NotesScreen(
     val uiState by viewModel.uiState.collectAsState()
 
 //    val keyboardController = LocalSoftwareKeyboardController.current
-//    var sortMenuExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
@@ -94,12 +93,14 @@ fun NotesScreen(
                 onSearch = {
                     viewModel.onEvent(NotesEvent.OnSearchSubmitted)
                 },
-                onSortClick = {
-
+                onSortChanged = { sortType ->
+                    viewModel.onEvent(
+                        NotesEvent.OnSortChanged(sortType)
+                    )
                 },
                 onDeleteModeClick = {
                     viewModel.onEvent(NotesEvent.OnDeleteModeToggled)
-                },
+                }
             )
 
             if (uiState.isEmpty) {
