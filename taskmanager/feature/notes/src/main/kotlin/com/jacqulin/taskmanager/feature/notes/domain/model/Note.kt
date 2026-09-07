@@ -5,5 +5,5 @@ data class Note(
     val title: String,
     val content: String,
     val createdAtMillis: Long,
-    val hasPreviewImage: Boolean
+    val imagePath: String?
 )

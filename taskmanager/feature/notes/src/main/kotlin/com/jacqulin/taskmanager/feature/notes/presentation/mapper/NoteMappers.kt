@@ -8,5 +8,5 @@ fun Note.toUiModel(): NoteListItemUi = NoteListItemUi(
     title = title,
     content = content,
     createdAtMillis = createdAtMillis,
-    hasPreviewImage = hasPreviewImage
+    imageUri = imagePath
 )

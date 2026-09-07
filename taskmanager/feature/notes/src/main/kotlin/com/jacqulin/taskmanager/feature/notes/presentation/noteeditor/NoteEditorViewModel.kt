@@ -4,9 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.feature.notes.domain.model.Note
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.AddNoteUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNoteByIdUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.UpdateNoteUseCase
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.SaveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +21,7 @@ import javax.inject.Inject
 class NoteEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getNoteUseCase: GetNoteByIdUseCase,
-    private val addNoteUseCase: AddNoteUseCase,
-    private val updateNoteUseCase: UpdateNoteUseCase
+    private val saveNoteUseCase: SaveNoteUseCase
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
@@ -53,14 +51,26 @@ class NoteEditorViewModel @Inject constructor(
                     it.copy(content = event.value)
                 }
             }
-            NoteEditorEvent.ImageAdded -> {
+            is NoteEditorEvent.ImageSelected -> {
                 _uiState.update {
-                    it.copy(hasImage = true)
+                    it.copy(
+                        selectedImageUri = event.uri,
+                        isImageRemoved = false,
+                    )
                 }
+            }
+            NoteEditorEvent.ImageAddFromGalleryClicked -> {
+                emitEffect(NoteEditorEffect.LaunchGallery)
+            }
+            NoteEditorEvent.ImageAddFromCameraClicked -> {
+                emitEffect(NoteEditorEffect.LaunchCamera)
             }
             NoteEditorEvent.ImageRemoved -> {
                 _uiState.update {
-                    it.copy(hasImage = false)
+                    it.copy(
+                        selectedImageUri = null,
+                        isImageRemoved = true,
+                    )
                 }
             }
             NoteEditorEvent.SaveClicked -> {
@@ -99,7 +109,8 @@ class NoteEditorViewModel @Inject constructor(
                 it.copy(
                     title = note.title,
                     content = note.content,
-                    hasImage = note.hasPreviewImage,
+                    imagePath = note.imagePath,
+                    createdAtMillis = note.createdAtMillis,
                     isLoading = false,
                 )
             }
@@ -122,18 +133,31 @@ class NoteEditorViewModel @Inject constructor(
             id = noteId ?: 0,
             title = state.title,
             content = state.content,
-            hasPreviewImage = state.hasImage,
-            createdAtMillis = System.currentTimeMillis(),
+            imagePath = state.imagePath,
+            createdAtMillis = if (noteId == null) {
+                System.currentTimeMillis()
+            } else {
+                state.createdAtMillis
+            }
         )
 
         viewModelScope.launch {
-            if (noteId == null) {
-                addNoteUseCase(note)
-            } else {
-                updateNoteUseCase(note)
-            }
+            try {
+                saveNoteUseCase(
+                    note = note,
+                    selectedImageUri = state.selectedImageUri,
+                    isImageRemoved = state.isImageRemoved,
+                    isNewNote = noteId == null,
+                )
 
-            emitEffect(NoteEditorEffect.NavigateBack)
+                emitEffect(NoteEditorEffect.NavigateBack)
+            } catch (e: Exception) {
+                emitEffect(
+                    NoteEditorEffect.ShowError(
+                        "Не удалось сохранить заметку"
+                    )
+                )
+            }
         }
     }
 

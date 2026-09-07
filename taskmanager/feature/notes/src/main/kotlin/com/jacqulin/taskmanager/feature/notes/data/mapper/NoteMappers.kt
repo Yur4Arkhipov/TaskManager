@@ -9,7 +9,7 @@ fun NoteEntity.toDomain(): Note {
         title = title,
         content = content,
         createdAtMillis = createdAtMillis,
-        hasPreviewImage = hasPreviewImage
+        imagePath = imagePath
     )
 }
 
@@ -19,6 +19,6 @@ fun Note.toEntity(): NoteEntity {
         title = title,
         content = content,
         createdAtMillis = createdAtMillis,
-        hasPreviewImage = hasPreviewImage
+        imagePath = imagePath
     )
 }

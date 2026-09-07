@@ -1,6 +1,8 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
-import androidx.compose.foundation.Image
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +21,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.designsystem.R
@@ -43,12 +47,33 @@ fun NoteEditorScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.onEvent(NoteEditorEvent.ImageSelected(uri))
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
+                NoteEditorEffect.LaunchGallery -> {
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                }
+
+                NoteEditorEffect.LaunchCamera -> {
+                    // позже
+                }
+
                 NoteEditorEffect.NavigateBack -> {
                     onBack()
                 }
+
                 is NoteEditorEffect.ShowError -> {
 
                 }
@@ -60,6 +85,12 @@ fun NoteEditorScreen(
         R.string.notes_add_note
     } else {
         R.string.notes_edit_note
+    }
+
+    val imageModel = if (uiState.isImageRemoved) {
+        null
+    } else {
+        uiState.selectedImageUri ?: uiState.imagePath
     }
 
     Scaffold(
@@ -107,11 +138,15 @@ fun NoteEditorScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            if (uiState.hasImage) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_image),
-                        contentDescription = null
+            if (imageModel != null) {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        model = imageModel,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
                     )
 
                     FilledIconButton(
@@ -124,7 +159,7 @@ fun NoteEditorScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_cross),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -137,7 +172,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_image),
                         text = stringResource(R.string.notes_add_from_files),
                         onClick = {
-                            viewModel.onEvent(NoteEditorEvent.ImageAdded)
+                            viewModel.onEvent(NoteEditorEvent.ImageAddFromGalleryClicked)
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -146,7 +181,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_camera),
                         text = stringResource(R.string.notes_add_from_camera),
                         onClick = {
-                            viewModel.onEvent(NoteEditorEvent.ImageAdded)
+                            viewModel.onEvent(NoteEditorEvent.ImageAddFromCameraClicked)
                         },
                         modifier = Modifier.weight(1f),
                     )
