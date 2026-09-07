@@ -1,6 +1,7 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
 import com.jacqulin.taskmanager.designsystem.model.SortType
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 
 sealed interface TasksEvent {
     data class OnSearchQueryChanged(val query: String) : TasksEvent
@@ -12,5 +13,5 @@ sealed interface TasksEvent {
     data class OnDraftTaskTextChanged(val text: String) : TasksEvent
     data object OnDraftTaskSaveClicked : TasksEvent
     data object OnDraftTaskDeleteClicked : TasksEvent
-    data class UpdateTaskStatus(val taskId: Int) : TasksEvent
+    data class UpdateTaskStatus(val task: TaskItemUi) : TasksEvent
 }

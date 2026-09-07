@@ -23,7 +23,7 @@ fun SortDropdownMenu(
             onClick = {
                 onSortChanged(SortType.NEW_TO_OLD)
                 onDismissRequest()
-            },
+            }
         )
 
         DropdownMenuItem(
@@ -33,7 +33,7 @@ fun SortDropdownMenu(
             onClick = {
                 onSortChanged(SortType.OLD_TO_NEW)
                 onDismissRequest()
-            },
+            }
         )
     }
 }

@@ -9,3 +9,10 @@ fun Task.toUiModel(): TaskItemUi = TaskItemUi(
     createdAtMillis = createdAtMillis,
     isCompleted = isCompleted
 )
+
+fun TaskItemUi.toDomain(): Task = Task(
+    id = id,
+    title = title,
+    createdAtMillis = createdAtMillis,
+    isCompleted = isCompleted
+)

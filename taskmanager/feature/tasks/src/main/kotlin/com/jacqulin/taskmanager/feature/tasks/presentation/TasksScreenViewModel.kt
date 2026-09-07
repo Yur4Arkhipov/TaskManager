@@ -7,8 +7,11 @@ import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.DeleteTaskUseCase
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.ObserveTasksUseCase
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.SaveTaskUseCase
+import com.jacqulin.taskmanager.feature.tasks.domain.usecase.UpdateTaskStatusUseCase
+import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,7 +25,8 @@ import javax.inject.Inject
 class TasksScreenViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
-    private val saveTaskUseCase: SaveTaskUseCase
+    private val saveTaskUseCase: SaveTaskUseCase,
+    val updateTaskStatusUseCase: UpdateTaskStatusUseCase
 ) : ViewModel() {
 
     private val searchQueryInput = MutableStateFlow("")
@@ -49,10 +53,18 @@ class TasksScreenViewModel @Inject constructor(
                 }
                 .let { tasks ->
                     when (sortType) {
-                        SortType.NEW_TO_OLD ->
-                            tasks.sortedByDescending { it.createdAtMillis }
-                        SortType.OLD_TO_NEW ->
-                            tasks.sortedBy { it.createdAtMillis }
+                        SortType.NEW_TO_OLD -> {
+                            tasks.sortedWith(
+                                compareBy<TaskItemUi> { it.isCompleted }
+                                    .thenByDescending { it.createdAtMillis }
+                            )
+                        }
+                        SortType.OLD_TO_NEW -> {
+                            tasks.sortedWith(
+                                compareBy<TaskItemUi> { it.isCompleted }
+                                    .thenBy { it.createdAtMillis }
+                            )
+                        }
                     }
                 }
 
@@ -102,7 +114,7 @@ class TasksScreenViewModel @Inject constructor(
                 _draftTask.value = null
             }
             is TasksEvent.UpdateTaskStatus -> {
-
+                updateTaskStatus(event.task)
             }
         }
     }
@@ -134,6 +146,16 @@ class TasksScreenViewModel @Inject constructor(
             )
 
             _draftTask.value = null
+        }
+    }
+
+    private fun updateTaskStatus(task: TaskItemUi) {
+        viewModelScope.launch {
+            val updatedTask = task.copy(
+                isCompleted = !task.isCompleted
+            )
+
+            updateTaskStatusUseCase(updatedTask.toDomain())
         }
     }
 }

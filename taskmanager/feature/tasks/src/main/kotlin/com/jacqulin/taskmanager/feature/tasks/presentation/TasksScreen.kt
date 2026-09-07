@@ -46,6 +46,9 @@ fun TasksScreen(
 
     var isCreateMenuExpanded by rememberSaveable { mutableStateOf(false) }
 
+    val activeTasksCount = uiState.visibleTasks.count { !it.isCompleted }
+    val completedTasksCount = uiState.visibleTasks.count { it.isCompleted }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -107,8 +110,7 @@ fun TasksScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-//                text = "${uiState.visibleTasks.size} заметок",
-                text = "1 активных * 0 выполнено",
+                text = "$activeTasksCount активных • $completedTasksCount выполнено",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -183,10 +185,10 @@ fun TasksScreen(
                         TaskItem(
                             task = task,
                             onDeleteClick = {
-//                                viewModel.onEvent(NotesEvent.OnDeleteNoteClicked(note.id))
+                                viewModel.onEvent(TasksEvent.OnDeleteTaskClicked(task.id))
                             },
                             onCompleteClick = {
-//                                viewModel.onEvent(NotesEvent.OnNoteClicked(note.id))
+                                viewModel.onEvent(TasksEvent.UpdateTaskStatus(task))
                             }
                         )
                     }

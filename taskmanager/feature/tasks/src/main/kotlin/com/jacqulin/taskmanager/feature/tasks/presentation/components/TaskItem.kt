@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -23,9 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
@@ -38,7 +41,7 @@ import java.util.Locale
 fun TaskItem(
     task: TaskItemUi,
     onDeleteClick: () -> Unit,
-    onCompleteClick: () -> Unit,
+    onCompleteClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
     editingText: String = "",
@@ -77,9 +80,10 @@ fun TaskItem(
         ) {
             Checkbox(
                 checked = task.isCompleted,
-                onCheckedChange = {
-                    onCompleteClick()
-                }
+                onCheckedChange = { checked ->
+                    onCompleteClick(checked)
+                },
+                enabled = !isEditing
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -92,7 +96,7 @@ fun TaskItem(
                         .weight(1f)
                         .focusRequester(focusRequester),
                     textStyle = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier.fillMaxWidth(),
@@ -128,9 +132,22 @@ fun TaskItem(
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .alpha(
+                            if (task.isCompleted) {
+                                0.5f
+                            } else {
+                                1f
+                            }
+                        ),
+                    textDecoration = if (task.isCompleted) {
+                        TextDecoration.LineThrough
+                    } else {
+                        TextDecoration.None
+                    }
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -143,12 +160,13 @@ fun TaskItem(
             }
 
             IconButton(
-                onClick = onDeleteClick,
+                onClick = onDeleteClick
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
                     contentDescription = "Удалить задачу",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -158,7 +176,7 @@ fun TaskItem(
 private fun formatDate(createdAtMillis: Long): String {
     val formatter = SimpleDateFormat(
         "dd.MM.yyyy HH:mm",
-        Locale.getDefault(),
+        Locale.getDefault()
     )
 
     return formatter.format(Date(createdAtMillis))
