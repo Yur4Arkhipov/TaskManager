@@ -29,7 +29,6 @@ fun CenterAlignedAppBar(
     @StringRes titleRes: Int,
     navigationIcon: Painter? = null,
     onNavigationClick: (() -> Unit)? = null,
-    saveEnabled: Boolean = false,
     onSaveClick: (() -> Unit)? = null,
     expandedHeight: Dp = TopAppBarDefaults.TopAppBarExpandedHeight,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -60,8 +59,7 @@ fun CenterAlignedAppBar(
         actions = {
             if (onSaveClick != null) {
                 TextButton(
-                    onClick = onSaveClick,
-                    enabled = saveEnabled,
+                    onClick = onSaveClick
                 ) {
                     Text("Сохранить")
                 }

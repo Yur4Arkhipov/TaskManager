@@ -28,6 +28,8 @@ include(":app")
 include(":core")
 include(":core:designsystem")
 include(":core:domain")
+include(":core:database")
+include(":core:voice")
 
 include(":feature")
 include(":feature:notes")

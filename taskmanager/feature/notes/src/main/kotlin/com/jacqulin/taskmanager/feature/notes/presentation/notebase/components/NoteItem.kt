@@ -53,7 +53,7 @@ fun NoteItem(
                         shape = RoundedCornerShape(8.dp)
                     )
             ) {
-                Text(text = if (note.hasPreviewImage) "IMG" else "—")
+                Text(text = if (note.imageUri != null) "IMG" else "—")
             }
 
             Column(

@@ -1,8 +1,21 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
+import android.net.Uri
+import com.jacqulin.taskmanager.core.voice.domain.VoiceState
+
+/**
+ *  imagePath - картинка сохраненная в памяти устройства
+ *  selectedImageUri - превью не сохраненное в памяти
+ */
 data class NoteEditorUiState(
     val title: String = "",
+    val titleError: String? = null,
     val content: String = "",
-    val hasImage: Boolean = false,
-    val isLoading: Boolean = false
+    val imagePath: String? = null,
+    val selectedImageUri: Uri? = null,
+    val isImageRemoved: Boolean = false,
+    val createdAtMillis: Long = 0L,
+    val isLoading: Boolean = true,
+    val voiceRecordingState: VoiceState = VoiceState.Idle,
+    val voiceError: String? = null
 )

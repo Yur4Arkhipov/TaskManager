@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NewLineAtEndOfFile:AndroidAudioRecorder.kt$com.jacqulin.taskmanager.core.voice.data.audio.AndroidAudioRecorder.kt</ID>
+    <ID>SwallowedException:VoiceRecognizerImpl.kt$VoiceRecognizerImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:VoiceRecognizerImpl.kt$VoiceRecognizerImpl$e: Exception</ID>
+    <ID>UseCheckOrError:AndroidAudioRecorder.kt$AndroidAudioRecorder$throw IllegalStateException("Output file is missing")</ID>
+    <ID>UseCheckOrError:AndroidAudioRecorder.kt$AndroidAudioRecorder$throw IllegalStateException("Recorder is not started")</ID>
+  </CurrentIssues>
+</SmellBaseline>

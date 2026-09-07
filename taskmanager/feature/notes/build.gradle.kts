@@ -26,13 +26,11 @@ android {
 
 }
 
-detekt {
-    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
-}
-
 dependencies {
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:database"))
+    implementation(project(":core:voice"))
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -58,6 +56,9 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
+
+    // Coil for async image
+    implementation(libs.coil.compose)
 
     // For preview
     debugImplementation(libs.androidx.compose.ui.tooling)

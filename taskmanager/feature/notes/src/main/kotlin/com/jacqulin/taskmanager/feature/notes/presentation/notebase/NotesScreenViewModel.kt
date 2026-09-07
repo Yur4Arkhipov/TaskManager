@@ -3,83 +3,103 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteNoteUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNotesUseCase
-import com.jacqulin.taskmanager.feature.notes.presentation.mappers.toUiModel
-import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.ObserveNotesUseCase
+import com.jacqulin.taskmanager.feature.notes.presentation.mapper.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NotesScreenViewModel @Inject constructor(
-    private val getNotesUseCase: GetNotesUseCase,
+    observeNotesUseCase: ObserveNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
 
-    private val allNotes = MutableStateFlow<List<NoteListItemUi>>(emptyList())
-    private val _uiState = MutableStateFlow(NotesUiState())
-    val uiState: StateFlow<NotesUiState> = _uiState.asStateFlow()
+    private val searchQueryInput = MutableStateFlow("")
+    private val appliedSearchQuery = MutableStateFlow("")
+    private val sortType = MutableStateFlow(NotesSortType.NEW_TO_OLD)
+    private val isDeleteModeEnabled = MutableStateFlow(false)
 
     private val _effects = MutableSharedFlow<NotesEffect>()
     val effects: SharedFlow<NotesEffect> = _effects.asSharedFlow()
 
-    init {
-        viewModelScope.launch {
-            getNotesUseCase().collect { notes ->
-                setNotes(notes.map { it.toUiModel() })
-            }
-        }
-    }
+    val uiState: StateFlow<NotesUiState> =
+        combine(
+            observeNotesUseCase(),
+            searchQueryInput,
+            appliedSearchQuery,
+            sortType,
+            isDeleteModeEnabled
+        ) { notes, inputQuery, appliedQuery, sortType, isDeleteModeEnabled  ->
+
+            val visibleNotes = notes
+                .map { it.toUiModel() }
+                .filter { note ->
+                    val query = appliedQuery.trim()
+
+                    query.isBlank() ||
+                            note.title.contains(
+                                query,
+                                ignoreCase = true,
+                            )
+                }
+                .let { notes ->
+                    when (sortType) {
+                        NotesSortType.NEW_TO_OLD ->
+                            notes.sortedByDescending { it.createdAtMillis }
+                        NotesSortType.OLD_TO_NEW ->
+                            notes.sortedBy { it.createdAtMillis }
+                    }
+                }
+
+            NotesUiState(
+                searchQueryInput = inputQuery,
+                appliedSearchQuery = appliedQuery,
+                sortType = sortType,
+                visibleNotes = visibleNotes,
+                isEmpty = visibleNotes.isEmpty(),
+                isDeleteModeEnabled = isDeleteModeEnabled,
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            NotesUiState(),
+        )
 
     fun onEvent(event: NotesEvent) {
         when (event) {
             is NotesEvent.OnSearchQueryChanged -> {
-                _uiState.update { current ->
-                    current.copy(searchQueryInput = event.query)
-                }
+                searchQueryInput.value = event.query
             }
-
             NotesEvent.OnSearchSubmitted -> {
-                _uiState.update { current ->
-                    current.copy(appliedSearchQuery = current.searchQueryInput)
-                }
-                recomputeVisibleNotes()
+                appliedSearchQuery.value = searchQueryInput.value
             }
-
             is NotesEvent.OnSortChanged -> {
-                _uiState.update { current -> current.copy(sortType = event.sortType) }
-                recomputeVisibleNotes()
+                sortType.value = event.sortType
             }
-
             NotesEvent.OnDeleteModeToggled -> {
-                _uiState.update { current -> current.copy(isDeleteModeEnabled = !current.isDeleteModeEnabled) }
+                isDeleteModeEnabled.update { !it }
             }
-
             is NotesEvent.OnDeleteNoteClicked -> {
                 deleteNote(event.noteId)
             }
-
             is NotesEvent.OnNoteClicked -> {
                 handleNoteClick(event.noteId)
             }
-
             NotesEvent.OnCreateNoteClicked -> {
-                if (_uiState.value.isDeleteModeEnabled) return
+                if (isDeleteModeEnabled.value) return
                 emitEffect(NotesEffect.NavigateToCreateNote)
             }
         }
-    }
-
-    fun setNotes(notes: List<NoteListItemUi>) {
-        allNotes.value = notes
-        recomputeVisibleNotes()
     }
 
     private fun deleteNote(noteId: Int) {
@@ -89,31 +109,8 @@ class NotesScreenViewModel @Inject constructor(
     }
 
     private fun handleNoteClick(noteId: Int) {
-        if (_uiState.value.isDeleteModeEnabled) return
+        if (isDeleteModeEnabled.value) return
         emitEffect(NotesEffect.NavigateToExistingNote(noteId))
-    }
-
-    private fun recomputeVisibleNotes() {
-        val currentState = _uiState.value
-        val query = currentState.appliedSearchQuery.trim()
-
-        val filteredNotes = allNotes.value
-            .filter { note ->
-                if (query.isBlank()) true else note.title.contains(query, ignoreCase = true)
-            }
-            .let { notes ->
-                when (currentState.sortType) {
-                    NotesSortType.NEW_TO_OLD -> notes.sortedByDescending { it.createdAtMillis }
-                    NotesSortType.OLD_TO_NEW -> notes.sortedBy { it.createdAtMillis }
-                }
-            }
-
-        _uiState.update { current ->
-            current.copy(
-                visibleNotes = filteredNotes,
-                isEmpty = filteredNotes.isEmpty()
-            )
-        }
     }
 
     private fun emitEffect(effect: NotesEffect) {

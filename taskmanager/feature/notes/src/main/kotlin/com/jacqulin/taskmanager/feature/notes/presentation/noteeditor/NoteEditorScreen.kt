@@ -1,6 +1,12 @@
-package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
+﻿package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
-import androidx.compose.foundation.Image
+import android.Manifest
+import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,15 +20,22 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.designsystem.R
@@ -38,11 +51,87 @@ import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components
 fun NoteEditorScreen(
     noteId: Int? = null,
     onBack: () -> Unit,
-    onAddImage: () -> Unit = {},
-    onRemoveImage: () -> Unit = {},
     viewModel: NoteEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var cameraSessionUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.onEvent(NoteEditorEvent.ImageSelected(uri))
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        val uri = cameraSessionUri
+        if (uri != null) {
+            if (success) {
+                viewModel.onEvent(NoteEditorEvent.ImageSelected(uri))
+            } else {
+                viewModel.onEvent(NoteEditorEvent.CameraCancelled(uri))
+            }
+        }
+        cameraSessionUri = null
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            viewModel.onEvent(NoteEditorEvent.CameraPermissionGranted)
+        } else {
+            viewModel.onEvent(NoteEditorEvent.CameraPermissionDenied)
+        }
+    }
+
+    val voicePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        Log.d("note screen", "permission: $granted")
+        if (granted) {
+            viewModel.onEvent(NoteEditorEvent.VoicePermissionGranted)
+        } else {
+            viewModel.onEvent(NoteEditorEvent.VoicePermissionDenied)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                NoteEditorEffect.LaunchGallery -> {
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                }
+                is NoteEditorEffect.LaunchCamera -> {
+                    cameraSessionUri = effect.uri
+                    cameraLauncher.launch(effect.uri)
+                }
+                NoteEditorEffect.RequestCameraPermission -> {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+                NoteEditorEffect.RequestVoicePermission -> {
+                    Log.d("note screen", "request permission")
+                    voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    Log.d("note screen", "request permission end")
+                }
+                NoteEditorEffect.NavigateBack -> {
+                    onBack()
+                }
+                is NoteEditorEffect.ShowError -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     val screenTitleRes = if (noteId == null) {
         R.string.notes_add_note
@@ -50,17 +139,28 @@ fun NoteEditorScreen(
         R.string.notes_edit_note
     }
 
+    val imageModel = if (uiState.isImageRemoved) {
+        null
+    } else {
+        uiState.selectedImageUri ?: uiState.imagePath
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedAppBar(
                 titleRes = screenTitleRes,
                 navigationIcon = painterResource(R.drawable.ic_arrow_back),
-                onNavigationClick = onBack,
-                onSaveClick = { }
+                onNavigationClick = {
+                    viewModel.onEvent(NoteEditorEvent.BackClicked)
+                },
+                onSaveClick = {
+                    viewModel.onEvent(NoteEditorEvent.SaveClicked)
+                }
             )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,31 +172,49 @@ fun NoteEditorScreen(
         ) {
             NoteTitleField(
                 value = uiState.title,
-                onValueChange = viewModel::onTitleChanged
+                onValueChange = { newTitle ->
+                    viewModel.onEvent(NoteEditorEvent.TitleChanged(newTitle))
+                },
+                errorMessage = uiState.titleError
             )
 
             Spacer(Modifier.height(16.dp))
 
             NoteContentField(
                 value = uiState.content,
-                onValueChange = viewModel::onContentChanged,
-                onVoiceInputClick = {
+                onValueChange = { newContent ->
+                    viewModel.onEvent(NoteEditorEvent.ContentChanged(newContent))
                 },
+                onVoiceInputClick = {
+//                    if (uiState.voiceRecordingState is VoiceState.Recording) {
+//                        viewModel.stopVoiceInput()
+//                    } else {
+                    Log.d("NoteEditorScreen", "click voice recognizer")
+                        viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
+//                    }
+                },
+                onStopVoice = {
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
+                },
+                voiceRecordingState = uiState.voiceRecordingState
             )
 
             Spacer(Modifier.height(16.dp))
 
-            if (uiState.hasImage) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_image),
-                        contentDescription = null
+            if (imageModel != null) {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        model = imageModel,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
                     )
 
                     FilledIconButton(
                         onClick = {
-                            viewModel.onImageRemoved()
-                            onRemoveImage()
+                            viewModel.onEvent(NoteEditorEvent.ImageRemoved)
                         },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -104,7 +222,7 @@ fun NoteEditorScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_cross),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -117,8 +235,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_image),
                         text = stringResource(R.string.notes_add_from_files),
                         onClick = {
-                            viewModel.onImageAdded()
-                            onAddImage()
+                            viewModel.onEvent(NoteEditorEvent.ImageAddFromGalleryClicked)
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -127,7 +244,7 @@ fun NoteEditorScreen(
                         icon = painterResource(R.drawable.ic_camera),
                         text = stringResource(R.string.notes_add_from_camera),
                         onClick = {
-                            viewModel.onImageAdded()
+                            viewModel.onEvent(NoteEditorEvent.ImageAddFromCameraClicked)
                         },
                         modifier = Modifier.weight(1f),
                     )
@@ -143,7 +260,8 @@ fun NoteEditorScreen(
 fun NoteEditorScreenPreview() {
     TaskManagerTheme {
         NoteEditorScreen(
-onBack = { }
+            noteId = 1,
+            onBack = { }
         )
     }
 }
