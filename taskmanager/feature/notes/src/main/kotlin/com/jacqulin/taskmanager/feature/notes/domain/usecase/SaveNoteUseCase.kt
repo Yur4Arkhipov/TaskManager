@@ -8,14 +8,14 @@ import javax.inject.Inject
 
 class SaveNoteUseCase @Inject constructor(
     private val notesRepository: NotesRepository,
-    private val imageStorage: NoteImageStorage,
+    private val imageStorage: NoteImageStorage
 ) {
 
     suspend operator fun invoke(
         note: Note,
         selectedImageUri: Uri?,
         isImageRemoved: Boolean,
-        isNewNote: Boolean,
+        isNewNote: Boolean
     ) {
         val oldImagePath = note.imagePath
 

@@ -5,7 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.feature.notes.domain.model.Note
-import com.jacqulin.taskmanager.feature.notes.domain.repository.NoteImageStorage
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.CreateTempImageUseCase
+import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteTempImageUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNoteByIdUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.SaveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,8 @@ class NoteEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getNoteUseCase: GetNoteByIdUseCase,
     private val saveNoteUseCase: SaveNoteUseCase,
-    private val noteImageStorage: NoteImageStorage
+    private val createTempImageUseCase: CreateTempImageUseCase,
+    private val deleteTempImageUseCase: DeleteTempImageUseCase,
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
@@ -75,7 +77,7 @@ class NoteEditorViewModel @Inject constructor(
             }
             NoteEditorEvent.CameraPermissionGranted -> {
                 viewModelScope.launch {
-                    currentTempImageUri = noteImageStorage.createTempImageUri()
+                    currentTempImageUri = createTempImageUseCase()
                     emitEffect(NoteEditorEffect.LaunchCamera(currentTempImageUri!!))
                 }
             }
@@ -100,7 +102,7 @@ class NoteEditorViewModel @Inject constructor(
             is NoteEditorEvent.BackClicked -> {
                 viewModelScope.launch {
                     currentTempImageUri?.let { uri ->
-                        noteImageStorage.deleteTempImage(uri)
+                        deleteTempImageUseCase(uri)
                     }
 
                     currentTempImageUri = null
@@ -189,7 +191,7 @@ class NoteEditorViewModel @Inject constructor(
 
     private fun deleteTempImage(uri: Uri) {
         viewModelScope.launch {
-            noteImageStorage.deleteTempImage(uri)
+            deleteTempImage(uri)
             if (currentTempImageUri == uri) {
                 currentTempImageUri = null
             }
