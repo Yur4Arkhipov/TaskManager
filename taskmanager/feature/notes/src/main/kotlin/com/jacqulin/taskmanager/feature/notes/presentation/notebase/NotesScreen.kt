@@ -117,7 +117,7 @@ fun NotesScreen(
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
-                        Text(text = "Заметок пока нет")
+                        Text(text = stringResource(R.string.notes_empty))
                     }
                 }
             } else {

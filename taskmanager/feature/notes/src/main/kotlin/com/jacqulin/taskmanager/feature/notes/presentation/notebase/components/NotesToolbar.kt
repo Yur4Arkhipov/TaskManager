@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.component.SearchField
@@ -38,7 +39,7 @@ fun NotesToolbar(
     ) {
         SearchField(
             value = searchQuery,
-            placeholderText = "Поиск заметок...",
+            placeholderText = stringResource(R.string.notes_search),
             onValueChange = onSearchQueryChanged,
             onSearch = onSearch,
             modifier = Modifier.weight(1f)
@@ -47,7 +48,7 @@ fun NotesToolbar(
         Box {
             ToolbarButton(
                 icon = painterResource(R.drawable.ic_sort),
-                contentDescription = "Сортировка",
+                contentDescription = stringResource(R.string.notes_sort),
                 onClick = {
                     sortMenuExpanded = true
                 }

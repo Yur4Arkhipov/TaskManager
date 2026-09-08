@@ -1,6 +1,5 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.voice.domain.VoiceError
@@ -123,8 +122,6 @@ class TasksScreenViewModel @Inject constructor(
                 emitEffect(TasksEffect.RequestVoicePermission)
             }
             TasksEvent.VoiceInputStopClicked -> {
-                Log.d("TasksVM", "stop voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
                 _voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
                     val result = voiceRecognizer.stopAndRecognize()
@@ -138,8 +135,6 @@ class TasksScreenViewModel @Inject constructor(
                 }
             }
             TasksEvent.VoicePermissionGranted -> {
-                Log.d("NoteEditorVM", "start voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
                 try {
                     voiceRecognizer.start()
                     _voiceState.value = VoiceState.Recording
@@ -171,10 +166,8 @@ class TasksScreenViewModel @Inject constructor(
                 updateTaskStatus(event.task)
             }
             TasksEvent.VoiceInputDismissed -> {
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
                 voiceRecognizer.cancel()
                 _voiceState.value = VoiceState.Idle
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
             }
             TasksEvent.VoiceInputRetry -> {
                 _voiceState.value = VoiceState.Recording

@@ -11,6 +11,9 @@
     <string name="notes_content_placeholder">Текст заметки…</string>
     <string name="notes_add_from_files">Файлы</string>
     <string name="notes_add_from_camera">Камера</string>
+    <string name="notes_search">Поиск заметок…</string>
+    <string name="notes_sort">Сортировка</string>
+    <string name="notes_empty">Заметок пока нет</string>
 
     // Tasks
     <string name="tasks_title">Задачи</string>

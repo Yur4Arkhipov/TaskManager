@@ -2,7 +2,6 @@
 
 import android.Manifest
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -93,7 +92,6 @@ fun NoteEditorScreen(
     val voicePermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        Log.d("note screen", "permission: $granted")
         if (granted) {
             viewModel.onEvent(NoteEditorEvent.VoicePermissionGranted)
         } else {
@@ -119,9 +117,7 @@ fun NoteEditorScreen(
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
                 NoteEditorEffect.RequestVoicePermission -> {
-                    Log.d("note screen", "request permission")
                     voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                    Log.d("note screen", "request permission end")
                 }
                 NoteEditorEffect.NavigateBack -> {
                     onBack()
@@ -189,8 +185,7 @@ fun NoteEditorScreen(
 //                    if (uiState.voiceRecordingState is VoiceState.Recording) {
 //                        viewModel.stopVoiceInput()
 //                    } else {
-                    Log.d("NoteEditorScreen", "click voice recognizer")
-                        viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
 //                    }
                 },
                 onStopVoice = {
