@@ -79,8 +79,11 @@ fun NotesScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "${uiState.visibleNotes.size} заметок",
-                style = MaterialTheme.typography.labelSmall,
+                text = stringResource(
+                    R.string.notes_count,
+                    uiState.visibleNotes.size
+                ),
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 

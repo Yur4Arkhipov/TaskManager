@@ -26,12 +26,15 @@ fun TopAppBar(
     actionIcon: Painter? = null,
     onActionClick: (() -> Unit)? = null,
     expandedHeight: Dp = TopAppBarDefaults.TopAppBarExpandedHeight,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant
-    )
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors()
 ) {
     TopAppBar(
-        title = { Text(stringResource(titleRes)) },
+        title = {
+            Text(
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         navigationIcon = {
             if (navigationIcon != null && onNavigationClick != null) {
                 IconButton(onClick = onNavigationClick) {

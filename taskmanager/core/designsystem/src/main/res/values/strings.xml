@@ -4,8 +4,8 @@
     // Notes
     <string name="notes_title">Заметки</string>
     <string name="notes_add_note">Новая заметка</string>
-    <string name="notes_edit_note">Редактировать заметку</string>
-    <string name="notes_view_note">просмотр заметки</string>
+    <string name="notes_edit_note">Редактирование</string>
+    <string name="notes_view_note">Просмотр заметки</string>
     <string name="notes_create_note">Новая заметка</string>
     <string name="notes_title_placeholder">Заголовок…</string>
     <string name="notes_content_placeholder">Текст заметки…</string>
@@ -14,6 +14,9 @@
     <string name="notes_search">Поиск заметок…</string>
     <string name="notes_sort">Сортировка</string>
     <string name="notes_empty">Заметок пока нет</string>
+    <string name="notes_count">%d заметок</string>
+    <string name="notes_back">Назад</string>
+    <string name="notes_save">Сохранить</string>
 
     // Tasks
     <string name="tasks_title">Задачи</string>

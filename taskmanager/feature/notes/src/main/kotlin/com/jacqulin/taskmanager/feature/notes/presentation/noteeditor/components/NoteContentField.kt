@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,8 +39,8 @@ fun NoteContentField(
     onValueChange: (String) -> Unit,
     onVoiceInputClick: () -> Unit,
     onStopVoice: () -> Unit,
-    voiceRecordingState: VoiceState = VoiceState.Idle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    voiceRecordingState: VoiceState = VoiceState.Idle
 ) {
     val isRecording = voiceRecordingState is VoiceState.Recording
     val isProcessing = voiceRecordingState is VoiceState.Processing
@@ -49,14 +50,11 @@ fun NoteContentField(
             .fillMaxWidth()
             .height(250.dp)
             .border(
-                width = 1.dp,
+                width = 0.2.dp,
                 color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(12.dp),
             )
-            .padding(
-                vertical = 6.dp,
-                horizontal = 12.dp
-            ),
+            .padding(12.dp)
     ) {
         if (isRecording) {
             Box(
@@ -126,6 +124,12 @@ fun NoteContentField(
                 onClick = onVoiceInputClick,
                 modifier = Modifier.align(Alignment.BottomEnd),
                 enabled = !isRecording,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                )
             ) {
                 if (isRecording) {
                     Column(

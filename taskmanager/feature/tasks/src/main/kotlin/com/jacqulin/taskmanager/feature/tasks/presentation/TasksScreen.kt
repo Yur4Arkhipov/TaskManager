@@ -153,7 +153,7 @@ fun TasksScreen(
                     activeTasksCount,
                     completedTasksCount
                 ),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
