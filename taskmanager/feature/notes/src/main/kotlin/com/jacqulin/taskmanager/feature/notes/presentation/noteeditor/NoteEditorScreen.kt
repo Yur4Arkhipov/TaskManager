@@ -194,16 +194,8 @@ fun NoteEditorScreen(
                     viewModel.onEvent(NoteEditorEvent.ContentChanged(newContent))
                 },
                 onVoiceInputClick = {
-//                    if (uiState.voiceRecordingState is VoiceState.Recording) {
-//                        viewModel.stopVoiceInput()
-//                    } else {
                     viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
-//                    }
-                },
-                onStopVoice = {
-                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
-                },
-                voiceRecordingState = uiState.voiceRecordingState
+                }
             )
 
             Spacer(Modifier.height(16.dp))
@@ -271,45 +263,45 @@ fun NoteEditorScreen(
             }
         }
     }
-//
-//    when (uiState.voiceRecordingState) {
-//        VoiceState.Idle -> Unit
-//
-//        VoiceState.Recording -> {
-//            VoiceRecordingOverlay(
-//                onStopClick = {
-//                    viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
-//                }
-//            )
-//        }
-//
-//        VoiceState.Processing -> {
-//            VoiceProcessingOverlay(
-//                text = stringResource(R.string.tasks_voice_processing)
-//            )
-//        }
-//
-//        is VoiceState.Success -> {
-//            VoiceSuccessOverlay(
-//                taskTitle = stringResource(
-//                    id = R.string.voice_recognized_text,
-//                    (uiState.voiceState as VoiceState.Success).text
-//                )
-//            )
-//            LaunchedEffect(Unit) {
-//                delay(2000.milliseconds)
-//                viewModel.onEvent(TasksEvent.VoiceInputDismissed)
-//            }
-//        }
-//
-//        is VoiceState.Error -> {
-//            VoiceErrorOverlay(
-//                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
-//                onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },
-//                onCancel = { viewModel.onEvent(TasksEvent.VoiceInputCancel) }
-//            )
-//        }
-//    }
+
+    when (val state = uiState.voiceRecordingState) {
+        VoiceState.Idle -> Unit
+
+        VoiceState.Recording -> {
+            VoiceRecordingOverlay(
+                onStopClick = {
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
+                }
+            )
+        }
+
+        VoiceState.Processing -> {
+            VoiceProcessingOverlay(
+                text = stringResource(R.string.tasks_voice_processing)
+            )
+        }
+
+        is VoiceState.Success -> {
+            VoiceSuccessOverlay(
+                taskTitle = stringResource(
+                    id = R.string.voice_recognized_text,
+                    state.text
+                )
+            )
+            LaunchedEffect(Unit) {
+                delay(3000.milliseconds)
+                viewModel.onEvent(NoteEditorEvent.VoiceInputDismissed)
+            }
+        }
+
+        is VoiceState.Error -> {
+            VoiceErrorOverlay(
+                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
+                onRetry = { viewModel.onEvent(NoteEditorEvent.VoiceInputRetry) },
+                onCancel = { viewModel.onEvent(NoteEditorEvent.VoiceInputCancel) }
+            )
+        }
+    }
 }
 
 @NavPreview(route = NoteEditorRoute::class, primary = true)

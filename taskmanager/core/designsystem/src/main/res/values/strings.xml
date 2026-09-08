@@ -45,7 +45,6 @@
     <string name="tasks_voice_successfully_return">Голосовой ввод успешно обработан</string>
     <string name="tasks_ok">Ок</string>
 
-
     // Settings
     <string name="settings_title">Настройки</string>
     <string name="settings_reset">Сбросить настройки</string>

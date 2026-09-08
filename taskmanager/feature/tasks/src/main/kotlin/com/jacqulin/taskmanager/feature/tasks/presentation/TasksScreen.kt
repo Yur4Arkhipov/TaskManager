@@ -264,7 +264,7 @@ fun TasksScreen(
                 )
             )
             LaunchedEffect(Unit) {
-                delay(2000.milliseconds)
+                delay(3000.milliseconds)
                 viewModel.onEvent(TasksEvent.VoiceInputDismissed)
             }
         }

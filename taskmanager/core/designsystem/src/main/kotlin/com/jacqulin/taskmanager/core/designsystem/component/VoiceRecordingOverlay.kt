@@ -81,7 +81,7 @@ fun VoiceRecordingOverlay(
                 modifier = Modifier.size(64.dp)
             ) {
                 Icon(
-                    painter = painterResource(android.R.drawable.ic_menu_close_clear_cancel),
+                    painter = painterResource(R.drawable.ic_close),
                     contentDescription = stringResource(R.string.tasks_stop_recording),
                     modifier = Modifier.size(32.dp)
                 )

@@ -131,6 +131,7 @@ class TasksScreenViewModel @Inject constructor(
                         _voiceState.value = VoiceState.Success(text)
                     }.onFailure { error ->
                         _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                        emitEffect(TasksEffect.ShowError("Не удалось распознать речь"))
                     }
                 }
             }
@@ -140,6 +141,7 @@ class TasksScreenViewModel @Inject constructor(
                     _voiceState.value = VoiceState.Recording
                 } catch (e: Exception) {
                     _voiceState.value = VoiceState.Error(VoiceError.Network)
+                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
                 }
             }
             TasksEvent.VoicePermissionDenied -> {
@@ -175,6 +177,7 @@ class TasksScreenViewModel @Inject constructor(
                     voiceRecognizer.start()
                 } catch (e: Exception) {
                     _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
                 }
             }
             TasksEvent.VoiceInputCancel -> {

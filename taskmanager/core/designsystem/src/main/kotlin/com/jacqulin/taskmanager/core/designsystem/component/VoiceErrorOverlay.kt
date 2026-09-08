@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
@@ -49,7 +50,7 @@ fun VoiceErrorOverlay(
                 .padding(horizontal = 32.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_task),
+                painter = painterResource(R.drawable.ic_error),
                 contentDescription = stringResource(R.string.tasks_error),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(72.dp)
@@ -61,7 +62,7 @@ fun VoiceErrorOverlay(
                 text = errorMessage,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -70,7 +71,7 @@ fun VoiceErrorOverlay(
                 text = stringResource(R.string.tasks_error_advice),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(32.dp))
