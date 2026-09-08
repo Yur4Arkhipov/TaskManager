@@ -1,5 +1,6 @@
 ﻿package com.jacqulin.taskmanager.core.voice.data.speech
 
+import android.util.Log
 import com.jacqulin.taskmanager.core.voice.domain.SpeechToText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,6 +33,7 @@ class SpeechToTextImpl @Inject constructor(
                 authorization = "Bearer $iamToken",
                 audio = requestBody,
             )
+            Log.d("speech", "send request")
 
             response.result
                 .takeIf { it.isNotBlank() }

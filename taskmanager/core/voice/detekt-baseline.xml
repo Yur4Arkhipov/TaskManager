@@ -2,10 +2,13 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>MaxLineLength:YandexSpeechModule.kt$YandexSpeechModule$iamToken = "t1.9euelZqeipuYl86SnJTHjp2UzY6Om-3rnpWal46Om8uTlY7Pzc6ez5PMysbl8_cYDQEr-e9NNzUd_d3z91g7fir57003NR391eL17Iac0ZCeiouX0Y-KnZOWnNKMm5Tt-ZCPmpGWm83n9euelZrNm4rNm5malIvMzMqVnpWcle_8xeuelZrNm4rNm5malIvMzMqVnpWclb3rnpWajprJzJqTnYrLnpuYk4vPicm164ac0ZaektGQj5qRlpvSjJqNiZqN.jaAkLkSN3weuncgRR4WiWcQTro60zCRCtQaUF9SBVoCZwiEirLhPmmBxcuji4ulwO8Uuf-f72zIIysS3T4P2BQ"</ID>
     <ID>NewLineAtEndOfFile:AndroidAudioRecorder.kt$com.jacqulin.taskmanager.core.voice.data.audio.AndroidAudioRecorder.kt</ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$.ExampleUnitTest.kt</ID>
     <ID>SwallowedException:VoiceRecognizerImpl.kt$VoiceRecognizerImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:VoiceRecognizerImpl.kt$VoiceRecognizerImpl$e: Exception</ID>
     <ID>UseCheckOrError:AndroidAudioRecorder.kt$AndroidAudioRecorder$throw IllegalStateException("Output file is missing")</ID>
     <ID>UseCheckOrError:AndroidAudioRecorder.kt$AndroidAudioRecorder$throw IllegalStateException("Recorder is not started")</ID>
+    <ID>UseCheckOrError:VoiceRecognizerImpl.kt$VoiceRecognizerImpl$throw IllegalStateException("Empty recognition result")</ID>
   </CurrentIssues>
 </SmellBaseline>

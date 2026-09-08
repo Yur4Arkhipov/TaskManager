@@ -12,10 +12,10 @@ import javax.inject.Singleton
 
 @Singleton
 class NotesRepositoryImpl @Inject constructor(
-    private val noteDao: NoteDao,
+    private val noteDao: NoteDao
 ) : NotesRepository {
 
-    override fun getAllNotes(): Flow<List<Note>> {
+    override fun observeNotes(): Flow<List<Note>> {
         return noteDao.observeNotes()
             .map { notes ->
                 notes.map { it.toDomain() }

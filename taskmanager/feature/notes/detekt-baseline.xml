@@ -4,10 +4,14 @@
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:NoteEditorScreen.kt$@NavDestination(route = NoteEditorRoute::class) @Composable fun NoteEditorScreen( noteId: Int? = null, onBack: () -&gt; Unit, viewModel: NoteEditorViewModel = hiltViewModel() )</ID>
     <ID>CyclomaticComplexMethod:NoteEditorViewModel.kt$NoteEditorViewModel$fun onEvent(event: NoteEditorEvent)</ID>
+    <ID>EmptyKtFile:NotesToolbarButton.kt$.NotesToolbarButton.kt</ID>
     <ID>FunctionNaming:NoteContentField.kt$@Composable fun NoteContentField( value: String, onValueChange: (String) -&gt; Unit, onVoiceInputClick: () -&gt; Unit, onStopVoice: () -&gt; Unit, voiceRecordingState: VoiceState = VoiceState.Idle, modifier: Modifier = Modifier )</ID>
     <ID>FunctionNaming:NoteEditorScreen.kt$@NavDestination(route = NoteEditorRoute::class) @Composable fun NoteEditorScreen( noteId: Int? = null, onBack: () -&gt; Unit, viewModel: NoteEditorViewModel = hiltViewModel() )</ID>
     <ID>FunctionNaming:NoteEditorScreen.kt$@NavPreview(route = NoteEditorRoute::class, primary = true) @Preview @Composable fun NoteEditorScreenPreview()</ID>
     <ID>LongMethod:NoteEditorScreen.kt$@NavDestination(route = NoteEditorRoute::class) @Composable fun NoteEditorScreen( noteId: Int? = null, onBack: () -&gt; Unit, viewModel: NoteEditorViewModel = hiltViewModel() )</ID>
+    <ID>MaxLineLength:NoteEditorViewModel.kt$NoteEditorViewModel$NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио")</ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$.ExampleUnitTest.kt</ID>
+    <ID>ReturnCount:NotesScreenViewModel.kt$NotesScreenViewModel$fun onEvent(event: NotesEvent)</ID>
     <ID>TooGenericExceptionCaught:SaveNoteUseCase.kt$SaveNoteUseCase$e: Exception</ID>
   </CurrentIssues>
 </SmellBaseline>

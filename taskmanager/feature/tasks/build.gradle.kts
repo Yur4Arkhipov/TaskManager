@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.navgraph)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -27,6 +28,10 @@ android {
 
 dependencies {
 
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:database"))
+    implementation(project(":core:voice"))
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -43,6 +48,11 @@ dependencies {
 
     // Compose navigation
     implementation(libs.androidx.navigation.compose)
+
+    // Hilt, hilt navigation
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
 
     // For preview
     debugImplementation(libs.androidx.compose.ui.tooling)
