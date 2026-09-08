@@ -17,10 +17,11 @@ data object SettingsRoute
 fun NavController.navigateToSettings(navOptions: NavOptions) = navigate(route = SettingsRoute, navOptions)
 
 fun NavGraphBuilder.settingsSection(
+    onNavigateBack: () -> Unit = {},
 ) {
     navigation<SettingsBaseRoute>(startDestination = SettingsRoute) {
         composable<SettingsRoute> {
-            SettingsScreen()
+            SettingsScreen(onNavigateBack = onNavigateBack)
         }
     }
 }
