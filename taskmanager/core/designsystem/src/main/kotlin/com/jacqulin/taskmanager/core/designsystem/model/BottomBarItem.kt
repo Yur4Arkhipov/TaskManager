@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.model
+package com.jacqulin.taskmanager.core.designsystem.model
 
 import androidx.compose.ui.graphics.painter.Painter
 

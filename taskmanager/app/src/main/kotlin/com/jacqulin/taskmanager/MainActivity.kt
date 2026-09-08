@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.data.domain.AppSettingsRepository
-import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.ui.App
 import com.jacqulin.taskmanager.ui.rememberAppState
 import com.jacqulin.taskmanager.util.isSystemInDarkTheme

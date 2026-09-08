@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.icon
+package com.jacqulin.taskmanager.core.designsystem.icon
 
 import com.jacqulin.taskmanager.designsystem.R
 

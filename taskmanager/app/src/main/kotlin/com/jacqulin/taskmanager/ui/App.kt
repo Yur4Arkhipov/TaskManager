@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.jacqulin.taskmanager.designsystem.component.BottomNavigationBar
-import com.jacqulin.taskmanager.designsystem.model.BottomBarItem
+import com.jacqulin.taskmanager.core.designsystem.component.BottomNavigationBar
+import com.jacqulin.taskmanager.core.designsystem.model.BottomBarItem
 import com.jacqulin.taskmanager.navigation.AppNavHost
 
 @Composable
@@ -28,7 +28,11 @@ internal fun App(
 
     Scaffold(
         modifier = modifier,
-        bottomBar = { BottomNavigationBar(items = bottomBarItems) }
+        bottomBar = {
+            BottomNavigationBar(
+                items = bottomBarItems
+            )
+        }
     ) { paddingValues  ->
         AppNavHost(
             appState = appState,

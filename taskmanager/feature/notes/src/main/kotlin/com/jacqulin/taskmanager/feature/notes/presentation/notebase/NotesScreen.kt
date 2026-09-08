@@ -27,8 +27,8 @@ import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavEdge
 import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.FloatingActionButton
-import com.jacqulin.taskmanager.designsystem.component.TopAppBar
+import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
+import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NoteItem

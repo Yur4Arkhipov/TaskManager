@@ -2,7 +2,7 @@ package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteNoteUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.ObserveNotesUseCase
 import com.jacqulin.taskmanager.feature.notes.presentation.mapper.toUiModel

@@ -19,13 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.theme.blueSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.defaultSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.greenSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.orangeSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.purpleSchemeColor
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.theme.blueSchemeColor
-import com.jacqulin.taskmanager.designsystem.theme.defaultSchemeColor
-import com.jacqulin.taskmanager.designsystem.theme.greenSchemeColor
-import com.jacqulin.taskmanager.designsystem.theme.orangeSchemeColor
-import com.jacqulin.taskmanager.designsystem.theme.purpleSchemeColor
 
 @Composable
 fun ColorPaletteRow(

@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.component
+package com.jacqulin.taskmanager.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

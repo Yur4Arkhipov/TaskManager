@@ -2,10 +2,10 @@ package com.jacqulin.taskmanager.feature.tasks.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.voice.domain.VoiceError
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
-import com.jacqulin.taskmanager.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.DeleteTaskUseCase
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.ObserveTasksUseCase

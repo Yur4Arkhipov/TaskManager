@@ -1,10 +1,10 @@
-package com.jacqulin.taskmanager.designsystem.component
+package com.jacqulin.taskmanager.core.designsystem.component
 
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.jacqulin.taskmanager.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 
 @Composable
 fun SortDropdownMenu(

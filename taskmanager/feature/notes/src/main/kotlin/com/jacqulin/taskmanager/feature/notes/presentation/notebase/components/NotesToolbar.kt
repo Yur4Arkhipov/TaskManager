@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.component.SearchField
+import com.jacqulin.taskmanager.core.designsystem.component.SortDropdownMenu
+import com.jacqulin.taskmanager.core.designsystem.component.ToolbarButton
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.SearchField
-import com.jacqulin.taskmanager.designsystem.component.SortDropdownMenu
-import com.jacqulin.taskmanager.designsystem.component.ToolbarButton
-import com.jacqulin.taskmanager.designsystem.model.SortType
 
 @Composable
 fun NotesToolbar(

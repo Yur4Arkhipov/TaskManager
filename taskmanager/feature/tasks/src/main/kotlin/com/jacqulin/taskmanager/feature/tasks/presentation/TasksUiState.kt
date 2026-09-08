@@ -1,7 +1,7 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
-import com.jacqulin.taskmanager.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 

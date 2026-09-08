@@ -42,13 +42,20 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.core.designsystem.component.CenterAlignedAppBar
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.CenterAlignedAppBar
-import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.ImagePickerButton
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteContentField
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @NavDestination(route = NoteEditorRoute::class)
 @Composable
@@ -264,6 +271,45 @@ fun NoteEditorScreen(
             }
         }
     }
+//
+//    when (uiState.voiceRecordingState) {
+//        VoiceState.Idle -> Unit
+//
+//        VoiceState.Recording -> {
+//            VoiceRecordingOverlay(
+//                onStopClick = {
+//                    viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
+//                }
+//            )
+//        }
+//
+//        VoiceState.Processing -> {
+//            VoiceProcessingOverlay(
+//                text = stringResource(R.string.tasks_voice_processing)
+//            )
+//        }
+//
+//        is VoiceState.Success -> {
+//            VoiceSuccessOverlay(
+//                taskTitle = stringResource(
+//                    id = R.string.voice_recognized_text,
+//                    (uiState.voiceState as VoiceState.Success).text
+//                )
+//            )
+//            LaunchedEffect(Unit) {
+//                delay(2000.milliseconds)
+//                viewModel.onEvent(TasksEvent.VoiceInputDismissed)
+//            }
+//        }
+//
+//        is VoiceState.Error -> {
+//            VoiceErrorOverlay(
+//                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
+//                onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },
+//                onCancel = { viewModel.onEvent(TasksEvent.VoiceInputCancel) }
+//            )
+//        }
+//    }
 }
 
 @NavPreview(route = NoteEditorRoute::class, primary = true)

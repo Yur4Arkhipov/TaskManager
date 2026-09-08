@@ -19,7 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import com.jacqulin.taskmanager.designsystem.extensions.dashedBorder
+import com.jacqulin.taskmanager.core.designsystem.extensions.dashedBorder
 
 @Composable
 fun ImagePickerButton(

@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation.components
+package com.jacqulin.taskmanager.core.designsystem.component
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode

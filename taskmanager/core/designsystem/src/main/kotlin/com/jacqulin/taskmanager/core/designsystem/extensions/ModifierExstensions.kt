@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.extensions
+package com.jacqulin.taskmanager.core.designsystem.extensions
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind

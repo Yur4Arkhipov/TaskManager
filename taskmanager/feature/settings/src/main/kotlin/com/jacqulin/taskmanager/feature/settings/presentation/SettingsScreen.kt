@@ -22,8 +22,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.feature.settings.navigation.SettingsRoute
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard

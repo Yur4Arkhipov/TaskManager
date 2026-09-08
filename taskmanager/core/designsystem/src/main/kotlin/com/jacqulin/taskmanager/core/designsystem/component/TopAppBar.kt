@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.component
+package com.jacqulin.taskmanager.core.designsystem.component
 
 import androidx.annotation.StringRes
 import androidx.compose.material3.ExperimentalMaterial3Api

@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.designsystem.component
+package com.jacqulin.taskmanager.core.designsystem.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -8,11 +8,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jacqulin.taskmanager.designsystem.model.BottomBarItem
 
 @Composable
 fun BottomNavigationBar(
-    items: List<BottomBarItem>,
+    items: List<com.jacqulin.taskmanager.core.designsystem.model.BottomBarItem>,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
