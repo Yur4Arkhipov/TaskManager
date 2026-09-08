@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:voice"))
     implementation(project(":feature:notes"))
@@ -68,4 +69,7 @@ dependencies {
     // Hilt, hilt navigation
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    // Datastore preferences
+    implementation(libs.androidx.datastore.preferences)
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:TasksScreenViewModel.kt$TasksScreenViewModel$fun onEvent(event: TasksEvent)</ID>
+    <ID>LongMethod:TasksScreen.kt$@NavDestination(route = TasksRoute::class) @Composable fun TasksScreen( viewModel: TasksScreenViewModel = hiltViewModel() )</ID>
+    <ID>MagicNumber:RecordingIndicator.kt$12</ID>
+    <ID>MagicNumber:TaskItem.kt$0.5f</ID>
+    <ID>MagicNumber:VoiceRecordingOverlay.kt$5</ID>
+    <ID>NewLineAtEndOfFile:TasksModule.kt$com.jacqulin.taskmanager.feature.tasks.di.TasksModule.kt</ID>
+    <ID>NewLineAtEndOfFile:TasksRepository.kt$com.jacqulin.taskmanager.feature.tasks.domain.repository.TasksRepository.kt</ID>
+    <ID>NewLineAtEndOfFile:TasksUiState.kt$com.jacqulin.taskmanager.feature.tasks.presentation.TasksUiState.kt</ID>
+    <ID>NewLineAtEndOfFile:VoiceRecordingItem.kt$com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceRecordingItem.kt</ID>
+    <ID>SwallowedException:TasksScreenViewModel.kt$TasksScreenViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:TasksScreenViewModel.kt$TasksScreenViewModel$e: Exception</ID>
+    <ID>WildcardImport:VoiceProcessingOverlay.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:VoiceSuccessOverlay.kt$import androidx.compose.foundation.layout.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

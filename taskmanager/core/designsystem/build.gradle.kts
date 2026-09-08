@@ -23,6 +23,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
