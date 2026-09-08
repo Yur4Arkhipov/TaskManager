@@ -67,3 +67,11 @@ internal val Teal30 = Color(0xFF214D56)
 internal val Teal40 = Color(0xFF3A656F)
 internal val Teal80 = Color(0xFFA2CED9)
 internal val Teal90 = Color(0xFFBEEAF6)
+
+
+val defaultSchemeColor = Color(0xFF006A6A)
+val blueSchemeColor = Color(0xFF005AC1)
+val greenSchemeColor = Color(0xFF3A6A3C)
+val orangeSchemeColor = Color(0xFFF36F45)
+val purpleSchemeColor = Color(0xFF673AB7)
+

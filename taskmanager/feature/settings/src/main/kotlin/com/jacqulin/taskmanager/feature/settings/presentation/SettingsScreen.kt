@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,7 +52,7 @@ fun SettingsScreen(
         ) {
             item {
                 SettingsSectionCard(
-                    title = "Баланс токенов",
+                    title = stringResource(R.string.settings_tokens),
                     content = {
                         Text(
                             text = "0",
@@ -63,7 +64,7 @@ fun SettingsScreen(
 
             item {
                 SettingsSectionCard(
-                    title = "Tема",
+                    title = stringResource(R.string.settings_theme),
                     content = {
                         ThemeSchemeRow(
                             selectedColorScheme = uiState.darkThemeConfig,
@@ -75,7 +76,7 @@ fun SettingsScreen(
 
             item {
                 SettingsSectionCard(
-                    title = "Цветовая схема",
+                    title = stringResource(R.string.settings_color_scheme),
                     content = {
                         ColorPaletteRow(
                             selectedPalette = uiState.colorPalette,
@@ -97,7 +98,7 @@ fun SettingsScreen(
                     ),
                     border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline)
                 ) {
-                    Text("Сбросить настройки")
+                    Text(stringResource(R.string.settings_reset))
                 }
             }
         }

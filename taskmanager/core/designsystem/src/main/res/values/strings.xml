@@ -19,10 +19,14 @@
     // Settings
 
     <string name="settings_title">Настройки</string>
-<!--    <string name="settings_language">Язык</string>-->
-<!--    <string name="settings_theme">Тема</string>-->
-<!--    <string name="settings_dark_theme">Темная тема</string>-->
-<!--    <string name="settings_light_theme">Светлая тема</string>-->
+    <string name="settings_reset">Сбросить настройки</string>
+    <string name="settings_color_scheme">"Цветовая схема"</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_tokens">Баланс токенов</string>
+    <string name="settings_color_selected">Выбрано</string>
+    <string name="settings_dark_theme">Темная</string>
+    <string name="settings_light_theme">Светлая</string>
+    <string name="settings_system_theme">Системная</string>
 <!--    -->
 
 </resources>
