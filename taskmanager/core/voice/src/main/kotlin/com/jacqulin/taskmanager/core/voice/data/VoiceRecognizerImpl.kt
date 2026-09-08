@@ -11,11 +11,16 @@ class VoiceRecognizerImpl @Inject constructor(
     private val speechToText: SpeechToText
 ) : VoiceRecognizer {
 
+    private var _isRecordingActive = false
+    override val isRecordingActive: Boolean get() = _isRecordingActive
+
     override fun start() {
+        _isRecordingActive = true
         try {
             audioRecorder.start()
             Log.d("Recognizer", "Recording started")
         } catch (e: Exception) {
+            _isRecordingActive = false
             audioRecorder.cancel()
             throw e
         }
@@ -25,9 +30,12 @@ class VoiceRecognizerImpl @Inject constructor(
         val audio = try {
             audioRecorder.stop()
         } catch (e: Exception) {
+            _isRecordingActive = false
             audioRecorder.cancel()
             return Result.failure(IllegalStateException("Failed to stop recording"))
         }
+
+        _isRecordingActive = false
 
         return speechToText.recognize(audio).mapCatching { text ->
             if (text.isBlank()) throw IllegalStateException("Empty recognition result")
@@ -36,6 +44,7 @@ class VoiceRecognizerImpl @Inject constructor(
     }
 
     override fun cancel() {
+        _isRecordingActive = false
         audioRecorder.cancel()
     }
 }

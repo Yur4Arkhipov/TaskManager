@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.data.domain.AppSettingsRepository
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import com.jacqulin.taskmanager.ui.App
 import com.jacqulin.taskmanager.ui.rememberAppState
 import com.jacqulin.taskmanager.util.isSystemInDarkTheme
@@ -31,6 +32,10 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appSettingsRepository: AppSettingsRepository
+
+    @Inject
+    lateinit var voiceRecognizer: VoiceRecognizer
+
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +87,10 @@ class MainActivity : ComponentActivity() {
                 darkTheme = themeSettings.darkTheme,
                 colorPalette = themeSettings.colorPalette
             ) {
-                App(appState = appState)
+                App(
+                    appState = appState,
+                    voiceRecognizer = voiceRecognizer
+                )
             }
         }
     }

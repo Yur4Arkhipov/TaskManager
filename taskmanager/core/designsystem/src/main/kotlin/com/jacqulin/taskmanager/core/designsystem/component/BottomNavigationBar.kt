@@ -25,7 +25,8 @@ fun BottomNavigationBar(
                         contentDescription = item.contentDescription,
                         modifier = modifier.size(24.dp)
                     )
-                }
+                },
+                enabled = item.enabled
             )
         }
     }
