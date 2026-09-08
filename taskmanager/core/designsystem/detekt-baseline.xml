@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$.ExampleUnitTest.kt</ID>
+    <ID>NewLineAtEndOfFile:SortType.kt$com.jacqulin.taskmanager.designsystem.model.SortType.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

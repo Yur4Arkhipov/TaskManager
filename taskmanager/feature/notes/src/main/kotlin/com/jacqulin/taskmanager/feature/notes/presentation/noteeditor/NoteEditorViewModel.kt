@@ -46,7 +46,7 @@ class NoteEditorViewModel @Inject constructor(
 
     init {
         loadNote()
-        observeVoiceState()
+//        observeVoiceState()
     }
 
     fun onEvent(event: NoteEditorEvent) {
@@ -108,7 +108,7 @@ class NoteEditorViewModel @Inject constructor(
             }
             NoteEditorEvent.VoiceInputStopClicked -> {
                 viewModelScope.launch {
-                    voiceRecognizer.stop()
+//                    voiceRecognizer.stop()
                 }
             }
             NoteEditorEvent.VoicePermissionGranted -> {
@@ -140,36 +140,36 @@ class NoteEditorViewModel @Inject constructor(
         }
     }
 
-    private fun observeVoiceState() {
-        viewModelScope.launch {
-            voiceRecognizer.state.collect { state ->
-                _uiState.update {
-                    it.copy(
-                        voiceRecordingState = state,
-                        voiceError = when (state) {
-                            is VoiceState.Error -> when (state.error) {
-                                VoiceError.RecordingFailed -> "Не удалось начать запись"
-                                VoiceError.RecognitionFailed -> "Не удалось распознать речь"
-                                VoiceError.Network -> "Проблема с сетью"
-                                VoiceError.Unauthorized -> "Неверный токен или API-ключ распознавания речи"
-                                VoiceError.EmptyResult -> "Результат распознавания пустой"
-                                VoiceError.Unknown -> "Неизвестная ошибка распознавания речи"
-                            }
-                            else -> null
-                        },
-                    )
-                }
-
-                if (state is VoiceState.Success) {
-                    val text = state.text.trim()
-                    if (text.isNotBlank()) {
-                        appendRecognizedText(text)
-                    }
-                    voiceRecognizer.cancel()
-                }
-            }
-        }
-    }
+//    private fun observeVoiceState() {
+//        viewModelScope.launch {
+//            voiceRecognizer.state.collect { state ->
+//                _uiState.update {
+//                    it.copy(
+//                        voiceRecordingState = state,
+//                        voiceError = when (state) {
+//                            is VoiceState.Error -> when (state.error) {
+//                                VoiceError.RecordingFailed -> "Не удалось начать запись"
+//                                VoiceError.RecognitionFailed -> "Не удалось распознать речь"
+//                                VoiceError.Network -> "Проблема с сетью"
+//                                VoiceError.Unauthorized -> "Неверный токен или API-ключ распознавания речи"
+//                                VoiceError.EmptyResult -> "Результат распознавания пустой"
+//                                VoiceError.Unknown -> "Неизвестная ошибка распознавания речи"
+//                            }
+//                            else -> null
+//                        },
+//                    )
+//                }
+//
+//                if (state is VoiceState.Success) {
+//                    val text = state.text.trim()
+//                    if (text.isNotBlank()) {
+//                        appendRecognizedText(text)
+//                    }
+//                    voiceRecognizer.cancel()
+//                }
+//            }
+//        }
+//    }
 
     private fun appendRecognizedText(text: String) {
         _uiState.update { current ->
@@ -192,7 +192,7 @@ class NoteEditorViewModel @Inject constructor(
 
     fun stopVoiceInput() {
         viewModelScope.launch {
-            voiceRecognizer.stop()
+//            voiceRecognizer.stop()
         }
     }
 
