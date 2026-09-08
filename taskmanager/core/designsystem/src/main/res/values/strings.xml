@@ -17,6 +17,7 @@
     <string name="notes_count">%d заметок</string>
     <string name="notes_back">Назад</string>
     <string name="notes_save">Сохранить</string>
+    <string name="notes_remove">Удалить</string>
 
     // Tasks
     <string name="tasks_title">Задачи</string>
@@ -42,6 +43,7 @@
     <string name="tasks_complete">Нажмите, чтобы завершить</string>
     <string name="tasks_successful">Успешно</string>
     <string name="tasks_voice_successfully_return">Голосовой ввод успешно обработан</string>
+    <string name="tasks_ok">Ок</string>
 
 
     // Settings

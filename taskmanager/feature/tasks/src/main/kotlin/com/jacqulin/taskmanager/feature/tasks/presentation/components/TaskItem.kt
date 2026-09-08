@@ -34,8 +34,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
@@ -127,7 +128,7 @@ fun TaskItem(
                     ),
                     modifier = Modifier.height(36.dp),
                 ) {
-                    Text("ОК")
+                    Text(stringResource(R.string.tasks_ok))
                 }
             } else {
                 Text(
@@ -154,7 +155,7 @@ fun TaskItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = formatDate(task.createdAtMillis),
+                    text = task.createdAtMillis.toFormattedDate(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -174,11 +175,11 @@ fun TaskItem(
     }
 }
 
-private fun formatDate(createdAtMillis: Long): String {
-    val formatter = SimpleDateFormat(
-        "dd.MM.yyyy HH:mm",
-        Locale.getDefault()
-    )
-
-    return formatter.format(Date(createdAtMillis))
+private fun Long.toFormattedDate(): String {
+    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy'г.'")
+        .withLocale(Locale.forLanguageTag("ru"))
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .format(formatter)
 }
