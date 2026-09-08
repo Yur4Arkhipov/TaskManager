@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
@@ -60,7 +61,7 @@ fun VoiceRecordingItem(
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
-                    text = "Запись...",
+                    text = stringResource(R.string.tasks_recording),
                     style = MaterialTheme.typography.bodyMedium,
                 )
 
@@ -74,7 +75,7 @@ fun VoiceRecordingItem(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_cross),
-                    contentDescription = "Остановить запись",
+                    contentDescription = stringResource(R.string.tasks_stop_recording)
                 )
             }
         }

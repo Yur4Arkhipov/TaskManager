@@ -16,14 +16,16 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 
 @Composable
 fun VoiceSuccessOverlay(
     modifier: Modifier = Modifier,
-    taskTitle: String = "Задача создана"
+    taskTitle: String
 ) {
     val scale = remember { Animatable(0f) }
 
@@ -49,8 +51,8 @@ fun VoiceSuccessOverlay(
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(
-                painter = painterResource(com.jacqulin.taskmanager.designsystem.R.drawable.ic_camera),
-                contentDescription = "Успешно",
+                painter = painterResource(R.drawable.ic_camera),
+                contentDescription = stringResource(R.string.tasks_successful),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(80.dp)
@@ -68,7 +70,7 @@ fun VoiceSuccessOverlay(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Голосовой ввод успешно обработан",
+                text = stringResource(R.string.tasks_voice_successfully_return),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -80,6 +82,8 @@ fun VoiceSuccessOverlay(
 @Composable
 fun VoiceSuccessOverlayPreview() {
     TaskManagerTheme {
-        VoiceSuccessOverlay()
+        VoiceSuccessOverlay(
+            taskTitle = ""
+        )
     }
 }

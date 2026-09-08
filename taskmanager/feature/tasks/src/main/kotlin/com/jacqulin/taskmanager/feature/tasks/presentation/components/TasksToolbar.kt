@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.component.SearchField
@@ -36,7 +37,7 @@ fun TasksToolbar(
     ) {
         SearchField(
             value = searchQuery,
-            placeholderText = "Поиск задач...",
+            placeholderText = stringResource(R.string.tasks_search),
             onValueChange = onSearchQueryChanged,
             onSearch = onSearch,
             modifier = Modifier.weight(1f),
@@ -45,7 +46,7 @@ fun TasksToolbar(
         Box {
             ToolbarButton(
                 icon = painterResource(R.drawable.ic_sort),
-                contentDescription = "Сортировка",
+                contentDescription = stringResource(R.string.tasks_sort),
                 onClick = {
                     sortMenuExpanded = true
                 }

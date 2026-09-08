@@ -20,14 +20,16 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 
 @Composable
 fun VoiceProcessingOverlay(
     modifier: Modifier = Modifier,
-    text: String = "Анализируем запись..."
+    text: String
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "processing_pulse")
 
@@ -92,7 +94,7 @@ fun VoiceProcessingOverlay(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Это может занять несколько секунд",
+                text = stringResource(R.string.tasks_processing_wait),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -104,6 +106,8 @@ fun VoiceProcessingOverlay(
 @Composable
 fun VoiceProcessingOverlayPreview() {
     TaskManagerTheme {
-        VoiceProcessingOverlay()
+        VoiceProcessingOverlay(
+            text = ""
+        )
     }
 }

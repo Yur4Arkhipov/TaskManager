@@ -15,9 +15,30 @@
     // Tasks
     <string name="tasks_title">Задачи</string>
     <string name="tasks_add_task">Новая задача</string>
+    <string name="tasks_add_task_voice">Голосом</string>
+    <string name="tasks_add_task_text">Текстом</string>
+    <string name="tasks_no_tasks_yet">Задач пока нет</string>
+    <string name="tasks_status_summary">%1$d активных • %2$d выполнено</string>
+    <string name="tasks_voice_processing">Отправляем ИИ и обрабатываем…</string>
+    <string name="tasks_voice_unknown_error">Произошла неизвестная ошибка</string>
+    <string name="voice_recognized_text">Распознано: «%1$s»</string>
+    <string name="tasks_naming_label">Название задачи…</string>
+    <string name="tasks_error">Ошибка</string>
+    <string name="tasks_error_advice">Проверьте подключение к интернету или попробуйте сказать громче</string>
+    <string name="tasks_cancel">Отмена</string>
+    <string name="tasks_retry">Повторить</string>
+    <string name="tasks_search">Поиск задач…</string>
+    <string name="tasks_sort">Сортировка</string>
+    <string name="tasks_processing_wait">Это может занять несколько секунд</string>
+    <string name="tasks_recording">Запись…</string>
+    <string name="tasks_stop_recording">Остановить запись</string>
+    <string name="tasks_record_voice">Запись голоса</string>
+    <string name="tasks_complete">Нажмите, чтобы завершить</string>
+    <string name="tasks_successful">Успешно</string>
+    <string name="tasks_voice_successfully_return">Голосовой ввод успешно обработан</string>
+
 
     // Settings
-
     <string name="settings_title">Настройки</string>
     <string name="settings_reset">Сбросить настройки</string>
     <string name="settings_color_scheme">"Цветовая схема"</string>
@@ -27,6 +48,5 @@
     <string name="settings_dark_theme">Темная</string>
     <string name="settings_light_theme">Светлая</string>
     <string name="settings_system_theme">Системная</string>
-<!--    -->
 
 </resources>

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
@@ -32,7 +33,7 @@ fun VoiceErrorOverlay(
     onRetry: () -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
-    errorMessage: String = "Не удалось распознать речь"
+    errorMessage: String
 ) {
     Box(
         modifier = modifier
@@ -49,7 +50,7 @@ fun VoiceErrorOverlay(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_task),
-                contentDescription = "Ошибка",
+                contentDescription = stringResource(R.string.tasks_error),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(72.dp)
             )
@@ -66,7 +67,7 @@ fun VoiceErrorOverlay(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Проверьте подключение к интернету или попробуйте сказать громче",
+                text = stringResource(R.string.tasks_error_advice),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -82,14 +83,14 @@ fun VoiceErrorOverlay(
                     onClick = onCancel,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.tasks_cancel))
                 }
 
                 Button(
                     onClick = onRetry,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Повторить")
+                    Text(stringResource(R.string.tasks_retry))
                 }
             }
         }
@@ -102,7 +103,8 @@ fun VoiceErrorOverlayPreview() {
     TaskManagerTheme {
         VoiceErrorOverlay(
             onRetry = {},
-            onCancel = {}
+            onCancel = {},
+            errorMessage = ""
         )
     }
 }

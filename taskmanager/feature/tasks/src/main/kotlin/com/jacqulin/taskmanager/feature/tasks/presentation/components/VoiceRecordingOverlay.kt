@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun VoiceRecordingOverlay(
@@ -63,7 +64,7 @@ fun VoiceRecordingOverlay(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_microphone),
-                contentDescription = "Запись голоса",
+                contentDescription = stringResource(R.string.tasks_record_voice),
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(48.dp)
             )
@@ -81,7 +82,7 @@ fun VoiceRecordingOverlay(
             ) {
                 Icon(
                     painter = painterResource(android.R.drawable.ic_menu_close_clear_cancel),
-                    contentDescription = "Остановить запись",
+                    contentDescription = stringResource(R.string.tasks_stop_recording),
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -89,7 +90,7 @@ fun VoiceRecordingOverlay(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Нажмите, чтобы завершить",
+                text = stringResource(R.string.tasks_complete),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )

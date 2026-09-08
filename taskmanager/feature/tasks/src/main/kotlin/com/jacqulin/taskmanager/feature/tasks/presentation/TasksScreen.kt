@@ -1,7 +1,6 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
 import android.Manifest
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,7 +67,6 @@ fun TasksScreen(
     val voicePermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        Log.d("note screen", "permission: $granted")
         if (granted) {
             viewModel.onEvent(TasksEvent.VoicePermissionGranted)
         } else {
@@ -105,7 +103,7 @@ fun TasksScreen(
                 ) {
                     DropdownMenuItem(
                         text = {
-                            Text("Голосом")
+                            Text(stringResource(R.string.tasks_add_task_voice))
                         },
                         onClick = {
                             isCreateMenuExpanded = false
@@ -118,7 +116,7 @@ fun TasksScreen(
 
                     DropdownMenuItem(
                         text = {
-                            Text("Текстом")
+                            Text(stringResource(R.string.tasks_add_task_text))
                         },
                         onClick = {
                             isCreateMenuExpanded = false
@@ -150,7 +148,11 @@ fun TasksScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "$activeTasksCount активных • $completedTasksCount выполнено",
+                text = stringResource(
+                    id = R.string.tasks_status_summary,
+                    activeTasksCount,
+                    completedTasksCount
+                ),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -213,7 +215,7 @@ fun TasksScreen(
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
-                        Text(text = "Задач пока нет")
+                        Text(text = stringResource(R.string.tasks_no_tasks_yet))
                     }
                 }
             } else {
@@ -238,15 +240,9 @@ fun TasksScreen(
     }
 
     when (uiState.voiceState) {
-        VoiceState.Idle -> {
-            Log.d("TasksScreen", "Voice state: must be idle")
-            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
-            Unit
-        }
+        VoiceState.Idle -> Unit
 
         VoiceState.Recording -> {
-            Log.d("TasksScreen", "Voice state: must be recording")
-            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
             VoiceRecordingOverlay(
                 onStopClick = {
                     viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
@@ -255,18 +251,17 @@ fun TasksScreen(
         }
 
         VoiceState.Processing -> {
-            Log.d("TasksScreen", "Voice state: must be processing")
-            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
             VoiceProcessingOverlay(
-                text = "Отправляем ИИ и обрабатываем..."
+                text = stringResource(R.string.tasks_voice_processing)
             )
         }
 
         is VoiceState.Success -> {
-            Log.d("TasksScreen", "Voice state: must be success")
-            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
             VoiceSuccessOverlay(
-                taskTitle = "Распознано: «${(uiState.voiceState as VoiceState.Success).text}»"
+                taskTitle = stringResource(
+                    id = R.string.voice_recognized_text,
+                   (uiState.voiceState as VoiceState.Success).text
+                )
             )
             LaunchedEffect(Unit) {
                 delay(2000.milliseconds)
@@ -275,10 +270,8 @@ fun TasksScreen(
         }
 
         is VoiceState.Error -> {
-            Log.d("TasksScreen", "Voice state: must be error")
-            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
             VoiceErrorOverlay(
-                errorMessage = "Произошла неизвестная ошибка",
+                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
                 onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },
                 onCancel = { viewModel.onEvent(TasksEvent.VoiceInputCancel) }
             )
