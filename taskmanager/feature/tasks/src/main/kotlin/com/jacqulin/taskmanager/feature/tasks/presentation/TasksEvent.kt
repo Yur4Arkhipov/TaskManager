@@ -18,4 +18,7 @@ sealed interface TasksEvent {
     data object VoicePermissionGranted : TasksEvent
     data object VoicePermissionDenied : TasksEvent
     data class VoiceTextRecognized(val text: String) : TasksEvent
+    data object VoiceInputDismissed : TasksEvent
+    data object VoiceInputRetry : TasksEvent
+    data object VoiceInputCancel : TasksEvent
 }

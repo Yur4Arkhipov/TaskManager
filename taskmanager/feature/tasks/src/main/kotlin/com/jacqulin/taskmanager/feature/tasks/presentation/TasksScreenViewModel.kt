@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.tasks.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.voice.domain.VoiceError
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.model.SortType
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,7 +47,6 @@ class TasksScreenViewModel @Inject constructor(
     val effects: SharedFlow<TasksEffect> = _effects.asSharedFlow()
 
     private val _voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
-
 
     private val tasksUiState =
         combine(
@@ -94,52 +93,14 @@ class TasksScreenViewModel @Inject constructor(
     val uiState: StateFlow<TasksUiState> =
         combine(
             tasksUiState,
-            voiceRecognizer.state
+            _voiceState
         ) { state, voiceState ->
-
-            state.copy(
-                voiceState = voiceState
-            )
+            state.copy(voiceState = voiceState)
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             TasksUiState()
         )
-
-    init {
-        observeVoiceState()
-    }
-
-    private fun observeVoiceState() {
-        viewModelScope.launch {
-            voiceRecognizer.state.collect { state ->
-                _voiceState.value = state
-
-                if (state is VoiceState.Success) {
-                    val text = state.text.trim()
-
-                    if (text.isNotBlank()) {
-                        appendRecognizedText(text)
-                    }
-
-                    voiceRecognizer.cancel()
-                }
-            }
-        }
-    }
-
-    private fun appendRecognizedText(text: String) {
-        _draftTask.update { current ->
-            val draft = current ?: DraftTaskUi()
-
-            val separator = if (draft.title.isBlank()) "" else " "
-
-            draft.copy(
-                title = draft.title + separator + text.trim()
-            )
-        }
-        Log.d("VM", "Draft: ${_draftTask.value}")
-    }
 
     fun onEvent(event: TasksEvent) {
         when (event) {
@@ -163,16 +124,27 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.VoiceInputStopClicked -> {
                 Log.d("TasksVM", "stop voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${voiceRecognizer.state.value}")
+                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
+                _voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
-                    voiceRecognizer.stop()
+                    val result = voiceRecognizer.stopAndRecognize()
+
+                    result.onSuccess { text ->
+                        _draftTask.value = DraftTaskUi(title = text)
+                        _voiceState.value = VoiceState.Success(text)
+                    }.onFailure { error ->
+                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                    }
                 }
             }
             TasksEvent.VoicePermissionGranted -> {
                 Log.d("NoteEditorVM", "start voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${voiceRecognizer.state.value}")
-                viewModelScope.launch {
+                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
+                try {
                     voiceRecognizer.start()
+                    _voiceState.value = VoiceState.Recording
+                } catch (e: Exception) {
+                    _voiceState.value = VoiceState.Error(VoiceError.Network)
                 }
             }
             TasksEvent.VoicePermissionDenied -> {
@@ -181,7 +153,8 @@ class TasksScreenViewModel @Inject constructor(
                 )
             }
             is TasksEvent.VoiceTextRecognized -> {
-//                appendRecognizedText(event.text)
+                _draftTask.value = DraftTaskUi(title = event.text)
+                _voiceState.value = VoiceState.Success(text = event.text)
             }
             is TasksEvent.OnDraftTaskTextChanged -> {
                 _draftTask.value = _draftTask.value?.copy(
@@ -196,6 +169,24 @@ class TasksScreenViewModel @Inject constructor(
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
+            }
+            TasksEvent.VoiceInputDismissed -> {
+                Log.d("VM", "_voiceState: ${_voiceState.value} ")
+                voiceRecognizer.cancel()
+                _voiceState.value = VoiceState.Idle
+                Log.d("VM", "_voiceState: ${_voiceState.value} ")
+            }
+            TasksEvent.VoiceInputRetry -> {
+                _voiceState.value = VoiceState.Recording
+                try {
+                    voiceRecognizer.start()
+                } catch (e: Exception) {
+                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                }
+            }
+            TasksEvent.VoiceInputCancel -> {
+                voiceRecognizer.cancel()
+                _voiceState.value = VoiceState.Idle
             }
         }
     }
@@ -239,13 +230,6 @@ class TasksScreenViewModel @Inject constructor(
             updateTaskStatusUseCase(updatedTask.toDomain())
         }
     }
-
-//    private fun appendRecognizedText(text: String) {
-//        uiState.update { current ->
-//            val separator = if (current.content.isBlank()) "" else "\n"
-//            current.copy(content = current.content + separator + text.trim())
-//        }
-//    }
 
     private fun emitEffect(effect: TasksEffect) {
         viewModelScope.launch {

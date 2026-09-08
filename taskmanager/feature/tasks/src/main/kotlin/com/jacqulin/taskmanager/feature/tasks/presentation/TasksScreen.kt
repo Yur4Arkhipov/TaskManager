@@ -43,9 +43,13 @@ import com.jacqulin.taskmanager.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
-import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceProcessingItem
-import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceRecordingItem
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceErrorOverlay
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceProcessingOverlay
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceRecordingOverlay
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.VoiceSuccessOverlay
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @NavDestination(route = TasksRoute::class)
 @Composable
@@ -164,32 +168,6 @@ fun TasksScreen(
                 }
             )
 
-            when (uiState.voiceState) {
-                VoiceState.Idle -> Unit
-
-                VoiceState.Recording -> {
-                    VoiceRecordingItem(
-                        onStopClick = {
-                            viewModel.onEvent(
-                                TasksEvent.VoiceInputStopClicked
-                            )
-                        }
-                    )
-                }
-
-                VoiceState.Processing -> {
-                    VoiceProcessingItem()
-                }
-
-                is VoiceState.Success -> {
-                    // позже
-                }
-
-                is VoiceState.Error -> {
-                    // позже
-                }
-            }
-
             if (uiState.draftTask != null) {
                 TaskItem(
                     task = TaskItemUi(
@@ -256,6 +234,54 @@ fun TasksScreen(
                     }
                 }
             }
+        }
+    }
+
+    when (uiState.voiceState) {
+        VoiceState.Idle -> {
+            Log.d("TasksScreen", "Voice state: must be idle")
+            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
+            Unit
+        }
+
+        VoiceState.Recording -> {
+            Log.d("TasksScreen", "Voice state: must be recording")
+            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
+            VoiceRecordingOverlay(
+                onStopClick = {
+                    viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
+                }
+            )
+        }
+
+        VoiceState.Processing -> {
+            Log.d("TasksScreen", "Voice state: must be processing")
+            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
+            VoiceProcessingOverlay(
+                text = "Отправляем ИИ и обрабатываем..."
+            )
+        }
+
+        is VoiceState.Success -> {
+            Log.d("TasksScreen", "Voice state: must be success")
+            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
+            VoiceSuccessOverlay(
+                taskTitle = "Распознано: «${(uiState.voiceState as VoiceState.Success).text}»"
+            )
+            LaunchedEffect(Unit) {
+                delay(2000.milliseconds)
+                viewModel.onEvent(TasksEvent.VoiceInputDismissed)
+            }
+        }
+
+        is VoiceState.Error -> {
+            Log.d("TasksScreen", "Voice state: must be error")
+            Log.d("TasksScreen", "Voice state: ${uiState.voiceState}")
+            VoiceErrorOverlay(
+                errorMessage = "Произошла неизвестная ошибка",
+                onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },
+                onCancel = { viewModel.onEvent(TasksEvent.VoiceInputCancel) }
+            )
         }
     }
 }
