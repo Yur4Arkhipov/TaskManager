@@ -30,6 +30,9 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
 
+    // Splash Screen
+    implementation(libs.androidx.core.splashscreen)
+
     // For preview
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

@@ -23,8 +23,7 @@ retrofit = "3.0.0"
 converterGsonVersion = "3.0.0"
 okhttp = "5.5.0"
 dataStore = "1.2.1"
-appcompat = "1.8.0"
-material = "1.14.0"
+androidxCoreSplashscreen = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,8 +72,8 @@ okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercepto
 
 # DataStore
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
