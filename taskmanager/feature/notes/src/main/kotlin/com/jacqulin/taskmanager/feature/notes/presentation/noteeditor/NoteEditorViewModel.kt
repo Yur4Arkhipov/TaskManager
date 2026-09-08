@@ -5,9 +5,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.core.voice.domain.VoiceError
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
-import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.feature.notes.domain.model.Note
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.CreateTempImageUseCase
 import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteTempImageUseCase
