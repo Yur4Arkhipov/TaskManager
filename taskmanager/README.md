@@ -11,7 +11,7 @@
 
 ## Видео
 
-Ссылка на yandex диск: 
+Ссылка на yandex диск: https://disk.yandex.ru/d/P9wD6UJU281DrQ
 ## Скриншоты
 
 <table>
