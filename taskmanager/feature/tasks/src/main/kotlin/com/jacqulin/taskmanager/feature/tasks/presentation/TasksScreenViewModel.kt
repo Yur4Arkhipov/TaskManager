@@ -1,12 +1,11 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.voice.domain.VoiceError
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
-import com.jacqulin.taskmanager.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.DeleteTaskUseCase
 import com.jacqulin.taskmanager.feature.tasks.domain.usecase.ObserveTasksUseCase
@@ -123,8 +122,6 @@ class TasksScreenViewModel @Inject constructor(
                 emitEffect(TasksEffect.RequestVoicePermission)
             }
             TasksEvent.VoiceInputStopClicked -> {
-                Log.d("TasksVM", "stop voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
                 _voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
                     val result = voiceRecognizer.stopAndRecognize()
@@ -134,17 +131,17 @@ class TasksScreenViewModel @Inject constructor(
                         _voiceState.value = VoiceState.Success(text)
                     }.onFailure { error ->
                         _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                        emitEffect(TasksEffect.ShowError("Не удалось распознать речь"))
                     }
                 }
             }
             TasksEvent.VoicePermissionGranted -> {
-                Log.d("NoteEditorVM", "start voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
                 try {
                     voiceRecognizer.start()
                     _voiceState.value = VoiceState.Recording
                 } catch (e: Exception) {
                     _voiceState.value = VoiceState.Error(VoiceError.Network)
+                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
                 }
             }
             TasksEvent.VoicePermissionDenied -> {
@@ -171,10 +168,8 @@ class TasksScreenViewModel @Inject constructor(
                 updateTaskStatus(event.task)
             }
             TasksEvent.VoiceInputDismissed -> {
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
                 voiceRecognizer.cancel()
                 _voiceState.value = VoiceState.Idle
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
             }
             TasksEvent.VoiceInputRetry -> {
                 _voiceState.value = VoiceState.Recording
@@ -182,6 +177,7 @@ class TasksScreenViewModel @Inject constructor(
                     voiceRecognizer.start()
                 } catch (e: Exception) {
                     _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
                 }
             }
             TasksEvent.VoiceInputCancel -> {

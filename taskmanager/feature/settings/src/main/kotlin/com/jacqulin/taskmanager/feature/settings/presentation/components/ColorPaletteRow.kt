@@ -17,7 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.theme.blueSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.defaultSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.greenSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.orangeSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.purpleSchemeColor
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.designsystem.R
 
@@ -52,11 +58,11 @@ fun ColorPaletteRow(
                     .clip(CircleShape)
                     .background(
                         color = when (palette) {
-                            ColorPalette.DEFAULT -> Color(0xFF006A6A)
-                            ColorPalette.BLUE -> Color(0xFF005AC1)
-                            ColorPalette.GREEN -> Color(0xFF3A6A3C)
-                            ColorPalette.ORANGE -> Color(0xFFF36F45)
-                            ColorPalette.PURPLE -> Color(0xFF673AB7)
+                            ColorPalette.DEFAULT -> defaultSchemeColor
+                            ColorPalette.BLUE -> blueSchemeColor
+                            ColorPalette.GREEN -> greenSchemeColor
+                            ColorPalette.ORANGE -> orangeSchemeColor
+                            ColorPalette.PURPLE -> purpleSchemeColor
                         }
                     ),
                 contentAlignment = Alignment.Center
@@ -64,7 +70,7 @@ fun ColorPaletteRow(
                 if (isSelected) {
                     Icon(
                         painter = painterResource(R.drawable.ic_check),
-                        contentDescription = "Выбрано",
+                        contentDescription = stringResource(R.string.settings_color_selected),
                         tint = Color.White.copy(alpha = 0.5f),
                         modifier = Modifier.size(16.dp)
                     )

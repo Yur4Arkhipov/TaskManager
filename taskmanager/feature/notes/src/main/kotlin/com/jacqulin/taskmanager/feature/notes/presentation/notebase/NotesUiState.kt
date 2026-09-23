@@ -1,6 +1,6 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
-import com.jacqulin.taskmanager.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
 
 data class NotesUiState(

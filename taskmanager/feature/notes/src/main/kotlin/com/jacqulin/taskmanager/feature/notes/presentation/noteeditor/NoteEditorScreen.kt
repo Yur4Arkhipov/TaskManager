@@ -2,11 +2,11 @@
 
 import android.Manifest
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,13 +42,20 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.core.designsystem.component.CenterAlignedAppBar
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
+import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.CenterAlignedAppBar
-import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.ImagePickerButton
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteContentField
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @NavDestination(route = NoteEditorRoute::class)
 @Composable
@@ -93,7 +104,6 @@ fun NoteEditorScreen(
     val voicePermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        Log.d("note screen", "permission: $granted")
         if (granted) {
             viewModel.onEvent(NoteEditorEvent.VoicePermissionGranted)
         } else {
@@ -119,9 +129,7 @@ fun NoteEditorScreen(
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
                 NoteEditorEffect.RequestVoicePermission -> {
-                    Log.d("note screen", "request permission")
                     voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                    Log.d("note screen", "request permission end")
                 }
                 NoteEditorEffect.NavigateBack -> {
                     onBack()
@@ -186,24 +194,23 @@ fun NoteEditorScreen(
                     viewModel.onEvent(NoteEditorEvent.ContentChanged(newContent))
                 },
                 onVoiceInputClick = {
-//                    if (uiState.voiceRecordingState is VoiceState.Recording) {
-//                        viewModel.stopVoiceInput()
-//                    } else {
-                    Log.d("NoteEditorScreen", "click voice recognizer")
-                        viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
-//                    }
-                },
-                onStopVoice = {
-                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
-                },
-                voiceRecordingState = uiState.voiceRecordingState
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStartClicked)
+                }
             )
 
             Spacer(Modifier.height(16.dp))
 
             if (imageModel != null) {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .border(
+                            width = 0.2.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(12.dp),
+                        )
+                        .clip(RoundedCornerShape(12.dp))
                 ) {
                     AsyncImage(
                         model = imageModel,
@@ -216,6 +223,10 @@ fun NoteEditorScreen(
                         onClick = {
                             viewModel.onEvent(NoteEditorEvent.ImageRemoved)
                         },
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
@@ -250,6 +261,45 @@ fun NoteEditorScreen(
                     )
                 }
             }
+        }
+    }
+
+    when (val state = uiState.voiceRecordingState) {
+        VoiceState.Idle -> Unit
+
+        VoiceState.Recording -> {
+            VoiceRecordingOverlay(
+                onStopClick = {
+                    viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
+                }
+            )
+        }
+
+        VoiceState.Processing -> {
+            VoiceProcessingOverlay(
+                text = stringResource(R.string.tasks_voice_processing)
+            )
+        }
+
+        is VoiceState.Success -> {
+            VoiceSuccessOverlay(
+                taskTitle = stringResource(
+                    id = R.string.voice_recognized_text,
+                    state.text
+                )
+            )
+            LaunchedEffect(Unit) {
+                delay(3000.milliseconds)
+                viewModel.onEvent(NoteEditorEvent.VoiceInputDismissed)
+            }
+        }
+
+        is VoiceState.Error -> {
+            VoiceErrorOverlay(
+                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
+                onRetry = { viewModel.onEvent(NoteEditorEvent.VoiceInputRetry) },
+                onCancel = { viewModel.onEvent(NoteEditorEvent.VoiceInputCancel) }
+            )
         }
     }
 }

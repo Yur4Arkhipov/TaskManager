@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.designsystem.R
@@ -73,9 +74,9 @@ fun ThemeSchemeRow(
 
                     Text(
                         text = when (config) {
-                            DarkThemeConfig.LIGHT -> "Светлая"
-                            DarkThemeConfig.DARK -> "Темная"
-                            DarkThemeConfig.FOLLOW_SYSTEM -> "Системная"
+                            DarkThemeConfig.LIGHT -> stringResource(R.string.settings_light_theme)
+                            DarkThemeConfig.DARK -> stringResource(R.string.settings_dark_theme)
+                            DarkThemeConfig.FOLLOW_SYSTEM -> stringResource(R.string.settings_system_theme)
                         },
                         style = MaterialTheme.typography.labelLarge,
                         color = if (isSelected) {

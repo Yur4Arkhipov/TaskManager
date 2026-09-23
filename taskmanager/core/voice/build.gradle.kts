@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.detekt)
@@ -16,11 +19,20 @@ android {
         buildConfig = true
     }
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
+    val yandexFolderId = localProperties.getProperty("YANDEX_FOLDER_ID", "")
+    val yandexIamToken = localProperties.getProperty("YANDEX_IAM_TOKEN", "")
+
     defaultConfig {
         minSdk = 26
-        buildConfigField("String", "YANDEX_FOLDER_ID", "\"\"")
-        buildConfigField("String", "YANDEX_IAM_TOKEN", "\"\"")
-
+        buildConfigField("String", "YANDEX_FOLDER_ID", "\"$yandexFolderId\"")
+        buildConfigField("String", "YANDEX_IAM_TOKEN", "\"$yandexIamToken\"")
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {

@@ -27,8 +27,8 @@ import com.github.skydoves.navgraph.annotations.NavDestination
 import com.github.skydoves.navgraph.annotations.NavEdge
 import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.FloatingActionButton
-import com.jacqulin.taskmanager.designsystem.component.TopAppBar
+import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
+import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NoteItem
@@ -79,8 +79,11 @@ fun NotesScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "${uiState.visibleNotes.size} заметок",
-                style = MaterialTheme.typography.labelSmall,
+                text = stringResource(
+                    R.string.notes_count,
+                    uiState.visibleNotes.size
+                ),
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
@@ -117,7 +120,7 @@ fun NotesScreen(
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
-                        Text(text = "Заметок пока нет")
+                        Text(text = stringResource(R.string.notes_empty))
                     }
                 }
             } else {

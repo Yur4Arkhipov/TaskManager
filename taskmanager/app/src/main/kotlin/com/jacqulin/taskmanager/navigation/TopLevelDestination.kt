@@ -2,7 +2,7 @@ package com.jacqulin.taskmanager.navigation
 
 import androidx.annotation.StringRes
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.icon.AppIcons
+import com.jacqulin.taskmanager.core.designsystem.icon.AppIcons
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
 import com.jacqulin.taskmanager.feature.settings.navigation.SettingsBaseRoute
