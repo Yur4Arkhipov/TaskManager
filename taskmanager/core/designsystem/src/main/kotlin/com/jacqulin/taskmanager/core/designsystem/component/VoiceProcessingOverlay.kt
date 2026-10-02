@@ -11,15 +11,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ fun VoiceProcessingOverlay(
     text: String
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "processing_pulse")
+    val scrimColor = colorScheme.surface.copy(alpha = 0.85f)
 
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -53,12 +55,14 @@ fun VoiceProcessingOverlay(
         label = "pulse_alpha"
     )
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .blur(radius = 12.dp)
-            .background(Color.Black.copy(alpha = 0.6f))
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(radius = 10.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                .background(scrimColor)
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -73,12 +77,12 @@ fun VoiceProcessingOverlay(
                         .fillMaxSize()
                         .scale(scale)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = alpha))
+                        .background(colorScheme.primary.copy(alpha = alpha))
                 )
 
                 CircularProgressIndicator(
                     modifier = Modifier.size(48.dp),
-                    color = MaterialTheme.colorScheme.primary,
+                    color = colorScheme.primary,
                     strokeWidth = 4.dp
                 )
             }
@@ -88,7 +92,7 @@ fun VoiceProcessingOverlay(
             Text(
                 text = text,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -96,7 +100,7 @@ fun VoiceProcessingOverlay(
             Text(
                 text = stringResource(R.string.tasks_processing_wait),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colorScheme.onSurfaceVariant
             )
         }
     }

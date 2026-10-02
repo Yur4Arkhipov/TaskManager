@@ -14,13 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,12 +37,18 @@ fun VoiceErrorOverlay(
     modifier: Modifier = Modifier,
     errorMessage: String
 ) {
+    val scrimColor = colorScheme.surface.copy(alpha = 0.85f)
+
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .blur(radius = 12.dp)
-            .background(Color.Black.copy(alpha = 0.6f))
+        modifier = modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(radius = 10.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                .background(scrimColor)
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -52,7 +59,7 @@ fun VoiceErrorOverlay(
             Icon(
                 painter = painterResource(R.drawable.ic_error),
                 contentDescription = stringResource(R.string.tasks_error),
-                tint = MaterialTheme.colorScheme.error,
+                tint = colorScheme.error,
                 modifier = Modifier.size(72.dp)
             )
 
@@ -61,7 +68,7 @@ fun VoiceErrorOverlay(
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
 
@@ -70,7 +77,7 @@ fun VoiceErrorOverlay(
             Text(
                 text = stringResource(R.string.tasks_error_advice),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 

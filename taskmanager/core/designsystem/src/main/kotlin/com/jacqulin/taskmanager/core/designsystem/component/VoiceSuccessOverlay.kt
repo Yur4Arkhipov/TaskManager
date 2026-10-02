@@ -11,12 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,24 +31,18 @@ fun VoiceSuccessOverlay(
     modifier: Modifier = Modifier,
     taskTitle: String
 ) {
-//    val scale = remember { Animatable(0f) }
-//
-//    LaunchedEffect(Unit) {
-//        scale.animateTo(
-//            targetValue = 1f,
-//            animationSpec = spring(
-//                dampingRatio = 0.6f,
-//                stiffness = 300f
-//            )
-//        )
-//    }
+    val scrimColor = colorScheme.surface.copy(alpha = 0.85f)
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .blur(radius = 10.dp)
-            .background(Color.Black.copy(alpha = 0.6f))
+        modifier = modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(radius = 10.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                .background(scrimColor)
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -58,7 +53,7 @@ fun VoiceSuccessOverlay(
             Icon(
                 painter = painterResource(R.drawable.ic_check),
                 contentDescription = stringResource(R.string.tasks_successful),
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colorScheme.primary,
                 modifier = Modifier.size(72.dp)
             )
 
@@ -67,7 +62,7 @@ fun VoiceSuccessOverlay(
             Text(
                 text = taskTitle,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
 
@@ -76,7 +71,7 @@ fun VoiceSuccessOverlay(
             Text(
                 text = stringResource(R.string.tasks_voice_successfully_return),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colorScheme.onSurfaceVariant
             )
         }
     }
