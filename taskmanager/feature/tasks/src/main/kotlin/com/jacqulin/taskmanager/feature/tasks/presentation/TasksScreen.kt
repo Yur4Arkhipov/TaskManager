@@ -159,6 +159,7 @@ fun TasksScreen(
 
             TasksToolbar(
                 searchQuery = uiState.searchQueryInput,
+                sortType = uiState.sortType,
                 onSearchQueryChanged = { query ->
                     viewModel.onEvent(TasksEvent.OnSearchQueryChanged(query))
                 },

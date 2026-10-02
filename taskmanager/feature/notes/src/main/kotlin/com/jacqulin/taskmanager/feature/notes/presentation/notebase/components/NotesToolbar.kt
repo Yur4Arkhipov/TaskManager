@@ -13,17 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.component.SearchField
 import com.jacqulin.taskmanager.core.designsystem.component.SortDropdownMenu
 import com.jacqulin.taskmanager.core.designsystem.component.ToolbarButton
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun NotesToolbar(
     searchQuery: String,
     isDeleteModeEnabled: Boolean,
+    sortType: SortType,
     onSearchQueryChanged: (String) -> Unit,
     onSearch: () -> Unit,
     onSortChanged: (SortType) -> Unit,
@@ -59,6 +62,7 @@ fun NotesToolbar(
                 onDismissRequest = {
                     sortMenuExpanded = false
                 },
+                sortType = sortType,
                 onSortChanged = onSortChanged,
             )
         }
@@ -68,6 +72,22 @@ fun NotesToolbar(
             contentDescription = "",
             onClick = onDeleteModeClick,
             selected = isDeleteModeEnabled
+        )
+    }
+}
+
+@Composable
+@Preview
+fun NotesToolbarPreview() {
+    TaskManagerTheme {
+        NotesToolbar(
+            searchQuery = " ",
+            isDeleteModeEnabled = false,
+            sortType = SortType.NEW_TO_OLD,
+            onSearchQueryChanged = { },
+            onSearch = { },
+            onSortChanged = { },
+            onDeleteModeClick = { },
         )
     }
 }

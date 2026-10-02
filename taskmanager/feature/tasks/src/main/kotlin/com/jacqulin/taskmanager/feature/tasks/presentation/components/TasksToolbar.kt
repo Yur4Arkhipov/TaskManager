@@ -23,6 +23,7 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun TasksToolbar(
     searchQuery: String,
+    sortType: SortType,
     onSearchQueryChanged: (String) -> Unit,
     onSearch: () -> Unit,
     onSortChanged: (SortType) -> Unit,
@@ -53,6 +54,7 @@ fun TasksToolbar(
             )
             SortDropdownMenu(
                 expanded = sortMenuExpanded,
+                sortType = sortType,
                 onDismissRequest = {
                     sortMenuExpanded = false
                 },

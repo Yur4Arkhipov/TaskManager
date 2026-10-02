@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.NoteEditorScreen
-import com.jacqulin.taskmanager.feature.notes.presentation.notebase.NotesScreen
+import com.jacqulin.taskmanager.feature.notes.presentation.notebase.NotesScreenRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,7 +34,7 @@ fun NavGraphBuilder.notesSection(
 ) {
     navigation<NotesBaseRoute>(startDestination = NotesRoute) {
         composable<NotesRoute> {
-            NotesScreen(
+            NotesScreenRoute(
                 onAddClick = onNavigateToNoteEditor,
                 onNoteClick = onNavigateToExistingNote
             )
