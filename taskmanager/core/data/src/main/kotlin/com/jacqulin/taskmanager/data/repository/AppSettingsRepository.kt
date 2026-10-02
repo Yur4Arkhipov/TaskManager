@@ -33,8 +33,8 @@ class AppSettingsRepositoryImpl @Inject constructor(
             } ?: DarkThemeConfig.FOLLOW_SYSTEM,
 
             colorPalette = preferences[PreferencesKeys.COLOR_PALETTE]?.let {
-                runCatching { ColorPalette.valueOf(it) }.getOrDefault(ColorPalette.DEFAULT)
-            } ?: ColorPalette.DEFAULT
+                runCatching { ColorPalette.valueOf(it) }.getOrDefault(ColorPalette.CYAN)
+            } ?: ColorPalette.CYAN
         )
     }
 

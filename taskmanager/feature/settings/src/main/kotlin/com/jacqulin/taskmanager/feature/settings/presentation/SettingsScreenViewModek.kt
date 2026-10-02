@@ -39,7 +39,7 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun resetSettings() {
         viewModelScope.launch {
-            appSettingsRepository.setColorPalette(ColorPalette.DEFAULT)
+            appSettingsRepository.setColorPalette(ColorPalette.CYAN)
             appSettingsRepository.setDarkThemeConfig(DarkThemeConfig.FOLLOW_SYSTEM)
         }
     }

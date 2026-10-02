@@ -1,9 +1,11 @@
 package com.jacqulin.taskmanager.core.model
 
 enum class ColorPalette {
-    DEFAULT,
+    CYAN,
     BLUE,
     GREEN,
     PURPLE,
-    ORANGE
+    ORANGE,
+    AMBER,
+    TEAL
 }

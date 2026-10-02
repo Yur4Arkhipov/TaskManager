@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jacqulin.taskmanager.core.model.ColorPalette
 
-val DarkDefaultColorScheme = darkColorScheme(
+val DarkCyanColorScheme = darkColorScheme(
     primary = Purple80,
     onPrimary = Purple20,
     primaryContainer = Purple30,
@@ -36,7 +36,7 @@ val DarkDefaultColorScheme = darkColorScheme(
     outline = PurpleGray60,
 )
 
-val LightDefaultColorScheme = lightColorScheme(
+val LightCyanColorScheme = lightColorScheme(
     primary = Purple40,
     onPrimary = Color.White,
     primaryContainer = Purple90,
@@ -256,18 +256,132 @@ val DarkOrangeColorScheme = darkColorScheme(
     outline = Color(0xFFA08D84)
 )
 
+val LightAmberColorScheme = lightColorScheme(
+    primary = Color(0xFF845926),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFFFDECA),
+    onPrimaryContainer = Color(0xFF2D1900),
+    secondary = Color(0xFF715D39),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFFDE0B0),
+    onSecondaryContainer = Color(0xFF271900),
+    tertiary = Color(0xFF536742),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFD7EDBC),
+    onTertiaryContainer = Color(0xFF112105),
+    error = Color(0xFFBA1A1A),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD6),
+    onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFFFFBFF),
+    onBackground = Color(0xFF201A17),
+    surface = Color(0xFFFFFBFF),
+    onSurface = Color(0xFF201A17),
+    surfaceVariant = Color(0xFFF5DFC8),
+    onSurfaceVariant = Color(0xFF534638),
+    outline = Color(0xFF857564),
+    inverseSurface = Color(0xFF352F2C),
+    inverseOnSurface = Color(0xFFFBF0EA),
+)
+
+val DarkAmberColorScheme = darkColorScheme(
+    primary = Color(0xFFFFB984),
+    onPrimary = Color(0xFF482E00),
+    primaryContainer = Color(0xFF634114),
+    onPrimaryContainer = Color(0xFFFFDECA),
+    secondary = Color(0xFFE0C38F),
+    onSecondary = Color(0xFF402F0D),
+    secondaryContainer = Color(0xFF594522),
+    onSecondaryContainer = Color(0xFFFDE0B0),
+    tertiary = Color(0xFFBBD191),
+    onTertiary = Color(0xFF253615),
+    tertiaryContainer = Color(0xFF3C4D2B),
+    onTertiaryContainer = Color(0xFFD7EDBC),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF201A17),
+    onBackground = Color(0xFFEDE0DA),
+    surface = Color(0xFF201A17),
+    onSurface = Color(0xFFEDE0DA),
+    surfaceVariant = Color(0xFF534638),
+    onSurfaceVariant = Color(0xFFD8C5B1),
+    outline = Color(0xFFA08F7D),
+    inverseSurface = Color(0xFFE6D9D2),
+    inverseOnSurface = Color(0xFF352F2C),
+)
+
+val LightTealColorScheme = lightColorScheme(
+    primary = Color(0xFF006A6A),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFA2F4F4),
+    onPrimaryContainer = Color(0xFF002020),
+    secondary = Color(0xFF4D6363),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFCFE9E8),
+    onSecondaryContainer = Color(0xFF091F1F),
+    tertiary = Color(0xFF46637F),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFD0E6FF),
+    onTertiaryContainer = Color(0xFF001E33),
+    error = Color(0xFFBA1A1A),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD6),
+    onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFFAFDFD),
+    onBackground = Color(0xFF191C1C),
+    surface = Color(0xFFFAFDFD),
+    onSurface = Color(0xFF191C1C),
+    surfaceVariant = Color(0xFFDCE4E4),
+    onSurfaceVariant = Color(0xFF404949),
+    outline = Color(0xFF707979),
+    inverseSurface = Color(0xFF2E3131),
+    inverseOnSurface = Color(0xFFF1F4F4),
+)
+
+val DarkTealColorScheme = darkColorScheme(
+    primary = Color(0xFF56DADA),
+    onPrimary = Color(0xFF003B3B),
+    primaryContainer = Color(0xFF005151),
+    onPrimaryContainer = Color(0xFFA2F4F4),
+    secondary = Color(0xFFB3CCCB),
+    onSecondary = Color(0xFF1F3535),
+    secondaryContainer = Color(0xFF364B4B),
+    onSecondaryContainer = Color(0xFFCFE9E8),
+    tertiary = Color(0xFFB0CAE9),
+    onTertiary = Color(0xFF14334B),
+    tertiaryContainer = Color(0xFF2E4A64),
+    onTertiaryContainer = Color(0xFFD0E6FF),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF191C1C),
+    onBackground = Color(0xFFE0E3E3),
+    surface = Color(0xFF191C1C),
+    onSurface = Color(0xFFE0E3E3),
+    surfaceVariant = Color(0xFF404949),
+    onSurfaceVariant = Color(0xFFBFC8C8),
+    outline = Color(0xFF899393),
+    inverseSurface = Color(0xFFE0E3E3),
+    inverseOnSurface = Color(0xFF2E3131),
+)
+
 @Composable
 fun TaskManagerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    colorPalette: ColorPalette = ColorPalette.DEFAULT,
+    colorPalette: ColorPalette = ColorPalette.CYAN,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when (colorPalette) {
-        ColorPalette.DEFAULT -> if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
+        ColorPalette.CYAN -> if (darkTheme) DarkCyanColorScheme else LightCyanColorScheme
         ColorPalette.BLUE -> if (darkTheme) DarkBlueColorScheme else LightBlueColorScheme
         ColorPalette.GREEN -> if (darkTheme) DarkGreenColorScheme else LightGreenColorScheme
         ColorPalette.PURPLE -> if (darkTheme) DarkPurpleColorScheme else LightPurpleColorScheme
         ColorPalette.ORANGE -> if (darkTheme) DarkOrangeColorScheme else LightOrangeColorScheme
+        ColorPalette.AMBER -> if (darkTheme) DarkAmberColorScheme else LightAmberColorScheme
+        ColorPalette.TEAL -> if (darkTheme) DarkTealColorScheme else LightTealColorScheme
     }
 
     MaterialTheme(

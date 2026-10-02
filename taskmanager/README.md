@@ -11,7 +11,13 @@
 
 ## Видео
 
-Ссылка на yandex диск: 
+Ссылка на yandex диск:
+
+<div align="center">
+  <video src="docs/demo.mp4" width="300" controls autoplay loop muted></video>
+  <br/>
+  <em>Демонстрация работы приложения</em>
+</div>
 ## Скриншоты
 
 <table>

@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
         var themeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
-                colorPalette = ColorPalette.DEFAULT
+                colorPalette = ColorPalette.CYAN
             )
         )
 
