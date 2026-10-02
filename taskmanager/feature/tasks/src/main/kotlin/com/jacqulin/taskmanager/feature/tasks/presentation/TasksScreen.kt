@@ -12,10 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +41,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskMenu
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
@@ -60,9 +58,6 @@ fun TasksScreen(
     val context = LocalContext.current
 
     var isCreateMenuExpanded by rememberSaveable { mutableStateOf(false) }
-
-    val activeTasksCount = uiState.visibleTasks.count { !it.isCompleted }
-    val completedTasksCount = uiState.visibleTasks.count { it.isCompleted }
 
     val voicePermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -88,54 +83,24 @@ fun TasksScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                titleRes = R.string.tasks_title
-            )
-        },
+        topBar = { TopAppBar(titleRes = R.string.tasks_title) },
         floatingActionButton = {
             Box {
-                DropdownMenu(
+                CreateTaskMenu(
                     expanded = isCreateMenuExpanded,
-                    onDismissRequest = {
-                        isCreateMenuExpanded = false
+                    onDismissRequest = { isCreateMenuExpanded = false },
+                    onVoiceClick = {
+                        viewModel.onEvent(TasksEvent.OnCreateTaskByVoiceClicked)
+                    },
+                    onTextClick = {
+                        viewModel.onEvent(TasksEvent.OnCreateTaskByTextClicked)
                     }
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(stringResource(R.string.tasks_add_task_voice))
-                        },
-                        onClick = {
-                            isCreateMenuExpanded = false
-
-                            viewModel.onEvent(
-                                TasksEvent.OnCreateTaskByVoiceClicked
-                            )
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        text = {
-                            Text(stringResource(R.string.tasks_add_task_text))
-                        },
-                        onClick = {
-                            isCreateMenuExpanded = false
-
-                            viewModel.onEvent(
-                                TasksEvent.OnCreateTaskByTextClicked
-                            )
-                        }
-                    )
-                }
+                )
 
                 FloatingActionButton(
                     icon = painterResource(R.drawable.ic_note_edit),
-                    contentDescription = stringResource(
-                        R.string.tasks_add_task
-                    ),
-                    onClick = {
-                        isCreateMenuExpanded = !isCreateMenuExpanded
-                    }
+                    contentDescription = stringResource(R.string.tasks_add_task),
+                    onClick = { isCreateMenuExpanded = !isCreateMenuExpanded }
                 )
             }
         }
@@ -147,16 +112,6 @@ fun TasksScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            Text(
-                text = stringResource(
-                    id = R.string.tasks_status_summary,
-                    activeTasksCount,
-                    completedTasksCount
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
             TasksToolbar(
                 searchQuery = uiState.searchQueryInput,
                 sortType = uiState.sortType,
