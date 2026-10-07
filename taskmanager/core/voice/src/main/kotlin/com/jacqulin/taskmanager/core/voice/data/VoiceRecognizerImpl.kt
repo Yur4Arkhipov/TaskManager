@@ -1,12 +1,12 @@
 ﻿package com.jacqulin.taskmanager.core.voice.data
 
 import android.util.Log
-import com.jacqulin.taskmanager.core.voice.domain.AudioRecorder
-import com.jacqulin.taskmanager.core.voice.domain.SpeechToText
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
+import com.jacqulin.taskmanager.core.voice.domain.internal.AudioRecorder
+import com.jacqulin.taskmanager.core.voice.domain.internal.SpeechToText
 import javax.inject.Inject
 
-class VoiceRecognizerImpl @Inject constructor(
+internal class VoiceRecognizerImpl @Inject constructor(
     private val audioRecorder: AudioRecorder,
     private val speechToText: SpeechToText
 ) : VoiceRecognizer {

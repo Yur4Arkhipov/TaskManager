@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.dataStore by preferencesDataStore(name = "app_settings")
+private val Context.settingsDataStore by preferencesDataStore(name = "app_settings")
 
 @Singleton
 class AppSettingsRepositoryImpl @Inject constructor(
@@ -26,7 +26,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
         val COLOR_PALETTE = stringPreferencesKey("color_palette")
     }
 
-    override val appSettings: Flow<AppSettings> = context.dataStore.data.map { preferences ->
+    override val appSettings: Flow<AppSettings> = context.settingsDataStore.data.map { preferences ->
         AppSettings(
             darkThemeConfig = preferences[PreferencesKeys.DARK_THEME_CONFIG]?.let {
                 runCatching { DarkThemeConfig.valueOf(it) }.getOrDefault(DarkThemeConfig.FOLLOW_SYSTEM)
@@ -39,10 +39,10 @@ class AppSettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setColorPalette(colorPalette: ColorPalette) {
-        context.dataStore.edit { it[PreferencesKeys.COLOR_PALETTE] = colorPalette.name }
+        context.settingsDataStore.edit { it[PreferencesKeys.COLOR_PALETTE] = colorPalette.name }
     }
 
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
-        context.dataStore.edit { it[PreferencesKeys.DARK_THEME_CONFIG] = darkThemeConfig.name }
+        context.settingsDataStore.edit { it[PreferencesKeys.DARK_THEME_CONFIG] = darkThemeConfig.name }
     }
 }
