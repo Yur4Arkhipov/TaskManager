@@ -2,9 +2,11 @@ package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
+import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
+import com.jacqulin.taskmanager.core.domain.settings.SetDarkThemeConfigUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
-import com.jacqulin.taskmanager.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +18,12 @@ import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val userDataRepository: UserDataRepository
+    observeUserDataUseCase: ObserveUserDataUseCase,
+    private val setColorPaletteUseCase: SetColorPaletteUseCase,
+    private val setDarkThemeConfigUseCase: SetDarkThemeConfigUseCase,
 ) : ViewModel() {
     val settingsUiState: StateFlow<SettingsUiState> =
-        userDataRepository.userData
+        observeUserDataUseCase()
             .map { userData ->
                 SettingsUiState.Success(
                     settings = UserEditableSettings(
@@ -36,13 +40,13 @@ class SettingsViewModel @Inject constructor(
 
     fun onColorPaletteChanged(palette: ColorPalette) {
         viewModelScope.launch {
-            userDataRepository.setColorPalette(palette)
+            setColorPaletteUseCase(palette)
         }
     }
 
     fun onDarkThemeConfigChanged(config: DarkThemeConfig) {
         viewModelScope.launch {
-            userDataRepository.setDarkThemeConfig(config)
+            setDarkThemeConfigUseCase(config)
         }
     }
 }
