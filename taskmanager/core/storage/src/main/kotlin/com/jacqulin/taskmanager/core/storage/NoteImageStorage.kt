@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.notes.domain.repository
+package com.jacqulin.taskmanager.core.storage
 
 import android.net.Uri
 
