@@ -4,6 +4,8 @@ import com.jacqulin.taskmanager.data.repository.NoteImageRepository
 import com.jacqulin.taskmanager.data.repository.NoteImageRepositoryImpl
 import com.jacqulin.taskmanager.data.repository.NotesRepository
 import com.jacqulin.taskmanager.data.repository.NotesRepositoryImpl
+import com.jacqulin.taskmanager.data.repository.TasksRepository
+import com.jacqulin.taskmanager.data.repository.TasksRepositoryImpl
 import com.jacqulin.taskmanager.data.repository.UserDataRepository
 import com.jacqulin.taskmanager.data.repository.UserDataRepositoryImpl
 import dagger.Binds
@@ -32,4 +34,9 @@ abstract class RepositoriesModule {
     internal abstract fun bindNoteImageRepository(
         noteImageRepository: NoteImageRepositoryImpl
     ): NoteImageRepository
+
+    @Binds
+    internal abstract fun bindTasksRepository(
+        tasksRepository: TasksRepositoryImpl
+    ): TasksRepository
 }

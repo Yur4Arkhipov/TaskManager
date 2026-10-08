@@ -1,6 +1,6 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.mapper
 
-import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
+import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 
 fun Task.toUiModel(): TaskItemUi = TaskItemUi(

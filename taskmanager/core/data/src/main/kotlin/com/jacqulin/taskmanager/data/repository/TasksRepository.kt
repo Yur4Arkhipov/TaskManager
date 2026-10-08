@@ -1,6 +1,6 @@
-package com.jacqulin.taskmanager.feature.tasks.domain.repository
+package com.jacqulin.taskmanager.data.repository
 
-import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
+import com.jacqulin.taskmanager.core.model.Task
 import kotlinx.coroutines.flow.Flow
 
 interface TasksRepository {

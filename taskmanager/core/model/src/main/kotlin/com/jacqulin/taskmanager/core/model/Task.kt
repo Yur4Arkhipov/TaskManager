@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.tasks.domain.model
+package com.jacqulin.taskmanager.core.model
 
 data class Task(
     val id: Int,
