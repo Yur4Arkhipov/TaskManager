@@ -2,14 +2,14 @@ package com.jacqulin.taskmanager.ui
 
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
-import com.jacqulin.taskmanager.data.model.AppSettings
+import com.jacqulin.taskmanager.core.model.UserData
 
 sealed interface MainActivityUiState {
     data object Loading : MainActivityUiState
 
-    data class Success(val settings: AppSettings) : MainActivityUiState {
+    data class Success(val userData: UserData) : MainActivityUiState {
         override fun shouldUseDarkTheme(isSystemDarkTheme: Boolean): Boolean =
-            when (settings.darkThemeConfig) {
+            when (userData.darkThemeConfig) {
                 DarkThemeConfig.FOLLOW_SYSTEM -> isSystemDarkTheme
                 DarkThemeConfig.LIGHT -> false
                 DarkThemeConfig.DARK -> true
@@ -17,7 +17,7 @@ sealed interface MainActivityUiState {
     }
 
     fun getColorPalette(): ColorPalette = when (this) {
-        is Success -> this.settings.colorPalette
+        is Success -> this.userData.colorPalette
         is Loading -> ColorPalette.DEFAULT
     }
 

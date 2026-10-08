@@ -13,9 +13,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jacqulin.taskmanager.core.model.ColorPalette
-import com.jacqulin.taskmanager.data.domain.AppSettingsRepository
 import com.jacqulin.taskmanager.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.ui.App
+import com.jacqulin.taskmanager.ui.MainActivityViewModel
 import com.jacqulin.taskmanager.ui.rememberAppState
 import com.jacqulin.taskmanager.util.isSystemInDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,13 +24,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var appSettingsRepository: AppSettingsRepository
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +99,7 @@ private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 
 
 /**
- * Класс для настройки темы
+ * Class for theme settings
  */
 data class ThemeSettings(
     val darkTheme: Boolean,
