@@ -1,7 +1,7 @@
-package com.jacqulin.taskmanager.feature.notes.domain.usecase
+package com.jacqulin.taskmanager.core.domain
 
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
-import com.jacqulin.taskmanager.feature.notes.domain.repository.NotesRepository
+import com.jacqulin.taskmanager.core.model.Note
+import com.jacqulin.taskmanager.data.repository.NotesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

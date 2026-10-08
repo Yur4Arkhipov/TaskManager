@@ -5,12 +5,10 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.domain.GetNoteByIdUseCase
+import com.jacqulin.taskmanager.core.domain.SaveNoteUseCase
+import com.jacqulin.taskmanager.core.model.Note
 import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.CreateTempImageUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteTempImageUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNoteByIdUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.SaveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +25,8 @@ class NoteEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getNoteUseCase: GetNoteByIdUseCase,
     private val saveNoteUseCase: SaveNoteUseCase,
-    private val createTempImageUseCase: CreateTempImageUseCase,
-    private val deleteTempImageUseCase: DeleteTempImageUseCase,
+//    private val createTempImageUseCase: CreateTempImageUseCase,
+//    private val deleteTempImageUseCase: DeleteTempImageUseCase,
     private val voiceRecognizer: VoiceRecognizer
 ) : ViewModel() {
 
@@ -80,10 +78,10 @@ class NoteEditorViewModel @Inject constructor(
                 emitEffect(NoteEditorEffect.RequestCameraPermission)
             }
             NoteEditorEvent.CameraPermissionGranted -> {
-                viewModelScope.launch {
-                    currentTempImageUri = createTempImageUseCase()
-                    emitEffect(NoteEditorEffect.LaunchCamera(currentTempImageUri!!))
-                }
+//                viewModelScope.launch {
+//                    currentTempImageUri = createTempImageUseCase()
+//                    emitEffect(NoteEditorEffect.LaunchCamera(currentTempImageUri!!))
+//                }
             }
             NoteEditorEvent.CameraPermissionDenied -> {
                 emitEffect(
@@ -126,11 +124,11 @@ class NoteEditorViewModel @Inject constructor(
             }
             is NoteEditorEvent.BackClicked -> {
                 viewModelScope.launch {
-                    currentTempImageUri?.let { uri ->
-                        deleteTempImageUseCase(uri)
-                    }
+//                    currentTempImageUri?.let { uri ->
+//                        deleteTempImageUseCase(uri)
+//                    }
 
-                    currentTempImageUri = null
+//                    currentTempImageUri = null
 
                     emitEffect(NoteEditorEffect.NavigateBack)
                 }
@@ -249,8 +247,8 @@ class NoteEditorViewModel @Inject constructor(
             try {
                 saveNoteUseCase(
                     note = note,
-                    selectedImageUri = state.selectedImageUri,
-                    isImageRemoved = state.isImageRemoved,
+//                    selectedImageUri = state.selectedImageUri,
+//                    isImageRemoved = state.isImageRemoved,
                     isNewNote = noteId == null,
                 )
 
@@ -269,12 +267,12 @@ class NoteEditorViewModel @Inject constructor(
     }
 
     private fun deleteTempImage(uri: Uri) {
-        viewModelScope.launch {
-            deleteTempImageUseCase(uri)
-            if (currentTempImageUri == uri) {
-                currentTempImageUri = null
-            }
-        }
+//        viewModelScope.launch {
+//            deleteTempImageUseCase(uri)
+//            if (currentTempImageUri == uri) {
+//                currentTempImageUri = null
+//            }
+//        }
     }
 
     private fun emitEffect(effect: NoteEditorEffect) {

@@ -1,6 +1,6 @@
-package com.jacqulin.taskmanager.feature.notes.domain.usecase
+package com.jacqulin.taskmanager.core.domain
 
-import com.jacqulin.taskmanager.feature.notes.domain.repository.NotesRepository
+import com.jacqulin.taskmanager.data.repository.NotesRepository
 import javax.inject.Inject
 
 class DeleteNoteUseCase @Inject constructor(
