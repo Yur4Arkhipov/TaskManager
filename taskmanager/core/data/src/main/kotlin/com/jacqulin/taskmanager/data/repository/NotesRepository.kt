@@ -1,6 +1,6 @@
-package com.jacqulin.taskmanager.feature.notes.domain.repository
+package com.jacqulin.taskmanager.data.repository
 
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
+import com.jacqulin.taskmanager.core.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {

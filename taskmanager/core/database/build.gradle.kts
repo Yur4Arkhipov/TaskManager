@@ -29,6 +29,7 @@ room {
 }
 
 dependencies {
+    implementation(project(":core:model"))
 
     // Room
     implementation(libs.room.runtime)

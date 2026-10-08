@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jacqulin.taskmanager.core.model.Note
 
 @Entity(tableName = "notes")
 data class NoteEntity(
@@ -11,4 +12,22 @@ data class NoteEntity(
     val content: String,
     val createdAtMillis: Long,
     val imagePath: String? = null
+)
+
+fun NoteEntity.asExternalModel(): Note {
+    return Note(
+        id = id,
+        title = title,
+        content = content,
+        createdAtMillis = createdAtMillis,
+        imagePath = imagePath
+    )
+}
+
+fun Note.toEntity(): NoteEntity = NoteEntity(
+    id = id,
+    title = title,
+    content = content,
+    createdAtMillis = createdAtMillis,
+    imagePath = imagePath,
 )

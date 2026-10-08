@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.notes.domain.model
+package com.jacqulin.taskmanager.core.model
 
 data class Note(
     val id: Int,
