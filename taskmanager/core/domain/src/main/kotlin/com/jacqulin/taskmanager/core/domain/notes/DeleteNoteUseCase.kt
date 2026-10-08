@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.domain
+package com.jacqulin.taskmanager.core.domain.notes
 
 import com.jacqulin.taskmanager.data.repository.NotesRepository
 import javax.inject.Inject
