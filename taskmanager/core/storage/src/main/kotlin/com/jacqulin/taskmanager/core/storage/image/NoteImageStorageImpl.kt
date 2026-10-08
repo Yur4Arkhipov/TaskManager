@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.storage
+package com.jacqulin.taskmanager.core.storage.image
 
 import android.content.Context
 import android.net.Uri

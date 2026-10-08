@@ -1,7 +1,7 @@
 package com.jacqulin.taskmanager.data.repository
 
 import android.net.Uri
-import com.jacqulin.taskmanager.core.storage.NoteImageStorage
+import com.jacqulin.taskmanager.core.storage.image.NoteImageStorage
 import javax.inject.Inject
 import javax.inject.Singleton
 
