@@ -3,15 +3,12 @@ package com.jacqulin.taskmanager.feature.tasks.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.core.voice.domain.VoiceError
-import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
-import com.jacqulin.taskmanager.core.voice.domain.VoiceState
-import com.jacqulin.taskmanager.designsystem.model.SortType
-import com.jacqulin.taskmanager.feature.tasks.domain.model.Task
-import com.jacqulin.taskmanager.feature.tasks.domain.usecase.DeleteTaskUseCase
-import com.jacqulin.taskmanager.feature.tasks.domain.usecase.ObserveTasksUseCase
-import com.jacqulin.taskmanager.feature.tasks.domain.usecase.SaveTaskUseCase
-import com.jacqulin.taskmanager.feature.tasks.domain.usecase.UpdateTaskStatusUseCase
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
+import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
@@ -34,7 +31,6 @@ class TasksScreenViewModel @Inject constructor(
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
     val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
-    private val voiceRecognizer: VoiceRecognizer
 ) : ViewModel() {
 
     private val searchQueryInput = MutableStateFlow("")
@@ -127,27 +123,27 @@ class TasksScreenViewModel @Inject constructor(
                 Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
                 _voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
-                    val result = voiceRecognizer.stopAndRecognize()
-
-                    result.onSuccess { text ->
-                        _draftTask.value = DraftTaskUi(title = text)
-                        _voiceState.value = VoiceState.Success(text)
-                    }.onFailure { error ->
-                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-                        emitEffect(TasksEffect.ShowError("Не удалось распознать речь"))
-                    }
+//                    val result = voiceRecognizer.stopAndRecognize()
+//
+//                    result.onSuccess { text ->
+//                        _draftTask.value = DraftTaskUi(title = text)
+//                        _voiceState.value = VoiceState.Success(text)
+//                    }.onFailure { error ->
+//                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+//                        emitEffect(TasksEffect.ShowError("Не удалось распознать речь"))
+//                    }
                 }
             }
             TasksEvent.VoicePermissionGranted -> {
-                Log.d("NoteEditorVM", "start voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
-                try {
-                    voiceRecognizer.start()
-                    _voiceState.value = VoiceState.Recording
-                } catch (e: Exception) {
-                    _voiceState.value = VoiceState.Error(VoiceError.Network)
-                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
-                }
+//                Log.d("NoteEditorVM", "start voice recognizer")
+//                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
+//                try {
+//                    voiceRecognizer.start()
+//                    _voiceState.value = VoiceState.Recording
+//                } catch (e: Exception) {
+//                    _voiceState.value = VoiceState.Error(VoiceError.Network)
+//                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
+//                }
             }
             TasksEvent.VoicePermissionDenied -> {
                 emitEffect(
@@ -173,23 +169,23 @@ class TasksScreenViewModel @Inject constructor(
                 updateTaskStatus(event.task)
             }
             TasksEvent.VoiceInputDismissed -> {
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
-                voiceRecognizer.cancel()
-                _voiceState.value = VoiceState.Idle
-                Log.d("VM", "_voiceState: ${_voiceState.value} ")
+//                Log.d("VM", "_voiceState: ${_voiceState.value} ")
+//                voiceRecognizer.cancel()
+//                _voiceState.value = VoiceState.Idle
+//                Log.d("VM", "_voiceState: ${_voiceState.value} ")
             }
             TasksEvent.VoiceInputRetry -> {
-                _voiceState.value = VoiceState.Recording
-                try {
-                    voiceRecognizer.start()
-                } catch (e: Exception) {
-                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
-                }
+//                _voiceState.value = VoiceState.Recording
+//                try {
+//                    voiceRecognizer.start()
+//                } catch (e: Exception) {
+//                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+//                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
+//                }
             }
             TasksEvent.VoiceInputCancel -> {
-                voiceRecognizer.cancel()
-                _voiceState.value = VoiceState.Idle
+//                voiceRecognizer.cancel()
+//                _voiceState.value = VoiceState.Idle
             }
         }
     }
