@@ -4,23 +4,21 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.core.voice.domain.VoiceError
-import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
-import com.jacqulin.taskmanager.core.voice.domain.VoiceState
-import com.jacqulin.taskmanager.feature.notes.domain.model.Note
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.CreateTempImageUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.DeleteTempImageUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.GetNoteByIdUseCase
-import com.jacqulin.taskmanager.feature.notes.domain.usecase.SaveNoteUseCase
+import com.jacqulin.taskmanager.core.domain.notes.CreateTempImageUseCase
+import com.jacqulin.taskmanager.core.domain.notes.DeleteTempImageUseCase
+import com.jacqulin.taskmanager.core.domain.notes.GetNoteByIdUseCase
+import com.jacqulin.taskmanager.core.domain.notes.SaveNoteUseCase
+import com.jacqulin.taskmanager.core.domain.voice.CancelVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StartVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StopAndRecognizeVoiceUseCase
+import com.jacqulin.taskmanager.core.model.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,33 +30,37 @@ class NoteEditorViewModel @Inject constructor(
     private val saveNoteUseCase: SaveNoteUseCase,
     private val createTempImageUseCase: CreateTempImageUseCase,
     private val deleteTempImageUseCase: DeleteTempImageUseCase,
-    private val voiceRecognizer: VoiceRecognizer
+    private val startVoiceRecordingUseCase: StartVoiceRecordingUseCase,
+    private val stopAndRecognizeVoiceUseCase: StopAndRecognizeVoiceUseCase,
+    private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
 
     private val _uiState = MutableStateFlow(NoteEditorUiState())
+    val uiState: StateFlow<NoteEditorUiState> = _uiState.asStateFlow()
 
     private var currentTempImageUri: Uri? = null
 
     private val _effects = MutableSharedFlow<NoteEditorEffect>()
     val effects: SharedFlow<NoteEditorEffect> = _effects.asSharedFlow()
 
-    private val _voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
-
-    val uiState: StateFlow<NoteEditorUiState> = combine(
-        _uiState,
-        _voiceState
-    ) { state, voiceState ->
-        state.copy(voiceRecordingState = voiceState)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        NoteEditorUiState()
-    )
+//    private val _voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
+//
+//    val uiState: StateFlow<NoteEditorUiState> = combine(
+//        _uiState,
+//        _voiceState
+//    ) { state, voiceState ->
+//        state.copy(voiceRecordingState = voiceState)
+//    }.stateIn(
+//        viewModelScope,
+//        SharingStarted.WhileSubscribed(5_000),
+//        NoteEditorUiState()
+//    )
 
     init {
         loadNote()
+//        observeVoiceState()
     }
 
     fun onEvent(event: NoteEditorEvent) {
@@ -115,29 +117,30 @@ class NoteEditorViewModel @Inject constructor(
                 }
             }
             NoteEditorEvent.VoiceInputStartClicked -> {
+                Log.d("NoteEditorVM", "request permission voice recognizer")
                 emitEffect(NoteEditorEffect.RequestVoicePermission)
             }
             NoteEditorEvent.VoiceInputStopClicked -> {
-                _voiceState.value = VoiceState.Processing
+//                _voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
-                    val result = voiceRecognizer.stopAndRecognize()
-                    result.onSuccess { text ->
-                        appendRecognizedText(text)
-                        _voiceState.value = VoiceState.Success(text)
-                    }.onFailure { error ->
-                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-                        emitEffect(NoteEditorEffect.ShowError("Не удалось распознать речь"))
-                    }
+//                    val result = voiceRecognizer.stopAndRecognize()
+//                    result.onSuccess { text ->
+//                        appendRecognizedText(text)
+//                        _voiceState.value = VoiceState.Success(text)
+//                    }.onFailure { error ->
+//                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+//                        emitEffect(NoteEditorEffect.ShowError("Не удалось распознать речь"))
+//                    }
                 }
             }
             NoteEditorEvent.VoicePermissionGranted -> {
-                try {
-                    voiceRecognizer.start()
-                    _voiceState.value = VoiceState.Recording
-                } catch (e: Exception) {
-                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-                    emitEffect(NoteEditorEffect.ShowError("Не удалось начать запись"))
-                }
+//                try {
+//                    voiceRecognizer.start()
+//                    _voiceState.value = VoiceState.Recording
+//                } catch (e: Exception) {
+//                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+//                    emitEffect(NoteEditorEffect.ShowError("Не удалось начать запись"))
+//                }
             }
             NoteEditorEvent.VoicePermissionDenied -> {
                 emitEffect(
@@ -146,24 +149,24 @@ class NoteEditorViewModel @Inject constructor(
             }
             is NoteEditorEvent.VoiceTextRecognized -> {
                 appendRecognizedText(event.text)
-                _voiceState.value = VoiceState.Success(event.text)
+//                _voiceState.value = VoiceState.Success(event.text)
             }
             NoteEditorEvent.VoiceInputCancel -> {
-                voiceRecognizer.cancel()
-                _voiceState.value = VoiceState.Idle
+//                voiceRecognizer.cancel()
+//                _voiceState.value = VoiceState.Idle
             }
             NoteEditorEvent.VoiceInputRetry -> {
-                _voiceState.value = VoiceState.Recording
-                try {
-                    voiceRecognizer.start()
-                } catch (e: Exception) {
-                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-                    emitEffect(NoteEditorEffect.ShowError("Не удалось начать запись"))
-                }
+//                _voiceState.value = VoiceState.Recording
+//                try {
+//                    voiceRecognizer.start()
+//                } catch (e: Exception) {
+//                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
+//                    emitEffect(NoteEditorEffect.ShowError("Не удалось начать запись"))
+//                }
             }
             NoteEditorEvent.VoiceInputDismissed -> {
-                voiceRecognizer.cancel()
-                _voiceState.value = VoiceState.Idle
+//                voiceRecognizer.cancel()
+//                _voiceState.value = VoiceState.Idle
             }
             NoteEditorEvent.SaveClicked -> {
                 saveNote()

@@ -9,14 +9,11 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.jacqulin.taskmanager.core.model.ColorPalette
-import com.jacqulin.taskmanager.data.domain.AppSettingsRepository
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
-import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
+import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.ui.App
 import com.jacqulin.taskmanager.ui.rememberAppState
 import com.jacqulin.taskmanager.util.isSystemInDarkTheme
@@ -26,21 +23,20 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var appSettingsRepository: AppSettingsRepository
-
-    @Inject
-    lateinit var voiceRecognizer: VoiceRecognizer
+//    @Inject
+//    lateinit var appSettingsRepository: AppSettingsRepository
+//
+//    @Inject
+//    lateinit var voiceRecognizer: VoiceRecognizer
 
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+//        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
         var themeSettings by mutableStateOf(
@@ -79,7 +75,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        splashScreen.setKeepOnScreenCondition { viewModel.uiState.value.shouldKeepSplashScreen() }
+//        splashScreen.setKeepOnScreenCondition { viewModel.uiState.value.shouldKeepSplashScreen() }
 
         setContent {
             val appState = rememberAppState()
@@ -90,8 +86,8 @@ class MainActivity : ComponentActivity() {
             ) {
                 App(
                     appState = appState,
-                    voiceRecognizer = voiceRecognizer
-                )
+//                    voiceRecognizer = voiceRecognizer
+                    )
             }
         }
     }

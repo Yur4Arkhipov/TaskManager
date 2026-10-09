@@ -29,8 +29,9 @@ android {
 dependencies {
 
     implementation(project(":core:designsystem"))
-    implementation(project(":core:database"))
     implementation(project(":core:voice"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
 
     // Core
     implementation(libs.androidx.core.ktx)

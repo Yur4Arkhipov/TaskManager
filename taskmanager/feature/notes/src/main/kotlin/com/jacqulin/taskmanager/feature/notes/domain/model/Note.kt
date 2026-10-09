@@ -1,9 +1,0 @@
-package com.jacqulin.taskmanager.feature.notes.domain.model
-
-data class Note(
-    val id: Int,
-    val title: String,
-    val content: String,
-    val createdAtMillis: Long,
-    val imagePath: String?
-)

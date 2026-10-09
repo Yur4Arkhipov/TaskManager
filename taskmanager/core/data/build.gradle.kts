@@ -24,21 +24,26 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
-    testImplementation(libs.truth)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
+    implementation(project(":core:model"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
+    implementation(project(":core:storage"))
+    implementation(project(":core:network"))
 
-    // Datastore preferences
-    implementation(libs.androidx.datastore.preferences)
+//    implementation(libs.androidx.appcompat)
+//    implementation(libs.androidx.core.ktx)
+//    implementation(libs.material)
 
     // Hilt, hilt navigation
     implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     ksp(libs.hilt.android.compiler)
 
+    // Testing
+//    testImplementation(libs.junit)
+//    testImplementation(libs.mockk)
+//    testImplementation(libs.turbine)
+//    testImplementation(libs.truth)
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    androidTestImplementation(libs.androidx.junit)
 }

@@ -1,20 +1,20 @@
-package com.jacqulin.taskmanager
+package com.jacqulin.taskmanager.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.data.domain.AppSettingsRepository
-import com.jacqulin.taskmanager.ui.MainActivityUiState
+import com.jacqulin.taskmanager.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    appSettingsRepository: AppSettingsRepository,
+    userDataRepository: UserDataRepository,
 ) : ViewModel() {
-    val uiState = appSettingsRepository.appSettings.map { settings ->
+    val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData.map { settings ->
         MainActivityUiState.Success(settings)
     }.stateIn(
         scope = viewModelScope,
