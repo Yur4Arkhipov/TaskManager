@@ -23,38 +23,46 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jacqulin.taskmanager.designsystem.R
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.res.stringResource
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun VoiceRecordingOverlay(
     onStopClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val scrimColor = colorScheme.surface.copy(alpha = 0.85f)
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .blur(radius = 10.dp)
-            .background(Color.Black.copy(alpha = 0.6f))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {}
             )
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(radius = 10.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                .background(scrimColor)
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -65,7 +73,7 @@ fun VoiceRecordingOverlay(
             Icon(
                 painter = painterResource(R.drawable.ic_microphone),
                 contentDescription = stringResource(R.string.tasks_record_voice),
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = colorScheme.onSurface,
                 modifier = Modifier.size(48.dp)
             )
 
@@ -92,7 +100,7 @@ fun VoiceRecordingOverlay(
             Text(
                 text = stringResource(R.string.tasks_complete),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
     }
@@ -129,7 +137,7 @@ private fun WaveLine(
                     .width(4.dp)
                     .height(32.dp * animatedHeight)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(colorScheme.primary)
             )
         }
     }

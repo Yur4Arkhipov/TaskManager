@@ -136,17 +136,8 @@ fun NoteEditorScreen(
         }
     }
 
-    val screenTitleRes = if (noteId == null) {
-        R.string.notes_add_note
-    } else {
-        R.string.notes_edit_note
-    }
-
-    val imageModel = if (uiState.isImageRemoved) {
-        null
-    } else {
-        uiState.selectedImageUri ?: uiState.imagePath
-    }
+    val screenTitleRes = if (noteId == null) R.string.notes_add_note else R.string.notes_edit_note
+    val imageModel = if (uiState.isImageRemoved) null else uiState.selectedImageUri ?: uiState.imagePath
 
     Scaffold(
         topBar = {
