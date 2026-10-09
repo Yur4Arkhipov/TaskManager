@@ -19,11 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.theme.amberSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.blueSchemeColor
-import com.jacqulin.taskmanager.core.designsystem.theme.defaultSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.cyanSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.greenSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.orangeSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.purpleSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.theme.tealSchemeColor
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.designsystem.R
 
@@ -58,11 +60,13 @@ fun ColorPaletteRow(
                     .clip(CircleShape)
                     .background(
                         color = when (palette) {
-                            ColorPalette.DEFAULT -> defaultSchemeColor
+                            ColorPalette.CYAN -> cyanSchemeColor
                             ColorPalette.BLUE -> blueSchemeColor
                             ColorPalette.GREEN -> greenSchemeColor
                             ColorPalette.ORANGE -> orangeSchemeColor
                             ColorPalette.PURPLE -> purpleSchemeColor
+                            ColorPalette.AMBER -> amberSchemeColor
+                            ColorPalette.TEAL -> tealSchemeColor
                         }
                     ),
                 contentAlignment = Alignment.Center

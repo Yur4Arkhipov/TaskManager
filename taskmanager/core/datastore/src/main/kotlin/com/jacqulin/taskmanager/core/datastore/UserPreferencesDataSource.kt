@@ -27,7 +27,7 @@ class UserPreferencesDataSource @Inject constructor(
                     ?: DarkThemeConfig.FOLLOW_SYSTEM,
                 colorPalette = preferences[PreferencesKeys.COLOR_PALETTE]
                     ?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
-                    ?: ColorPalette.DEFAULT,
+                    ?: ColorPalette.CYAN,
             )
         }
 

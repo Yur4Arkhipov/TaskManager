@@ -5,5 +5,5 @@ import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 
 data class UserPreferences(
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-    val colorPalette: ColorPalette = ColorPalette.DEFAULT
+    val colorPalette: ColorPalette = ColorPalette.CYAN
 )

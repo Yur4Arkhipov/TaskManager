@@ -18,7 +18,7 @@ sealed interface MainActivityUiState {
 
     fun getColorPalette(): ColorPalette = when (this) {
         is Success -> this.userData.colorPalette
-        is Loading -> ColorPalette.DEFAULT
+        is Loading -> ColorPalette.CYAN
     }
 
     fun shouldKeepSplashScreen(): Boolean = this is Loading
