@@ -26,7 +26,7 @@ fun BottomNavigationBar(
                         modifier = modifier.size(24.dp)
                     )
                 },
-                enabled = item.enabled
+//                enabled = item.enabled
             )
         }
     }
