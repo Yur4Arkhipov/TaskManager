@@ -28,7 +28,6 @@ fun NotesToolbar(
     isDeleteModeEnabled: Boolean,
     sortType: SortType,
     onSearchQueryChanged: (String) -> Unit,
-    onSearch: () -> Unit,
     onSortChanged: (SortType) -> Unit,
     onDeleteModeClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -44,7 +43,6 @@ fun NotesToolbar(
             value = searchQuery,
             placeholderText = stringResource(R.string.notes_search),
             onValueChange = onSearchQueryChanged,
-            onSearch = onSearch,
             modifier = Modifier.weight(1f)
         )
 
@@ -85,7 +83,6 @@ fun NotesToolbarPreview() {
             isDeleteModeEnabled = false,
             sortType = SortType.NEW_TO_OLD,
             onSearchQueryChanged = { },
-            onSearch = { },
             onSortChanged = { },
             onDeleteModeClick = { },
         )

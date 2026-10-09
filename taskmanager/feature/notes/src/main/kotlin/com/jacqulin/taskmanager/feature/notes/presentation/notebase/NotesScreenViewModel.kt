@@ -25,8 +25,7 @@ class NotesScreenViewModel @Inject constructor(
     private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
 
-    private val searchQueryInput = MutableStateFlow("")
-    private val appliedSearchQuery = MutableStateFlow("")
+    private val searchQuery = MutableStateFlow("")
     private val sortType = MutableStateFlow(SortType.NEW_TO_OLD)
     private val isDeleteModeEnabled = MutableStateFlow(false)
 
@@ -36,31 +35,26 @@ class NotesScreenViewModel @Inject constructor(
     val uiState: StateFlow<NotesUiState> =
         combine(
             observeNotesUseCase(),
-            searchQueryInput,
-            appliedSearchQuery,
+            searchQuery,
             sortType,
             isDeleteModeEnabled
-        ) { notes, inputQuery, appliedQuery, sortType, isDeleteModeEnabled  ->
+        ) { notes, searchQuery, sortType, isDeleteModeEnabled  ->
 
             val visibleNotes = notes
                 .map { it.toUiModel() }
                 .filter { note ->
-                    val query = appliedQuery.trim()
-                    query.isBlank() ||
-                        note.title.contains(query, ignoreCase = true)
+                    val query = searchQuery.trim()
+                    query.isBlank() || note.title.contains(query, ignoreCase = true)
                 }
                 .let { notes ->
                     when (sortType) {
-                        SortType.NEW_TO_OLD ->
-                            notes.sortedByDescending { it.createdAtMillis }
-                        SortType.OLD_TO_NEW ->
-                            notes.sortedBy { it.createdAtMillis }
+                        SortType.NEW_TO_OLD -> notes.sortedByDescending { it.createdAtMillis }
+                        SortType.OLD_TO_NEW -> notes.sortedBy { it.createdAtMillis }
                     }
                 }
 
             NotesUiState(
-                searchQueryInput = inputQuery,
-                appliedSearchQuery = appliedQuery,
+                searchQueryInput = searchQuery,
                 sortType = sortType,
                 visibleNotes = visibleNotes,
                 isEmpty = visibleNotes.isEmpty(),
@@ -76,11 +70,7 @@ class NotesScreenViewModel @Inject constructor(
         when (event) {
             is NotesEvent.OnSearchQueryChanged -> {
                 if (isDeleteModeEnabled.value) return
-                searchQueryInput.value = event.query
-            }
-            NotesEvent.OnSearchSubmitted -> {
-                if (isDeleteModeEnabled.value) return
-                appliedSearchQuery.value = searchQueryInput.value
+                searchQuery.value = event.query
             }
             is NotesEvent.OnSortChanged -> {
                 if (isDeleteModeEnabled.value) return
