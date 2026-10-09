@@ -25,20 +25,20 @@ import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun ThemeSchemeRow(
-    selectedColorScheme: DarkThemeConfig,
-    onColorSchemeSelected: (DarkThemeConfig) -> Unit
+    selectedThemeConfig: DarkThemeConfig,
+    onThemeConfigChanged: (DarkThemeConfig) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         DarkThemeConfig.entries.forEach { config ->
-            val isSelected = config == selectedColorScheme
+            val isSelected = config == selectedThemeConfig
 
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onColorSchemeSelected(config) },
+                    .clickable { onThemeConfigChanged(config) },
                 shape = MaterialTheme.shapes.medium,
                 color = if (isSelected) {
                     MaterialTheme.colorScheme.primaryContainer

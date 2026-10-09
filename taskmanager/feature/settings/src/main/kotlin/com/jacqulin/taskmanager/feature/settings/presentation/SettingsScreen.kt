@@ -1,16 +1,11 @@
 package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,12 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.skydoves.navgraph.annotations.NavDestination
-import com.github.skydoves.navgraph.annotations.NavPreview
+import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.model.ColorPalette
+import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.designsystem.component.TopAppBar
-import com.jacqulin.taskmanager.feature.settings.navigation.SettingsRoute
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSchemeRow
@@ -55,8 +49,6 @@ fun SettingsScreen(
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
 ) {
-    val uiState by viewModel.settings.collectAsStateWithLifecycle()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -101,8 +93,8 @@ fun SettingsScreen(
                             title = stringResource(R.string.settings_theme),
                             content = {
                                 ThemeSchemeRow(
-                                    selectedColorScheme = uiState.darkThemeConfig,
-                                    onColorSchemeSelected = viewModel::onDarkThemeConfigChanged
+                                    selectedThemeConfig = settingsUiState.settings.darkThemeConfig,
+                                    onThemeConfigChanged = onChangeDarkThemeConfig
                                 )
                             }
                         )
@@ -113,28 +105,28 @@ fun SettingsScreen(
                             title = "Цветовая схема",
                             content = {
                                 ColorPaletteRow(
-                                    selectedPalette = uiState.colorPalette,
-                                    onPaletteSelected = viewModel::onColorPaletteChanged
+                                    selectedPalette = settingsUiState.settings.colorPalette,
+                                    onPaletteSelected = onChangeColorPalette
                                 )
                             }
                         )
                     }
 
-                    item {
-                        Button(
-                            onClick = viewModel::resetSettings,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.errorContainer,
-                                contentColor = MaterialTheme.colorScheme.onErrorContainer
-                            ),
-                            border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline)
-                        ) {
-                            Text("Сбросить настройки")
-                        }
-                    }
+//                    item {
+//                        Button(
+//                            onClick = viewModel::resetSettings,
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(48.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = MaterialTheme.colorScheme.errorContainer,
+//                                contentColor = MaterialTheme.colorScheme.onErrorContainer
+//                            ),
+//                            border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline)
+//                        ) {
+//                            Text("Сбросить настройки")
+//                        }
+//                    }
                 }
             }
         }

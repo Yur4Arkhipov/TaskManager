@@ -1,7 +1,6 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.noteeditor
 
 import android.net.Uri
-import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 
 /**
  *  imagePath - картинка сохраненная в памяти устройства
