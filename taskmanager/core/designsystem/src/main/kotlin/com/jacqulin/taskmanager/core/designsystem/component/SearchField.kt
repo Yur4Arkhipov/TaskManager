@@ -32,7 +32,6 @@ fun SearchField(
     value: String,
     placeholderText: String,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BasicTextField(
@@ -51,9 +50,7 @@ fun SearchField(
             imeAction = ImeAction.Search,
         ),
         keyboardActions = KeyboardActions(
-            onSearch = {
-                onSearch()
-            },
+            onSearch = { },
         ),
         decorationBox = { innerTextField ->
             Row(

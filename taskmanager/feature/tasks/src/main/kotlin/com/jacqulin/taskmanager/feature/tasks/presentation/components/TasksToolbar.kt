@@ -25,7 +25,6 @@ fun TasksToolbar(
     searchQuery: String,
     sortType: SortType,
     onSearchQueryChanged: (String) -> Unit,
-    onSearch: () -> Unit,
     onSortChanged: (SortType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -40,7 +39,6 @@ fun TasksToolbar(
             value = searchQuery,
             placeholderText = stringResource(R.string.tasks_search),
             onValueChange = onSearchQueryChanged,
-            onSearch = onSearch,
             modifier = Modifier.weight(1f),
         )
 

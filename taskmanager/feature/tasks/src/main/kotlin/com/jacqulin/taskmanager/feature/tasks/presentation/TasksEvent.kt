@@ -5,7 +5,6 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 
 sealed interface TasksEvent {
     data class OnSearchQueryChanged(val query: String) : TasksEvent
-    data object OnSearchSubmitted : TasksEvent
     data class OnSortChanged(val sortType: SortType) : TasksEvent
     data class OnDeleteTaskClicked(val taskId: Int) : TasksEvent
     data object OnCreateTaskByTextClicked : TasksEvent

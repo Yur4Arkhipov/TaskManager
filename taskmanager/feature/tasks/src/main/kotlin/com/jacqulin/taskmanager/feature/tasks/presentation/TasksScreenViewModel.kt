@@ -33,32 +33,26 @@ class TasksScreenViewModel @Inject constructor(
     val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
 ) : ViewModel() {
 
-    private val searchQueryInput = MutableStateFlow("")
-    private val appliedSearchQuery = MutableStateFlow("")
+    private val searchQuery = MutableStateFlow("")
     private val sortType = MutableStateFlow(SortType.NEW_TO_OLD)
-
-    private val _draftTask = MutableStateFlow<DraftTaskUi?>(null)
+    private val draftTask = MutableStateFlow<DraftTaskUi?>(null)
+    private val voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
 
     private val _effects = MutableSharedFlow<TasksEffect>()
     val effects: SharedFlow<TasksEffect> = _effects.asSharedFlow()
 
-    private val _voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
-
-    private val tasksUiState =
+    private val tasksUiState: StateFlow<TasksUiState> =
         combine(
             observeTasksUseCase(),
-            searchQueryInput,
-            appliedSearchQuery,
+            searchQuery,
             sortType,
-            _draftTask
-        ) { tasks, inputQuery, appliedQuery, sortType, draftTask ->
-
+            draftTask
+        ) { tasks, searchQuery, sortType, draftTask ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
                 .filter { task ->
-                    val query = appliedQuery.trim()
-                    query.isBlank() ||
-                            task.title.contains(query, ignoreCase = true)
+                    val query = searchQuery.trim()
+                    query.isBlank() || task.title.contains(query, ignoreCase = true)
                 }
                 .let { tasks ->
                     when (sortType) {
@@ -78,18 +72,21 @@ class TasksScreenViewModel @Inject constructor(
                 }
 
             TasksUiState(
-                searchQueryInput = inputQuery,
-                appliedSearchQuery = appliedQuery,
+                searchQuery = searchQuery,
                 visibleTasks = visibleTasks,
                 isEmpty = visibleTasks.isEmpty(),
                 draftTask = draftTask
             )
-        }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            TasksUiState(),
+        )
 
     val uiState: StateFlow<TasksUiState> =
         combine(
             tasksUiState,
-            _voiceState
+            voiceState
         ) { state, voiceState ->
             state.copy(voiceState = voiceState)
         }.stateIn(
@@ -101,10 +98,7 @@ class TasksScreenViewModel @Inject constructor(
     fun onEvent(event: TasksEvent) {
         when (event) {
             is TasksEvent.OnSearchQueryChanged -> {
-                searchQueryInput.value = event.query
-            }
-            TasksEvent.OnSearchSubmitted -> {
-                appliedSearchQuery.value = searchQueryInput.value
+                searchQuery.value = event.query
             }
             is TasksEvent.OnSortChanged -> {
                 sortType.value = event.sortType
@@ -120,8 +114,8 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.VoiceInputStopClicked -> {
                 Log.d("TasksVM", "stop voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
-                _voiceState.value = VoiceState.Processing
+                Log.d("TasksVM", "VoiceState: ${voiceState.value}")
+                voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
 //                    val result = voiceRecognizer.stopAndRecognize()
 //
@@ -151,11 +145,11 @@ class TasksScreenViewModel @Inject constructor(
                 )
             }
             is TasksEvent.VoiceTextRecognized -> {
-                _draftTask.value = DraftTaskUi(title = event.text)
-                _voiceState.value = VoiceState.Success(text = event.text)
+                draftTask.value = DraftTaskUi(title = event.text)
+                voiceState.value = VoiceState.Success(text = event.text)
             }
             is TasksEvent.OnDraftTaskTextChanged -> {
-                _draftTask.value = _draftTask.value?.copy(
+                draftTask.value = draftTask.value?.copy(
                     title = event.text
                 )
             }
@@ -163,7 +157,7 @@ class TasksScreenViewModel @Inject constructor(
                 saveDraftTask()
             }
             TasksEvent.OnDraftTaskDeleteClicked -> {
-                _draftTask.value = null
+                draftTask.value = null
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
@@ -197,11 +191,11 @@ class TasksScreenViewModel @Inject constructor(
     }
 
     private fun createDraftTask() {
-        _draftTask.value = DraftTaskUi()
+        draftTask.value = DraftTaskUi()
     }
 
     private fun saveDraftTask() {
-        val draft = _draftTask.value ?: return
+        val draft = draftTask.value ?: return
         val title = draft.title.trim()
 
         if (title.isBlank()) return
@@ -216,7 +210,7 @@ class TasksScreenViewModel @Inject constructor(
                 )
             )
 
-            _draftTask.value = null
+            draftTask.value = null
         }
     }
 
