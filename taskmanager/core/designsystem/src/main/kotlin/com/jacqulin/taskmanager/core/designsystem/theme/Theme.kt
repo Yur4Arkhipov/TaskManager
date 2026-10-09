@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jacqulin.taskmanager.core.model.ColorPalette
 
-val DarkDefaultColorScheme = darkColorScheme(
+internal val DarkDefaultColorScheme = darkColorScheme(
     primary = Purple80,
     onPrimary = Purple20,
     primaryContainer = Purple30,
@@ -36,7 +36,7 @@ val DarkDefaultColorScheme = darkColorScheme(
     outline = PurpleGray60,
 )
 
-val LightDefaultColorScheme = lightColorScheme(
+internal val LightDefaultColorScheme = lightColorScheme(
     primary = Purple40,
     onPrimary = Color.White,
     primaryContainer = Purple90,
@@ -64,7 +64,7 @@ val LightDefaultColorScheme = lightColorScheme(
     outline = PurpleGray50,
 )
 
-val LightBlueColorScheme = lightColorScheme(
+internal val LightBlueColorScheme = lightColorScheme(
     primary = Color(0xFF005AC1),
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFFD8E2FF),
@@ -82,7 +82,7 @@ val LightBlueColorScheme = lightColorScheme(
     outline = Color(0xFF757780)
 )
 
-val DarkBlueColorScheme = darkColorScheme(
+internal val DarkBlueColorScheme = darkColorScheme(
     primary = Color(0xFFAEC6FF),
     onPrimary = Color(0xFF002E69),
     primaryContainer = Color(0xFF004494),
@@ -100,7 +100,7 @@ val DarkBlueColorScheme = darkColorScheme(
     outline = Color(0xFF8F9099)
 )
 
-val LightGreenColorScheme = lightColorScheme(
+internal val LightGreenColorScheme = lightColorScheme(
     primary = Color(0xFF006D3A),
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFF99F6B5),
@@ -126,7 +126,7 @@ val LightGreenColorScheme = lightColorScheme(
     outline = Color(0xFF717971)
 )
 
-val DarkGreenColorScheme = darkColorScheme(
+internal val DarkGreenColorScheme = darkColorScheme(
     primary = Color(0xFF7CDA99),
     onPrimary = Color(0xFF00391C),
     primaryContainer = Color(0xFF00522A),
@@ -152,7 +152,7 @@ val DarkGreenColorScheme = darkColorScheme(
     outline = Color(0xFF8B938A)
 )
 
-val LightPurpleColorScheme = lightColorScheme(
+internal val LightPurpleColorScheme = lightColorScheme(
     primary = Color(0xFF6750A4),
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFFEADDFF),
@@ -178,7 +178,7 @@ val LightPurpleColorScheme = lightColorScheme(
     outline = Color(0xFF79747E)
 )
 
-val DarkPurpleColorScheme = darkColorScheme(
+internal val DarkPurpleColorScheme = darkColorScheme(
     primary = Color(0xFFD0BCFF),
     onPrimary = Color(0xFF381E72),
     primaryContainer = Color(0xFF4F378B),
@@ -204,7 +204,7 @@ val DarkPurpleColorScheme = darkColorScheme(
     outline = Color(0xFF938F99)
 )
 
-val LightOrangeColorScheme = lightColorScheme(
+internal val LightOrangeColorScheme = lightColorScheme(
     primary = Color(0xFF8B4F25),
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFFFFDBC9),
@@ -230,7 +230,7 @@ val LightOrangeColorScheme = lightColorScheme(
     outline = Color(0xFF85736B)
 )
 
-val DarkOrangeColorScheme = darkColorScheme(
+internal val DarkOrangeColorScheme = darkColorScheme(
     primary = Color(0xFFFFB59B),
     onPrimary = Color(0xFF4F2500),
     primaryContainer = Color(0xFF6E370A),
