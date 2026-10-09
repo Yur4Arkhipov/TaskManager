@@ -137,12 +137,12 @@ fun SettingsScreen(
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenPreview() {
-    TaskManagerTheme() {
+    TaskManagerTheme {
         SettingsScreen(
             titleRes = R.string.settings_title,
             settingsUiState = SettingsUiState.Success(
                 settings = UserEditableSettings(
-                    colorPalette = ColorPalette.DEFAULT,
+                    colorPalette = ColorPalette.CYAN,
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                 ),
             ),

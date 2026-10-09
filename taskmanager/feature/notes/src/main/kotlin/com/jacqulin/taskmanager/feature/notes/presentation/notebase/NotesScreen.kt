@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
+import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NoteItem
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NotesToolbar
@@ -37,8 +37,6 @@ fun NotesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-//    val keyboardController = LocalSoftwareKeyboardController.current
-
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
@@ -48,19 +46,52 @@ fun NotesScreen(
         }
     }
 
+    NotesScreen(
+        uiState = uiState,
+        onAddNoteClick = {
+            viewModel.onEvent(NotesEvent.OnCreateNoteClicked)
+        },
+        onSearchQueryChanged = { query ->
+            viewModel.onEvent(NotesEvent.OnSearchQueryChanged(query))
+        },
+        onSearch = {
+            viewModel.onEvent(NotesEvent.OnSearchSubmitted)
+        },
+        onSortChanged = { sortType ->
+            viewModel.onEvent(NotesEvent.OnSortChanged(sortType))
+        },
+        onDeleteModeClick = {
+            viewModel.onEvent(NotesEvent.OnDeleteModeToggled)
+        },
+        onDeleteClick = {
+            viewModel.onEvent(NotesEvent.OnDeleteNoteClicked(it))
+        },
+        onNoteClick = {
+            viewModel.onEvent(NotesEvent.OnNoteClicked(it))
+        }
+    )
+}
+
+@Composable
+fun NotesScreen(
+    uiState: NotesUiState,
+    onAddNoteClick: () -> Unit,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearch: () -> Unit,
+    onSortChanged: (SortType) -> Unit,
+    onDeleteModeClick: () -> Unit,
+    onDeleteClick: (Int) -> Unit,
+    onNoteClick: (Int) -> Unit,
+) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                titleRes = R.string.notes_title
-            )
+            TopAppBar(titleRes = R.string.notes_title)
         },
         floatingActionButton = {
             FloatingActionButton(
                 icon = painterResource(R.drawable.ic_note_edit),
                 contentDescription = stringResource(R.string.notes_add_note),
-                onClick = {
-                    viewModel.onEvent(NotesEvent.OnCreateNoteClicked)
-                }
+                onClick = onAddNoteClick
             )
         }
     ) { paddingValues ->
@@ -71,32 +102,14 @@ fun NotesScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            Text(
-                text = stringResource(
-                    R.string.notes_count,
-                    uiState.visibleNotes.size
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
             NotesToolbar(
                 searchQuery = uiState.searchQueryInput,
                 isDeleteModeEnabled = uiState.isDeleteModeEnabled,
-                onSearchQueryChanged = { query ->
-                    viewModel.onEvent(NotesEvent.OnSearchQueryChanged(query))
-                },
-                onSearch = {
-                    viewModel.onEvent(NotesEvent.OnSearchSubmitted)
-                },
-                onSortChanged = { sortType ->
-                    viewModel.onEvent(
-                        NotesEvent.OnSortChanged(sortType)
-                    )
-                },
-                onDeleteModeClick = {
-                    viewModel.onEvent(NotesEvent.OnDeleteModeToggled)
-                }
+                sortType = uiState.sortType,
+                onSearchQueryChanged = onSearchQueryChanged,
+                onSearch = onSearch,
+                onSortChanged = onSortChanged,
+                onDeleteModeClick = onDeleteModeClick
             )
 
             if (uiState.isEmpty) {
@@ -128,12 +141,8 @@ fun NotesScreen(
                         NoteItem(
                             note = note,
                             isDeleteModeEnabled = uiState.isDeleteModeEnabled,
-                            onDeleteClick = {
-                                viewModel.onEvent(NotesEvent.OnDeleteNoteClicked(note.id))
-                            },
-                            onNoteClick = {
-                                viewModel.onEvent(NotesEvent.OnNoteClicked(note.id))
-                            }
+                            onDeleteClick = { onDeleteClick(note.id) },
+                            onNoteClick = { onNoteClick(note.id) }
                         )
                     }
                 }
@@ -146,7 +155,13 @@ fun NotesScreen(
 @Composable
 fun NotesScreenPreview() {
     NotesScreen(
-        onAddClick = {},
-        onNoteClick = {}
+        uiState = NotesUiState(),
+        onAddNoteClick = { },
+        onSearchQueryChanged = { },
+        onSearch = { },
+        onSortChanged = { },
+        onDeleteModeClick = { },
+        onDeleteClick = { },
+        onNoteClick = { }
     )
 }
