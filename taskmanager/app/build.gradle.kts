@@ -43,7 +43,6 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":core:designsystem"))
-    implementation(project(":core:voice"))
     implementation(project(":feature:notes"))
     implementation(project(":feature:tasks"))
     implementation(project(":feature:settings"))
