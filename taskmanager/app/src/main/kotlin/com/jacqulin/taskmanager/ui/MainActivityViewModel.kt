@@ -2,7 +2,7 @@ package com.jacqulin.taskmanager.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.data.repository.UserDataRepository
+import com.jacqulin.taskmanager.core.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

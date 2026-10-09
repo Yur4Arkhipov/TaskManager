@@ -1,7 +1,7 @@
 package com.jacqulin.taskmanager.core.domain.voice
 
-import com.jacqulin.taskmanager.data.repository.AudioRecorderRepository
-import com.jacqulin.taskmanager.data.repository.SpeechRecognitionRepository
+import com.jacqulin.taskmanager.core.data.repository.AudioRecorderRepository
+import com.jacqulin.taskmanager.core.data.repository.SpeechRecognitionRepository
 import javax.inject.Inject
 
 class StopAndRecognizeVoiceUseCase @Inject constructor(

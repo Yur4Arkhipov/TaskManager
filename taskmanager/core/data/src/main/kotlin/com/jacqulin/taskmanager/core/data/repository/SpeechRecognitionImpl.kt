@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.data.repository
+package com.jacqulin.taskmanager.core.data.repository
 
 import com.jacqulin.taskmanager.core.network.NetworkDataSource
 import javax.inject.Inject

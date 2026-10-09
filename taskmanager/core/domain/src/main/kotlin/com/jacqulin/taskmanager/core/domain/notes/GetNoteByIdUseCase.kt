@@ -1,7 +1,7 @@
 package com.jacqulin.taskmanager.core.domain.notes
 
 import com.jacqulin.taskmanager.core.model.Note
-import com.jacqulin.taskmanager.data.repository.NotesRepository
+import com.jacqulin.taskmanager.core.data.repository.NotesRepository
 import javax.inject.Inject
 
 class GetNoteByIdUseCase @Inject constructor(
