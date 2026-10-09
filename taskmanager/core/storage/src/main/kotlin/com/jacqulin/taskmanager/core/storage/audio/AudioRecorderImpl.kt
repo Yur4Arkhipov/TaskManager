@@ -1,13 +1,12 @@
-package com.jacqulin.taskmanager.core.voice.data.audio
+package com.jacqulin.taskmanager.core.storage.audio
 
 import android.content.Context
 import android.media.MediaRecorder
-import com.jacqulin.taskmanager.core.voice.domain.AudioRecorder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 
-class AndroidAudioRecorder @Inject constructor(
+internal class AudioRecorderImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : AudioRecorder {
 

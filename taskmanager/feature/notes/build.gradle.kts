@@ -30,7 +30,6 @@ dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
-    implementation(project(":core:voice"))
     implementation(project(":core:model"))
 
     // Core

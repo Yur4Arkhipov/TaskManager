@@ -1,8 +1,6 @@
-package com.jacqulin.taskmanager.core.voice.di
+package com.jacqulin.taskmanager.core.network.di
 
-import com.jacqulin.taskmanager.core.voice.BuildConfig
-import com.jacqulin.taskmanager.core.voice.data.speech.YandexSpeechApi
-import com.jacqulin.taskmanager.core.voice.data.speech.YandexSpeechConfig
+import com.jacqulin.taskmanager.core.network.retrofit.YandexSpeechApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,18 +13,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object YandexSpeechModule {
+object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideYandexSpeechConfig(): YandexSpeechConfig = YandexSpeechConfig(
-        folderId = BuildConfig.YANDEX_FOLDER_ID,
-        iamToken = BuildConfig.YANDEX_IAM_TOKEN,
-    )
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    internal fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
@@ -36,7 +27,7 @@ object YandexSpeechModule {
 
     @Provides
     @Singleton
-    fun provideYandexSpeechApi(
+    internal fun provideYandexSpeechApi(
         okHttpClient: OkHttpClient,
     ): YandexSpeechApi = Retrofit.Builder()
         .baseUrl("https://stt.api.cloud.yandex.net/")

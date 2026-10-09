@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.voice.domain
+package com.jacqulin.taskmanager.core.storage.audio
 
 interface AudioRecorder {
     fun start()

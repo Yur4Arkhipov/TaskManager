@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.voice.data.speech
+package com.jacqulin.taskmanager.core.network.dto
 
 import kotlinx.serialization.Serializable
 
@@ -6,3 +6,4 @@ import kotlinx.serialization.Serializable
 data class YandexSpeechResponse(
     val result: String
 )
+

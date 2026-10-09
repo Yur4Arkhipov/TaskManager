@@ -1,27 +1,23 @@
-﻿package com.jacqulin.taskmanager.core.voice.data.speech
+package com.jacqulin.taskmanager.core.network
 
-import android.util.Log
-import com.jacqulin.taskmanager.core.voice.domain.SpeechToText
+import com.jacqulin.taskmanager.core.network.retrofit.YandexSpeechApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class SpeechToTextImpl @Inject constructor(
+@Singleton
+internal class NetworkDataSourceImpl @Inject constructor(
     private val api: YandexSpeechApi,
-    private val config: YandexSpeechConfig,
-) : SpeechToText {
+) : NetworkDataSource {
 
     override suspend fun recognize(
-        audio: ByteArray
+        audio: ByteArray,
+        folderId: String,
+        iamToken: String,
     ): Result<String> = withContext(Dispatchers.IO) {
-        val folderId = config.folderId
-        val iamToken = config.iamToken
-
-        if (folderId.isBlank() || iamToken.isBlank()) {
-            return@withContext Result.failure(IllegalStateException("Yandex speech config is not configured"))
-        }
 
         runCatching {
             val requestBody = audio.toRequestBody(
@@ -33,10 +29,8 @@ class SpeechToTextImpl @Inject constructor(
                 authorization = "Bearer $iamToken",
                 audio = requestBody,
             )
-            Log.d("speech", "send request")
 
-            response.result
-                .takeIf { it.isNotBlank() }
+            response.result.takeIf { it.isNotBlank() }
                 ?: error("Yandex returned an empty result")
         }
     }

@@ -9,8 +9,10 @@ import com.jacqulin.taskmanager.core.domain.notes.CreateTempImageUseCase
 import com.jacqulin.taskmanager.core.domain.notes.DeleteTempImageUseCase
 import com.jacqulin.taskmanager.core.domain.notes.GetNoteByIdUseCase
 import com.jacqulin.taskmanager.core.domain.notes.SaveNoteUseCase
+import com.jacqulin.taskmanager.core.domain.voice.CancelVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StartVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StopAndRecognizeVoiceUseCase
 import com.jacqulin.taskmanager.core.model.Note
-import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,9 @@ class NoteEditorViewModel @Inject constructor(
     private val saveNoteUseCase: SaveNoteUseCase,
     private val createTempImageUseCase: CreateTempImageUseCase,
     private val deleteTempImageUseCase: DeleteTempImageUseCase,
-    private val voiceRecognizer: VoiceRecognizer
+    private val startVoiceRecordingUseCase: StartVoiceRecordingUseCase,
+    private val stopAndRecognizeVoiceUseCase: StopAndRecognizeVoiceUseCase,
+    private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")

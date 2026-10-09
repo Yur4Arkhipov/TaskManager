@@ -1,7 +1,9 @@
 package com.jacqulin.taskmanager.core.storage.di
 
-import com.jacqulin.taskmanager.core.storage.NoteImageStorage
-import com.jacqulin.taskmanager.core.storage.NoteImageStorageImpl
+import com.jacqulin.taskmanager.core.storage.audio.AudioRecorder
+import com.jacqulin.taskmanager.core.storage.audio.AudioRecorderImpl
+import com.jacqulin.taskmanager.core.storage.image.NoteImageStorage
+import com.jacqulin.taskmanager.core.storage.image.NoteImageStorageImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,9 @@ abstract class StorageModule {
     internal abstract fun bindsNoteImageStorage(
         noteImageStorage: NoteImageStorageImpl,
     ): NoteImageStorage
+
+    @Binds
+    internal abstract fun bindsAudioRecorder(
+        audioRecorder: AudioRecorderImpl,
+    ): AudioRecorder
 }

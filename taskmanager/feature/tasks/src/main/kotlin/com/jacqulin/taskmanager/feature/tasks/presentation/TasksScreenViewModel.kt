@@ -8,8 +8,6 @@ import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
 import com.jacqulin.taskmanager.core.model.Task
-import com.jacqulin.taskmanager.core.voice.domain.VoiceError
-import com.jacqulin.taskmanager.core.voice.domain.VoiceRecognizer
 import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain

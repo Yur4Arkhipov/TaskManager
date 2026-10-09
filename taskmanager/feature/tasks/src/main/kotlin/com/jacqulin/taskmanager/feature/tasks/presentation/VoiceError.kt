@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.voice.domain
+package com.jacqulin.taskmanager.feature.tasks.presentation
 
 sealed interface VoiceError {
     data object RecordingFailed : VoiceError
