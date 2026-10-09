@@ -40,24 +40,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.github.skydoves.navgraph.annotations.NavDestination
-import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.core.designsystem.component.CenterAlignedAppBar
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
-import com.jacqulin.taskmanager.core.voice.domain.VoiceState
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.ImagePickerButton
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteContentField
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
-@NavDestination(route = NoteEditorRoute::class)
 @Composable
 fun NoteEditorScreen(
     noteId: Int? = null,
@@ -304,7 +299,6 @@ fun NoteEditorScreen(
     }
 }
 
-@NavPreview(route = NoteEditorRoute::class, primary = true)
 @Preview
 @Composable
 fun NoteEditorScreenPreview() {

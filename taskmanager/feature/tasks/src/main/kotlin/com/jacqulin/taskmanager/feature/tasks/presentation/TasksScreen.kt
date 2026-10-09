@@ -33,8 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.github.skydoves.navgraph.annotations.NavDestination
-import com.github.skydoves.navgraph.annotations.NavPreview
 import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
@@ -42,14 +40,12 @@ import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverl
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.tasks.navigation.TasksRoute
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
-@NavDestination(route = TasksRoute::class)
 @Composable
 fun TasksScreen(
     viewModel: TasksScreenViewModel = hiltViewModel()
@@ -279,7 +275,6 @@ fun TasksScreen(
 }
 
 
-@NavPreview(route = TasksRoute::class, primary = true)
 @Preview
 @Composable
 fun TasksScreenPreview() {

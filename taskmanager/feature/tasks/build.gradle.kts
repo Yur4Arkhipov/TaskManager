@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.navgraph)
     alias(libs.plugins.hilt)
 }
 

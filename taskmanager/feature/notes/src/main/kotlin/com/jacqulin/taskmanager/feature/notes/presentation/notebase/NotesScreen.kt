@@ -23,19 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.github.skydoves.navgraph.annotations.NavDestination
-import com.github.skydoves.navgraph.annotations.NavEdge
-import com.github.skydoves.navgraph.annotations.NavPreview
-import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
-import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
-import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
+import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NoteItem
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NotesToolbar
 
-@NavDestination(route = NotesRoute::class)
-@NavEdge(to = NoteEditorRoute::class, label = "open note editor")
 @Composable
 fun NotesScreen(
     onAddClick: () -> Unit,
@@ -149,7 +142,6 @@ fun NotesScreen(
     }
 }
 
-@NavPreview(route = NotesRoute::class, primary = true)
 @Preview
 @Composable
 fun NotesScreenPreview() {
