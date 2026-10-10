@@ -158,10 +158,6 @@ class TasksScreenViewModel @Inject constructor(
             TasksEvent.VoicePermissionDenied -> {
                 emitEffect(TasksEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио"))
             }
-            is TasksEvent.VoiceTextRecognized -> {
-                draftTask.value = DraftTaskUi(title = event.text)
-                voiceState.value = VoiceState.Success(text = event.text)
-            }
             is TasksEvent.OnDraftTaskTextChanged -> {
                 draftTask.value = draftTask.value?.copy(
                     title = event.text
