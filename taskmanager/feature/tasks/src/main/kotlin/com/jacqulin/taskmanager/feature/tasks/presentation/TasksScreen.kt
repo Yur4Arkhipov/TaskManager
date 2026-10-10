@@ -1,6 +1,7 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
 import android.Manifest
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,8 +42,6 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTask
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TasksScreen(
@@ -58,8 +57,10 @@ fun TasksScreen(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
+            Log.d("TasksScreen", "Voice permission granted")
             viewModel.onEvent(TasksEvent.VoicePermissionGranted)
         } else {
+            Log.d("TasksScreen", "Voice permission denied")
             viewModel.onEvent(TasksEvent.VoicePermissionDenied)
         }
     }
@@ -68,6 +69,7 @@ fun TasksScreen(
         viewModel.effects.collect { effect ->
             when (effect) {
                 TasksEffect.RequestVoicePermission -> {
+                    Log.d("TasksScreen", "TasksEffect.RequestVoicePermission called")
                     voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                 }
                 is TasksEffect.ShowError -> {
@@ -188,7 +190,7 @@ fun TasksScreen(
         }
     }
 
-    when (uiState.voiceState) {
+    when (val voiceState = uiState.voiceState) {
         VoiceState.Idle -> Unit
 
         VoiceState.Recording -> {
@@ -209,16 +211,12 @@ fun TasksScreen(
             VoiceSuccessOverlay(
                 taskTitle = stringResource(
                     id = R.string.voice_recognized_text,
-                   (uiState.voiceState as VoiceState.Success).text
+                   voiceState.text
                 )
             )
-            LaunchedEffect(Unit) {
-                delay(3000.milliseconds)
-                viewModel.onEvent(TasksEvent.VoiceInputDismissed)
-            }
         }
 
-        is VoiceState.Error -> {
+        VoiceState.Error -> {
             VoiceErrorOverlay(
                 errorMessage = stringResource(R.string.tasks_voice_unknown_error),
                 onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },

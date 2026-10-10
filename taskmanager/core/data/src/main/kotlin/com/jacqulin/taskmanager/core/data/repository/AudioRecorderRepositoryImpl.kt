@@ -9,7 +9,7 @@ internal class AudioRecorderRepositoryImpl @Inject constructor(
     private val audioRecorder: AudioRecorder,
 ) : AudioRecorderRepository {
 
-    override fun start() = audioRecorder.start()
+    override suspend fun start() = audioRecorder.start()
     override suspend fun stop(): ByteArray = audioRecorder.stop()
-    override fun cancel() = audioRecorder.cancel()
+    override suspend fun cancel() = audioRecorder.cancel()
 }

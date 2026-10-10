@@ -11,10 +11,10 @@ internal interface YandexSpeechApi {
 
     @POST("speech/v1/stt:recognize")
     suspend fun recognize(
-        @Query("topic") topic: String = "general",
-        @Query("folderId") folderId: String,
         @Query("lang") language: String = "ru-RU",
+        @Query("topic") topic: String = "general",
         @Query("format") format: String = "oggopus",
+        @Query("folderId") folderId: String,
         @Header("Authorization") authorization: String,
         @Body audio: RequestBody,
     ): YandexSpeechResponse

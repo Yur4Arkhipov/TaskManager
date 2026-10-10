@@ -8,12 +8,16 @@ import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
+import com.jacqulin.taskmanager.core.domain.voice.CancelVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StartVoiceRecordingUseCase
+import com.jacqulin.taskmanager.core.domain.voice.StopAndRecognizeVoiceUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,13 +28,17 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class TasksScreenViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
-    val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
+    private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
+    private val startVoiceRecordingUseCase: StartVoiceRecordingUseCase,
+    private val stopAndRecognizeVoiceUseCase: StopAndRecognizeVoiceUseCase,
+    private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
 ) : ViewModel() {
 
     private val searchQuery = MutableStateFlow("")
@@ -70,7 +78,6 @@ class TasksScreenViewModel @Inject constructor(
                         }
                     }
                 }
-
             TasksUiState(
                 searchQuery = searchQuery,
                 visibleTasks = visibleTasks,
@@ -110,39 +117,46 @@ class TasksScreenViewModel @Inject constructor(
                 createDraftTask()
             }
             TasksEvent.OnCreateTaskByVoiceClicked -> {
+                Log.d("TasksVM", "[TasksEvent.OnCreateTaskByVoiceClicked] need voice permission")
                 emitEffect(TasksEffect.RequestVoicePermission)
             }
-            TasksEvent.VoiceInputStopClicked -> {
-                Log.d("TasksVM", "stop voice recognizer")
-                Log.d("TasksVM", "VoiceState: ${voiceState.value}")
+            is TasksEvent.VoiceInputStopClicked -> {
+                Log.d("TasksVM", "[TasksEvent.VoiceInputStopClicked] stop voice recording and start recognize")
+                Log.d("TasksVM", "[TasksEvent.VoiceInputStopClicked] ${Thread.currentThread().name}")
                 voiceState.value = VoiceState.Processing
                 viewModelScope.launch {
-//                    val result = voiceRecognizer.stopAndRecognize()
-//
-//                    result.onSuccess { text ->
-//                        _draftTask.value = DraftTaskUi(title = text)
-//                        _voiceState.value = VoiceState.Success(text)
-//                    }.onFailure { error ->
-//                        _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-//                        emitEffect(TasksEffect.ShowError("Не удалось распознать речь"))
-//                    }
+                    stopAndRecognizeVoiceUseCase()
+                        .onSuccess { text ->
+                            voiceState.value = VoiceState.Success(text)
+                            delay(3000.milliseconds)
+                            draftTask.value = DraftTaskUi(title = text)
+                            voiceState.value = VoiceState.Idle
+
+                        }
+                        .onFailure { error ->
+                            Log.e("TasksVM", "[TasksEvent.VoiceInputStopClicked] Failed to record and recognize voice", error)
+                            voiceState.value = VoiceState.Error
+                            emitEffect(TasksEffect.ShowError("Ошибка с обработкой речи"))
+                        }
                 }
             }
-            TasksEvent.VoicePermissionGranted -> {
-//                Log.d("NoteEditorVM", "start voice recognizer")
-//                Log.d("TasksVM", "VoiceState: ${_voiceState.value}")
-//                try {
-//                    voiceRecognizer.start()
-//                    _voiceState.value = VoiceState.Recording
-//                } catch (e: Exception) {
-//                    _voiceState.value = VoiceState.Error(VoiceError.Network)
-//                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
-//                }
+            is TasksEvent.VoicePermissionGranted -> {
+                Log.d("TasksVM", "[TasksEvent.VoicePermissionGranted] start voice recording")
+                Log.d("TasksVM", "[TasksEvent.VoicePermissionGranted] ${Thread.currentThread().name}")
+                viewModelScope.launch {
+                    startVoiceRecordingUseCase()
+                        .onSuccess {
+                            voiceState.value = VoiceState.Recording
+                        }
+                        .onFailure { error ->
+                            Log.e("TasksVM", "[TasksEvent.VoicePermissionGranted] Failed to start voice recording", error)
+                            voiceState.value = VoiceState.Error
+                            emitEffect(TasksEffect.ShowError("Возникала ошибка при попытке записи речи"))
+                        }
+                }
             }
             TasksEvent.VoicePermissionDenied -> {
-                emitEffect(
-                    TasksEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио")
-                )
+                emitEffect(TasksEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио"))
             }
             is TasksEvent.VoiceTextRecognized -> {
                 draftTask.value = DraftTaskUi(title = event.text)
@@ -162,24 +176,28 @@ class TasksScreenViewModel @Inject constructor(
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
             }
-            TasksEvent.VoiceInputDismissed -> {
-//                Log.d("VM", "_voiceState: ${_voiceState.value} ")
-//                voiceRecognizer.cancel()
-//                _voiceState.value = VoiceState.Idle
-//                Log.d("VM", "_voiceState: ${_voiceState.value} ")
-            }
             TasksEvent.VoiceInputRetry -> {
-//                _voiceState.value = VoiceState.Recording
-//                try {
-//                    voiceRecognizer.start()
-//                } catch (e: Exception) {
-//                    _voiceState.value = VoiceState.Error(VoiceError.Unknown)
-//                    emitEffect(TasksEffect.ShowError("Не удалось начать запись"))
-//                }
+                Log.d("TasksVM", "[TasksEvent.VoiceInputRetry] retry voice recording")
+                Log.d("TasksVM", "[TasksEvent.VoiceInputRetry] ${Thread.currentThread().name}")
+                viewModelScope.launch {
+                    startVoiceRecordingUseCase()
+                        .onSuccess {
+                            voiceState.value = VoiceState.Recording
+                        }
+                        .onFailure { error ->
+                            Log.e("TasksVM", "[TasksEvent.VoiceInputRetry] Failed to start voice recording", error)
+                            voiceState.value = VoiceState.Error
+                            emitEffect(TasksEffect.ShowError("Возникала ошибка при попытке записи речи"))
+                        }
+                }
             }
             TasksEvent.VoiceInputCancel -> {
-//                voiceRecognizer.cancel()
-//                _voiceState.value = VoiceState.Idle
+                Log.d("TasksVM", "[TasksEvent.VoiceInputCancel] cancel voice recording")
+                Log.d("TasksVM", "[TasksEvent.VoiceInputCancel] ${Thread.currentThread().name}")
+                viewModelScope.launch {
+                    cancelVoiceRecordingUseCase()
+                    voiceState.value = VoiceState.Idle
+                }
             }
         }
     }
