@@ -4,11 +4,15 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +27,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
+import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard
@@ -38,7 +43,8 @@ fun SettingsScreen(
         titleRes = R.string.settings_title,
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::onDarkThemeConfigChanged,
-        onChangeColorPalette = viewModel::onColorPaletteChanged
+        onChangeColorPalette = viewModel::onColorPaletteChanged,
+        onChangeVoiceInputMode = viewModel::onVoiceInputModeChanged,
     )
 }
 
@@ -48,11 +54,12 @@ fun SettingsScreen(
     settingsUiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
+    onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                titleRes = R.string.settings_title
+                titleRes = titleRes
             )
         }
     ) { paddingValues ->
@@ -76,6 +83,30 @@ fun SettingsScreen(
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp)
                 ) {
+                    item {
+                        SingleChoiceSegmentedButtonRow(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            SegmentedButton(
+                                modifier = Modifier.weight(1f),
+                                selected = settingsUiState.settings.voiceInputMode == VoiceInputMode.LIVE,
+                                onClick = { onChangeVoiceInputMode(VoiceInputMode.LIVE) },
+                                shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                            ) {
+                                Text("Сразу")
+                            }
+
+                            SegmentedButton(
+                                modifier = Modifier.weight(1f),
+                                selected = settingsUiState.settings.voiceInputMode == VoiceInputMode.RECORD_THEN_RECOGNIZE,
+                                onClick = { onChangeVoiceInputMode(VoiceInputMode.RECORD_THEN_RECOGNIZE) },
+                                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                            ) {
+                                Text("После записи")
+                            }
+                        }
+                    }
+
                     item {
                         SettingsSectionCard(
                             title = stringResource(R.string.settings_tokens),
@@ -144,10 +175,12 @@ private fun SettingsScreenPreview() {
                 settings = UserEditableSettings(
                     colorPalette = ColorPalette.CYAN,
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
+                    voiceInputMode = VoiceInputMode.RECORD_THEN_RECOGNIZE,
                 ),
             ),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
+            onChangeVoiceInputMode = {},
         )
     }
 }

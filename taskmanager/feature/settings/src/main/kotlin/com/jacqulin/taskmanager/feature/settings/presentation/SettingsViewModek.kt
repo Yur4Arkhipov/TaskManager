@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetDarkThemeConfigUseCase
+import com.jacqulin.taskmanager.core.domain.settings.SetVoiceInputModeUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
+import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +23,7 @@ class SettingsViewModel @Inject constructor(
     observeUserDataUseCase: ObserveUserDataUseCase,
     private val setColorPaletteUseCase: SetColorPaletteUseCase,
     private val setDarkThemeConfigUseCase: SetDarkThemeConfigUseCase,
+    private val setVoiceInputModeUseCase: SetVoiceInputModeUseCase,
 ) : ViewModel() {
     val settingsUiState: StateFlow<SettingsUiState> =
         observeUserDataUseCase()
@@ -29,6 +32,7 @@ class SettingsViewModel @Inject constructor(
                     settings = UserEditableSettings(
                         colorPalette =  userData.colorPalette,
                         darkThemeConfig = userData.darkThemeConfig,
+                        voiceInputMode = userData.voiceInputMode,
                     ),
                 )
             }
@@ -49,6 +53,10 @@ class SettingsViewModel @Inject constructor(
             setDarkThemeConfigUseCase(config)
         }
     }
+
+    fun onVoiceInputModeChanged(mode: VoiceInputMode) {
+        viewModelScope.launch { setVoiceInputModeUseCase(mode) }
+    }
 }
 
 /**
@@ -57,10 +65,10 @@ class SettingsViewModel @Inject constructor(
 data class UserEditableSettings(
     val colorPalette: ColorPalette,
     val darkThemeConfig: DarkThemeConfig,
+    val voiceInputMode: VoiceInputMode,
 )
 
 sealed interface SettingsUiState {
     data object Loading : SettingsUiState
     data class Success(val settings: UserEditableSettings) : SettingsUiState
 }
-

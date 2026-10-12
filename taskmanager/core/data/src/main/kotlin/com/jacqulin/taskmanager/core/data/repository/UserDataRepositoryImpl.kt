@@ -4,6 +4,7 @@ import com.jacqulin.taskmanager.core.datastore.UserPreferencesDataSource
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.UserData
+import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,6 +21,7 @@ internal class UserDataRepositoryImpl @Inject constructor(
                 UserData(
                     darkThemeConfig = it.darkThemeConfig,
                     colorPalette = it.colorPalette,
+                    voiceInputMode = it.voiceInputMode,
                 )
             }
 
@@ -28,4 +30,7 @@ internal class UserDataRepositoryImpl @Inject constructor(
 
     override suspend fun setColorPalette(palette: ColorPalette) =
         userPreferencesDataSource.setColorPalette(palette)
+
+    override suspend fun setVoiceInputMode(mode: VoiceInputMode) =
+        userPreferencesDataSource.setVoiceInputMode(mode)
 }
