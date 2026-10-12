@@ -56,4 +56,11 @@
     <string name="settings_light_theme">Светлая</string>
     <string name="settings_system_theme">Системная</string>
 
+    // Voice
+    <string name="voice_error_recording_failed">Не удалось получить звук с микрофона. Проверьте разрешение на запись аудио</string>
+    <string name="voice_error_recognition_failed">Служба распознавания речи недоступна или не поддерживает выбранный язык</string>
+    <string name="voice_error_network">Не удалось подключиться к службе распознавания</string>
+    <string name="voice_error_unauthorized">Нет доступа к службе распознавания</string>
+    <string name="voice_error_empty_result">Не удалось распознать речь. Попробуйте ещё раз</string>
+
 </resources>

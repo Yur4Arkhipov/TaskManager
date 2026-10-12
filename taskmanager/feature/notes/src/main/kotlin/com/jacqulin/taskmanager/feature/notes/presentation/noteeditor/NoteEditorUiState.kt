@@ -15,6 +15,5 @@ data class NoteEditorUiState(
     val isImageRemoved: Boolean = false,
     val createdAtMillis: Long = 0L,
     val isLoading: Boolean = true,
-    val voiceRecordingState: VoiceState = VoiceState.Idle,
-    val voiceError: String? = null
+    val voiceState: VoiceState = VoiceState.Idle,
 )

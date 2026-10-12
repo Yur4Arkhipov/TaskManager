@@ -2,6 +2,8 @@ package com.jacqulin.taskmanager.core.data.di
 
 import com.jacqulin.taskmanager.core.data.repository.AudioRecorderRepository
 import com.jacqulin.taskmanager.core.data.repository.AudioRecorderRepositoryImpl
+import com.jacqulin.taskmanager.core.data.repository.LiveSpeechRecognitionRepository
+import com.jacqulin.taskmanager.core.data.repository.LiveSpeechRecognitionRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.NoteImageRepository
 import com.jacqulin.taskmanager.core.data.repository.NoteImageRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.NotesRepository
@@ -55,4 +57,10 @@ abstract class RepositoriesModule {
     internal abstract fun bindsSpeechRecognitionRepository(
         impl: SpeechRecognitionRepositoryImpl,
     ): SpeechRecognitionRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLiveSpeechRecognitionRepository(
+        impl: LiveSpeechRecognitionRepositoryImpl,
+    ): LiveSpeechRecognitionRepository
 }

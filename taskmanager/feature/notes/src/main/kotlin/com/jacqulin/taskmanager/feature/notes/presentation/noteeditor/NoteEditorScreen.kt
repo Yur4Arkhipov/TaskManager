@@ -250,11 +250,12 @@ fun NoteEditorScreen(
         }
     }
 
-    when (val state = uiState.voiceRecordingState) {
+    when (val state = uiState.voiceState) {
         VoiceState.Idle -> Unit
 
-        VoiceState.Recording -> {
+        is VoiceState.Recording -> {
             VoiceRecordingOverlay(
+                partialText = state.partialText,
                 onStopClick = {
                     viewModel.onEvent(NoteEditorEvent.VoiceInputStopClicked)
                 }
@@ -274,15 +275,21 @@ fun NoteEditorScreen(
                     state.text
                 )
             )
-            LaunchedEffect(Unit) {
+            LaunchedEffect(state) {
                 delay(3000.milliseconds)
-                viewModel.onEvent(NoteEditorEvent.VoiceInputDismissed)
             }
         }
 
         is VoiceState.Error -> {
             VoiceErrorOverlay(
-                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
+                errorMessage = when (state.error) {
+                    VoiceError.RecordingFailed -> stringResource(R.string.voice_error_recording_failed)
+                    VoiceError.RecognitionFailed -> stringResource(R.string.voice_error_recognition_failed)
+                    VoiceError.Network -> stringResource(R.string.voice_error_network)
+                    VoiceError.Unauthorized -> stringResource(R.string.voice_error_unauthorized)
+                    VoiceError.EmptyResult -> stringResource(R.string.voice_error_empty_result)
+                    VoiceError.Unknown -> stringResource(R.string.tasks_voice_unknown_error)
+                },
                 onRetry = { viewModel.onEvent(NoteEditorEvent.VoiceInputRetry) },
                 onCancel = { viewModel.onEvent(NoteEditorEvent.VoiceInputCancel) }
             )

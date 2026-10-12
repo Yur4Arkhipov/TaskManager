@@ -43,6 +43,7 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun VoiceRecordingOverlay(
     onStopClick: () -> Unit,
+    partialText: String = "",
     modifier: Modifier = Modifier
 ) {
     val scrimColor = colorScheme.surface.copy(alpha = 0.85f)
@@ -80,6 +81,15 @@ fun VoiceRecordingOverlay(
             Spacer(modifier = Modifier.height(24.dp))
 
             WaveLine()
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = partialText.ifBlank { "Говорите — текст появится здесь" },
+                style = MaterialTheme.typography.bodyLarge,
+                color = colorScheme.onSurface,
+                modifier = Modifier.padding(horizontal = 32.dp),
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
