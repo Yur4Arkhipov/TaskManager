@@ -9,8 +9,7 @@ import com.jacqulin.taskmanager.core.domain.notes.CreateTempImageUseCase
 import com.jacqulin.taskmanager.core.domain.notes.DeleteTempImageUseCase
 import com.jacqulin.taskmanager.core.domain.notes.GetNoteByIdUseCase
 import com.jacqulin.taskmanager.core.domain.notes.SaveNoteUseCase
-import com.jacqulin.taskmanager.core.domain.voice.ListenToSpeechUseCase
-import com.jacqulin.taskmanager.core.domain.voice.StopSpeechRecognitionUseCase
+import com.jacqulin.taskmanager.core.domain.voice.VoiceInputUseCase
 import com.jacqulin.taskmanager.core.model.Note
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
@@ -32,8 +31,7 @@ class NoteEditorViewModel @Inject constructor(
     private val saveNoteUseCase: SaveNoteUseCase,
     private val createTempImageUseCase: CreateTempImageUseCase,
     private val deleteTempImageUseCase: DeleteTempImageUseCase,
-    private val listenToSpeechUseCase: ListenToSpeechUseCase,
-    private val stopSpeechRecognitionUseCase: StopSpeechRecognitionUseCase,
+    private val voiceInputUseCase: VoiceInputUseCase,
 ) : ViewModel() {
 
     private val noteId: Int? = savedStateHandle.get<Int>("noteId")
@@ -110,7 +108,18 @@ class NoteEditorViewModel @Inject constructor(
             NoteEditorEvent.VoiceInputStopClicked -> {
                 Log.d(TAG, "Stop voice input clicked")
                 setVoiceState(VoiceState.Processing)
-                stopSpeechRecognitionUseCase()
+                viewModelScope.launch {
+                    voiceInputUseCase.stop()
+                        .onSuccess { text ->
+                            if (text.isNotBlank()) {
+                                appendRecognizedText(text)
+                                setVoiceState(VoiceState.Success(text))
+                            }
+                        }
+                        .onFailure {
+                            setVoiceState(VoiceState.Error(VoiceError.RecognitionFailed))
+                        }
+                }
             }
             NoteEditorEvent.VoicePermissionGranted -> {
                 Log.d(TAG, "Voice permission granted")
@@ -122,12 +131,12 @@ class NoteEditorViewModel @Inject constructor(
                     NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио")
                 )
             }
-//            is NoteEditorEvent.VoiceTextRecognized -> {
-//                appendRecognizedText(event.text)
-//            }
             NoteEditorEvent.VoiceInputCancel -> {
                 Log.d(TAG, "Cancel voice input clicked")
-                setVoiceState(VoiceState.Idle)
+                viewModelScope.launch {
+                    voiceInputUseCase.cancel()
+                    setVoiceState(VoiceState.Idle)
+                }
             }
             NoteEditorEvent.VoiceInputRetry -> {
                 Log.d(TAG, "Retry voice input clicked")
@@ -154,7 +163,12 @@ class NoteEditorViewModel @Inject constructor(
         setVoiceState(VoiceState.Recording())
 
         viewModelScope.launch {
-            listenToSpeechUseCase().collect { event ->
+            voiceInputUseCase.start()
+                .onFailure {
+                    setVoiceState(VoiceState.Error(VoiceError.RecordingFailed))
+                    return@launch
+                }
+            voiceInputUseCase.listen().collect { event ->
                 when (event) {
                     SpeechRecognitionEvent.Ready,
                     SpeechRecognitionEvent.SpeechStarted -> {

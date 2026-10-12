@@ -14,6 +14,8 @@ import com.jacqulin.taskmanager.core.data.repository.TasksRepository
 import com.jacqulin.taskmanager.core.data.repository.TasksRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.UserDataRepository
 import com.jacqulin.taskmanager.core.data.repository.UserDataRepositoryImpl
+import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepository
+import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,6 +30,12 @@ abstract class RepositoriesModule {
     internal abstract fun bindsUserDataRepository(
         userDataRepository: UserDataRepositoryImpl,
     ): UserDataRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindVoiceInputRepository(
+        impl: VoiceInputRepositoryImpl
+    ): VoiceInputRepository
 
     @Binds
     @Singleton

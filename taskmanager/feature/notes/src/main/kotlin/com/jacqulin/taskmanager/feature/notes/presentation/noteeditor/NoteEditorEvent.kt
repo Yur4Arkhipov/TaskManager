@@ -17,7 +17,6 @@ sealed interface NoteEditorEvent {
     data object VoiceInputStopClicked : NoteEditorEvent
     data object VoicePermissionGranted : NoteEditorEvent
     data object VoicePermissionDenied : NoteEditorEvent
-//    data class VoiceTextRecognized(val text: String) : NoteEditorEvent
     data object VoiceInputRetry : NoteEditorEvent
     data object VoiceInputCancel : NoteEditorEvent
 

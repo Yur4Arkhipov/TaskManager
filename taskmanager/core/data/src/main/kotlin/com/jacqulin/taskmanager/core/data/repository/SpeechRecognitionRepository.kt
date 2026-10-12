@@ -1,5 +1,5 @@
 package com.jacqulin.taskmanager.core.data.repository
 
-interface SpeechRecognitionRepository {
+internal interface SpeechRecognitionRepository {
     suspend fun recognize(audio: ByteArray): Result<String>
 }

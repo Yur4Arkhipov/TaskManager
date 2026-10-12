@@ -23,7 +23,9 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
     private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun listen(): Flow<SpeechRecognitionEvent> = callbackFlow {
+        log("listen(): flow collected; thread=${Thread.currentThread().name}")
         if (!systemSpeechRecognizer.isAvailable) {
+            log("listen(): recognizer unavailable")
             trySend(SpeechRecognitionEvent.Error(SpeechRecognitionFailure.ServiceUnavailable))
             close()
             return@callbackFlow
@@ -31,27 +33,33 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
 
         mainHandler.post {
             try {
+                log("startListening(): running on ${Thread.currentThread().name}")
                 systemSpeechRecognizer.startListening(
                     listener = object : SpeechRecognitionListener {
                         override fun onReadyForSpeech() {
+                            log("callback onReadyForSpeech on ${Thread.currentThread().name}")
                             trySend(SpeechRecognitionEvent.Ready)
                         }
 
                         override fun onBeginningOfSpeech() {
+                            log("callback onBeginningOfSpeech on ${Thread.currentThread().name}")
                             trySend(SpeechRecognitionEvent.SpeechStarted)
                         }
 
                         override fun onEndOfSpeech() {
+                            log("callback onEndOfSpeech on ${Thread.currentThread().name}")
                             trySend(SpeechRecognitionEvent.SpeechEnded)
                         }
 
                         override fun onPartialResults(results: List<String>) {
+                            log("callback onPartialResults on ${Thread.currentThread().name}")
                             results.firstOrNull()?.let { text ->
                                 trySend(SpeechRecognitionEvent.PartialResult(text))
                             }
                         }
 
                         override fun onResults(results: List<String>) {
+                            log("callback onResults on ${Thread.currentThread().name}")
                             val text = results.firstOrNull()
                             if (text.isNullOrBlank()) {
                                 trySend(SpeechRecognitionEvent.Error(SpeechRecognitionFailure.NoMatch))
@@ -62,6 +70,7 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
                         }
 
                         override fun onError(error: Int) {
+                            log("callback onError code=$error on ${Thread.currentThread().name}")
                             trySend(SpeechRecognitionEvent.Error(error.toFailure()))
                             close()
                         }
@@ -76,6 +85,7 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
         }
 
         awaitClose {
+            log("awaitClose(): flow collection ended; scheduling destroy")
             mainHandler.post {
                 systemSpeechRecognizer.destroy()
             }
@@ -83,9 +93,15 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
     }
 
     override fun stop() {
+        log("stop(): called on ${Thread.currentThread().name}; scheduling stopListening")
         mainHandler.post {
+            log("stopListening(): running on ${Thread.currentThread().name}")
             systemSpeechRecognizer.stopListening()
         }
+    }
+
+    private fun log(message: String) {
+        Log.d(TAG, "${System.currentTimeMillis()} $message")
     }
 
     private fun Int.toFailure(): SpeechRecognitionFailure = when (this) {
