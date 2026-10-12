@@ -193,8 +193,9 @@ fun TasksScreen(
     when (val voiceState = uiState.voiceState) {
         VoiceState.Idle -> Unit
 
-        VoiceState.Recording -> {
+        is VoiceState.Recording -> {
             VoiceRecordingOverlay(
+                partialText = voiceState.partialText,
                 onStopClick = {
                     viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
                 }
@@ -216,9 +217,16 @@ fun TasksScreen(
             )
         }
 
-        VoiceState.Error -> {
+        is VoiceState.Error -> {
             VoiceErrorOverlay(
-                errorMessage = stringResource(R.string.tasks_voice_unknown_error),
+                errorMessage = when (voiceState.error) {
+                    VoiceError.RecordingFailed -> stringResource(R.string.voice_error_recording_failed)
+                    VoiceError.RecognitionFailed -> stringResource(R.string.voice_error_recognition_failed)
+                    VoiceError.Network -> stringResource(R.string.voice_error_network)
+                    VoiceError.Unauthorized -> stringResource(R.string.voice_error_unauthorized)
+                    VoiceError.EmptyResult -> stringResource(R.string.voice_error_empty_result)
+                    VoiceError.Unknown -> stringResource(R.string.tasks_voice_unknown_error)
+                },
                 onRetry = { viewModel.onEvent(TasksEvent.VoiceInputRetry) },
                 onCancel = { viewModel.onEvent(TasksEvent.VoiceInputCancel) }
             )

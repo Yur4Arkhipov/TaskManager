@@ -50,8 +50,6 @@ import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.ImagePickerButton
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteContentField
 import com.jacqulin.taskmanager.feature.notes.presentation.noteeditor.components.NoteTitleField
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun NoteEditorScreen(
@@ -275,9 +273,6 @@ fun NoteEditorScreen(
                     state.text
                 )
             )
-            LaunchedEffect(state) {
-                delay(3000.milliseconds)
-            }
         }
 
         is VoiceState.Error -> {
