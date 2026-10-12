@@ -101,7 +101,7 @@ internal class LiveSpeechRecognitionRepositoryImpl @Inject constructor(
     }
 
     private fun log(message: String) {
-        Log.d(TAG, "${System.currentTimeMillis()} $message")
+        Log.d(TAG, message)
     }
 
     private fun Int.toFailure(): SpeechRecognitionFailure = when (this) {
