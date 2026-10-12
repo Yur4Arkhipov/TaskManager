@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.data.repository
+package com.jacqulin.taskmanager.core.data.repository
 
 import android.net.Uri
 import com.jacqulin.taskmanager.core.storage.image.NoteImageStorage

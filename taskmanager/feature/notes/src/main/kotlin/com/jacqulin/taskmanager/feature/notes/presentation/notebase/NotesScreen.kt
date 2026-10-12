@@ -54,9 +54,6 @@ fun NotesScreen(
         onSearchQueryChanged = { query ->
             viewModel.onEvent(NotesEvent.OnSearchQueryChanged(query))
         },
-        onSearch = {
-            viewModel.onEvent(NotesEvent.OnSearchSubmitted)
-        },
         onSortChanged = { sortType ->
             viewModel.onEvent(NotesEvent.OnSortChanged(sortType))
         },
@@ -77,7 +74,6 @@ fun NotesScreen(
     uiState: NotesUiState,
     onAddNoteClick: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
-    onSearch: () -> Unit,
     onSortChanged: (SortType) -> Unit,
     onDeleteModeClick: () -> Unit,
     onDeleteClick: (Int) -> Unit,
@@ -107,7 +103,6 @@ fun NotesScreen(
                 isDeleteModeEnabled = uiState.isDeleteModeEnabled,
                 sortType = uiState.sortType,
                 onSearchQueryChanged = onSearchQueryChanged,
-                onSearch = onSearch,
                 onSortChanged = onSortChanged,
                 onDeleteModeClick = onDeleteModeClick
             )
@@ -158,7 +153,6 @@ fun NotesScreenPreview() {
         uiState = NotesUiState(),
         onAddNoteClick = { },
         onSearchQueryChanged = { },
-        onSearch = { },
         onSortChanged = { },
         onDeleteModeClick = { },
         onDeleteClick = { },

@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.data.repository
+package com.jacqulin.taskmanager.core.data.repository
 
 import com.jacqulin.taskmanager.core.network.NetworkDataSource
 import javax.inject.Inject
@@ -10,5 +10,9 @@ internal class SpeechRecognitionRepositoryImpl @Inject constructor(
 ) : SpeechRecognitionRepository {
 
     override suspend fun recognize(audio: ByteArray): Result<String> =
-        network.recognize(audio, "", "")
+        network.recognize(
+            audio = audio,
+            folderId = "",
+            iamToken = ""
+        )
 }
