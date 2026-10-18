@@ -9,6 +9,7 @@ import com.jacqulin.taskmanager.core.domain.settings.SetVoiceInputModeUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
+import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,7 @@ class SettingsViewModel @Inject constructor(
             .map { userData ->
                 SettingsUiState.Success(
                     settings = UserEditableSettings(
-                        colorPalette =  userData.colorPalette,
+                        colorPalette = userData.colorPalette,
                         darkThemeConfig = userData.darkThemeConfig,
                         voiceInputMode = userData.voiceInputMode,
                     ),
@@ -57,18 +58,4 @@ class SettingsViewModel @Inject constructor(
     fun onVoiceInputModeChanged(mode: VoiceInputMode) {
         viewModelScope.launch { setVoiceInputModeUseCase(mode) }
     }
-}
-
-/**
- * Represents the settings which the user can edit within the app.
- */
-data class UserEditableSettings(
-    val colorPalette: ColorPalette,
-    val darkThemeConfig: DarkThemeConfig,
-    val voiceInputMode: VoiceInputMode,
-)
-
-sealed interface SettingsUiState {
-    data object Loading : SettingsUiState
-    data class Success(val settings: UserEditableSettings) : SettingsUiState
 }
