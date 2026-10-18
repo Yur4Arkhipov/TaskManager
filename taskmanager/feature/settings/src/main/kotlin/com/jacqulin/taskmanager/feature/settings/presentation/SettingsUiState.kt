@@ -4,5 +4,8 @@ import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditable
 
 sealed interface SettingsUiState {
     data object Loading : SettingsUiState
-    data class Success(val settings: UserEditableSettings) : SettingsUiState
+    data class Success(
+        val settings: UserEditableSettings,
+        val speechRecognizerAvailable: Boolean = true,
+    ) : SettingsUiState
 }

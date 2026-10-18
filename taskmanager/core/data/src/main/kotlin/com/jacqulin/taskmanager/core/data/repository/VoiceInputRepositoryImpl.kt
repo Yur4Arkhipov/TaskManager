@@ -79,7 +79,7 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
         log("start(): reading current voice input setting")
         val mode = userDataRepository.userData.first().voiceInputMode
         log("start(): session mode=$mode")
-        if (mode == VoiceInputMode.RECORD_THEN_RECOGNIZE) {
+        if (mode != VoiceInputMode.LIVE) {
             log("start(): starting audio recorder")
             audioRecorderRepository.start()
             log("start(): audio recorder started")
@@ -120,7 +120,7 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
                     log("stop(): liveResult completed; coroutine resumed with ${text.length} chars")
                     Result.success(text)
                 }
-                VoiceInputMode.RECORD_THEN_RECOGNIZE -> {
+                else -> {
                     log("stop(): stopping audio recorder")
                     val audio = audioRecorderRepository.stop()
                     log("stop(): got ${audio.size} audio bytes; requesting recognition")
@@ -153,8 +153,8 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
         log("cancel(): cancelling mode=${session?.mode}")
         when (session?.mode) {
             VoiceInputMode.LIVE -> liveSpeechRecognitionRepository.stop()
-            VoiceInputMode.RECORD_THEN_RECOGNIZE -> audioRecorderRepository.cancel()
             null -> Unit
+            else -> audioRecorderRepository.cancel()
         }
         session?.liveResult?.cancel()
         log("cancel(): session state cleared")

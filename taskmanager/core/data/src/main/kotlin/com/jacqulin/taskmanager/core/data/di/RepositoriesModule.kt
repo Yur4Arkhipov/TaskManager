@@ -16,6 +16,8 @@ import com.jacqulin.taskmanager.core.data.repository.UserDataRepository
 import com.jacqulin.taskmanager.core.data.repository.UserDataRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepository
 import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepositoryImpl
+import com.jacqulin.taskmanager.core.data.system.AndroidSystemCapabilitiesCheckerImpl
+import com.jacqulin.taskmanager.core.data.system.SystemCapabilitiesChecker
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -71,4 +73,10 @@ abstract class RepositoriesModule {
     internal abstract fun bindLiveSpeechRecognitionRepository(
         impl: LiveSpeechRecognitionRepositoryImpl,
     ): LiveSpeechRecognitionRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindsSystemCapabilitiesChecker(
+        impl: AndroidSystemCapabilitiesCheckerImpl,
+    ): SystemCapabilitiesChecker
 }

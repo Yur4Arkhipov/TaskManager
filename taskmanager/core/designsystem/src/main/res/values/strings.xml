@@ -55,6 +55,14 @@
     <string name="settings_dark_theme">Темная</string>
     <string name="settings_light_theme">Светлая</string>
     <string name="settings_system_theme">Системная</string>
+    <string name="settings_voice_input">Голосовой ввод</string>
+    <string name="voice_mode_live">Системный сервис Android</string>
+    <string name="voice_mode_live_subtitle">Не требует настройки. Качество зависит от устройства</string>
+    <string name="voice_mode_yandex_speech">Yandex SpeechKit</string>
+    <string name="voice_mode_yandex_subtitle">Облачное распознавание</string>
+    <string name="voice_mode_future_title">Скоро</string>
+    <string name="voice_mode_future_subtitle">Скоро</string>
+    <string name="voice_recognizer_unavailable_warning">Системный сервис недоступен на текущем устройстве</string>
 
     // Voice
     <string name="voice_error_recording_failed">Не удалось получить звук с микрофона. Проверьте разрешение на запись аудио</string>
@@ -63,4 +71,9 @@
     <string name="voice_error_unauthorized">Нет доступа к службе распознавания</string>
     <string name="voice_error_empty_result">Не удалось распознать речь. Попробуйте ещё раз</string>
 
+    // Icons description
+    <string name="settings_expandable_collapse">Скрыть</string>
+    <string name="settings_expandable_expand">Раскрыть</string>
+
+    
 </resources>

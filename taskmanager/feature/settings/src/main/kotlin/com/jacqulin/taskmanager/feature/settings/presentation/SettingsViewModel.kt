@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.domain.settings.CheckSpeechRecognizerAvailabilityUseCase
 import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetDarkThemeConfigUseCase
@@ -13,7 +14,7 @@ import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,18 +26,22 @@ class SettingsViewModel @Inject constructor(
     private val setColorPaletteUseCase: SetColorPaletteUseCase,
     private val setDarkThemeConfigUseCase: SetDarkThemeConfigUseCase,
     private val setVoiceInputModeUseCase: SetVoiceInputModeUseCase,
+    checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
 ) : ViewModel() {
     val settingsUiState: StateFlow<SettingsUiState> =
-        observeUserDataUseCase()
-            .map { userData ->
-                SettingsUiState.Success(
-                    settings = UserEditableSettings(
-                        colorPalette = userData.colorPalette,
-                        darkThemeConfig = userData.darkThemeConfig,
-                        voiceInputMode = userData.voiceInputMode,
-                    ),
-                )
-            }
+        combine(
+            observeUserDataUseCase(),
+            checkSpeechRecognizerAvailabilityUseCase.isAvailable,
+        ) { userData, speechRecognizerAvailable ->
+            SettingsUiState.Success(
+                settings = UserEditableSettings(
+                    colorPalette = userData.colorPalette,
+                    darkThemeConfig = userData.darkThemeConfig,
+                    voiceInputMode = userData.voiceInputMode,
+                ),
+                speechRecognizerAvailable = speechRecognizerAvailable,
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5.seconds.inWholeMilliseconds),
