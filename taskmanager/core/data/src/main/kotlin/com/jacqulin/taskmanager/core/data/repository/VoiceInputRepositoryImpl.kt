@@ -79,7 +79,7 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
         log("start(): reading current voice input setting")
         val mode = userDataRepository.userData.first().voiceInputMode
         log("start(): session mode=$mode")
-        if (mode == VoiceInputMode.RECORD_THEN_RECOGNIZE) {
+        if (mode != VoiceInputMode.LIVE) {
             log("start(): starting audio recorder")
             audioRecorderRepository.start()
             log("start(): audio recorder started")
@@ -120,15 +120,30 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
                     log("stop(): liveResult completed; coroutine resumed with ${text.length} chars")
                     Result.success(text)
                 }
-                VoiceInputMode.RECORD_THEN_RECOGNIZE -> {
+                VoiceInputMode.YANDEX_SPEECH -> {
                     log("stop(): stopping audio recorder")
                     val audio = audioRecorderRepository.stop()
+                    val tokens = userDataRepository.getYandexTokens()
+                    if (!tokens.isConfigured) {
+                        Log.w(TAG, "stop(): Yandex tokens are not configured")
+                        return Result.failure(
+                            IllegalStateException("Yandex IAM token / folder ID не заданы")
+                        )
+                    }
+
                     log("stop(): got ${audio.size} audio bytes; requesting recognition")
-                    speechRecognitionRepository.recognize(audio).mapCatching { text ->
+                    speechRecognitionRepository
+                        .recognizeYandex(audio, tokens.iamToken, tokens.folderId)
+                        .mapCatching { text ->
                         log("stop(): recognition returned ${text.length} chars")
                         text.takeIf(String::isNotBlank)
                             ?: throw IllegalStateException("Empty recognition result")
                     }
+                }
+                VoiceInputMode.FUTURE -> {
+                    return Result.failure(
+                        IllegalStateException("Method is not configured")
+                    )
                 }
             }
         } catch (exception: TimeoutCancellationException) {
@@ -153,8 +168,8 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
         log("cancel(): cancelling mode=${session?.mode}")
         when (session?.mode) {
             VoiceInputMode.LIVE -> liveSpeechRecognitionRepository.stop()
-            VoiceInputMode.RECORD_THEN_RECOGNIZE -> audioRecorderRepository.cancel()
             null -> Unit
+            else -> audioRecorderRepository.cancel()
         }
         session?.liveResult?.cancel()
         log("cancel(): session state cleared")

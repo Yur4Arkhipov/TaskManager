@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.core.data.repository
 
+import com.jacqulin.taskmanager.core.data.model.YandexTokens
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.UserData
@@ -26,4 +27,16 @@ interface UserDataRepository {
      * Sets preferred voice input mode
      */
     suspend fun setVoiceInputMode(mode: VoiceInputMode)
+
+    /**
+     * Sets Yandex tokens
+     */
+    suspend fun setYandexTokens(iamToken: String, folderId: String)
+
+    /**
+     * Returns Yandex tokens
+     */
+    suspend fun getYandexTokens(): YandexTokens
+
+    suspend fun areYandexTokensConfigured(): Boolean
 }

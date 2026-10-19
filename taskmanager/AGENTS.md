@@ -1,30 +1,88 @@
-# Task Manager Project
+# Repository Guidelines
 
-TaskManager is a native Android mobile application for managing tasks and notes with manually or
-voice recording - users can choose this option.
+## Project Structure & Module Organization
 
-## Architecture
- 
-This project is modern Android application that follows the official architecture guidance from Google.
-It is a reactive, single-activity app that uses following:
+```
+taskmanager/
+├── app/                          # Entry point: MainActivity, AppNavHost, theme setup
+├── core/                         # Shared modules
+│   ├── data/                     # Repository interfaces & implementations
+│   ├── database/                 # Room: database, entities, DAO's
+│   ├── datastore/                # DataStore for app preferences
+│   ├── designsystem/             # Reusable UI components, theme, icons
+│   ├── domain/                   # Use cases (business logic)
+│   ├── model/                    # Shared data models & events
+│   ├── network/                  # Retrofit, OkHttp, API's
+│   ├── speech/                   # Android SpeechRecognizer wrapper
+│   └── storage/                  # audio recording, image storage, file handling
+├── feature/                      # Feature modules
+│   ├── notes/                    # Notes list + editor
+│   ├── tasks/                    # Tasks list
+│   └── settings/                 # Theme & palette settings, audio input mode
+├── config/detekt/                # Detekt static analysis config
+└── docs/                         # Screenshots and architecture diagrams
+```
 
--   **UI:** Built entirely with Jetpack Compose, including Material 3 components and adaptive layouts for different screen sizes.
--   **State Management:** Unidirectional Data Flow (UDF) is implemented using Kotlin Coroutines and `Flow`s. `ViewModel`s act as state holders, exposing UI state as streams of data.
--   **Dependency Injection:** Hilt is used for dependency injection throughout the app, simplifying the management of dependencies and improving testability.
--   **Navigation:** Navigation is handled by Jetpack Navigation 2 for Compose, allowing for a declarative and type-safe way to navigate between screens.
--   **Data:** The data layer is implemented using the repository pattern.
-    -   **Local Data:** Room and DataStore are used for local data persistence.
-    -   **Remote Data:** Retrofit and OkHttp are used for fetching data from the network.
--   **Background Processing:** WorkManager is used for deferrable background tasks.
+**Dependency direction:** `feature` → `core:domain` → `core:data` → `core:database` / `core:datastore` / `core:speech` / `core:storage` / `core:network`. Feature modules depend on `core:domain` (use cases) and `core:model` (types), never on `core:data` directly.
 
-## Modules
+## Build, Test, and Development Commands
 
-The main Android app lives in the `app/` folder.
-Feature modules live in `feature/` and core and shared modules in `core/`.
+| Command | Description |
+|---------|-------------|
+| `.\gradlew assembleDebug` | Build debug APK |
+| `.\gradlew assembleRelease` | Build release APK (unsigned) |
+| `.\gradlew connectedAndroidTest` | Run instrumentation tests on connected device |
+| `.\gradlew test` | Run local unit tests |
+| `.\gradlew detekt` | Run static analysis |
+| `.\gradlew detektFormat` | Auto-format code via Detekt |
 
-## Before modifying code
+Run from the project root. Use Android Studio's Run/Debug configurations for running the app.
 
-1. Inspect the existing implementation.
-2. Follow existing patterns.
-3. Do not introduce a new library if an existing dependency solves the problem.
-4. Keep changes focused.
+## Coding Style & Naming Conventions
+
+- **Language:** Kotlin (target 2.4+)
+- **Style:** Follows [kotlinlang.org coding conventions](https://kotlinlang.org/docs/coding-conventions.html)
+- **Formatting:** Android Studio default Kotlin formatter
+- **Static analysis:** [Detekt](https://detekt.dev/) configured in `config/detekt/detekt.yml` with a baseline file. Run `gradlew detekt` before committing.
+- **Naming patterns:**
+  - Classes: `PascalCase` — `NoteEditorViewModel`, `AudioRecorderImpl`
+  - Interfaces: `PascalCase` without prefix — `AudioRecorder`, `SystemSpeechRecognizer`
+  - Implementations: `<Interface>Impl` — `AudioRecorderImpl`
+  - Use cases: `<Verb>UseCase` — `StartVoiceRecordingUseCase`
+  - Repositories: `<Domain>Repository` — `SpeechRecognitionRepository`
+  - Compose UI state: `*State` sealed interfaces — `VoiceState`, `NoteEditorUiState`
+  - Events/actions: `*Event` / `*Clicked` sealed interfaces — `NoteEditorEvent`
+
+## Testing Guidelines
+
+- **Frameworks:** JUnit 4, MockK, Turbine (for Flow testing), Truth
+- **Test location:** `src/test/kotlin/` alongside source files
+- **Test naming:** `<ClassBeingTested>Test` — `NoteEditorViewModelTest`
+- **Run tests:** `.\gradlew test` (local) or `.\gradlew connectedAndroidTest` (instrumentation)
+- Coverage is not enforced yet. Prioritize unit tests for use cases and ViewModel logic.
+
+## Commit & Pull Request Guidelines
+
+- **Commit messages:** Conventional-style, imperative mood, short prefix:
+  - `fix: speech recognizer for tasks screen`
+  - `feat: add voice input mode to user settings`
+  - `refactor: optimize usecase, make it universal for ui`
+- Prefixes used: `feat`, `fix`, `refactor`, `chore`, `docs`
+- Pull requests reference task IDs (e.g., `tm-12`, `tm-11`) in branch names and merge commits.
+
+## Architecture Overview
+
+The app follows Google's recommended architecture:
+
+1. **UI Layer** (Compose) → observes `StateFlow` from ViewModel
+2. **ViewModel** → exposes UI state, handles user actions, calls use cases
+3. **Domain Layer** (use cases) → single-responsibility business logic, no Android dependencies
+4. **Data Layer** (repositories) → collect all data sources (from database, datastore, network and others)
+5. **Network/Storage/Speech/Database/Datastore** → concrete implementations of platform integrations
+
+Dependency injection is handled by Hilt. Each module declares its own `@Module` with `@InstallIn` bindings.
+
+## Security & Configuration
+
+- Audio recording requires `RECORD_AUDIO` runtime permission.
+- Min SDK: 26 (Android 8.0).

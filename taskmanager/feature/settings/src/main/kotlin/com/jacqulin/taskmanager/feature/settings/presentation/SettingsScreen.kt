@@ -2,22 +2,30 @@ package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,8 +38,15 @@ import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
+import com.jacqulin.taskmanager.feature.settings.presentation.components.ProviderConfigFields
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSchemeRow
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TokenTextField
+import com.jacqulin.taskmanager.feature.settings.presentation.components.VoiceProviderOptionCard
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
+import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SettingsScreen(
@@ -42,9 +57,19 @@ fun SettingsScreen(
     SettingsScreen(
         titleRes = R.string.settings_title,
         settingsUiState = settingsUiState,
-        onChangeDarkThemeConfig = viewModel::onDarkThemeConfigChanged,
-        onChangeColorPalette = viewModel::onColorPaletteChanged,
-        onChangeVoiceInputMode = viewModel::onVoiceInputModeChanged,
+        effects = viewModel.effects,
+        onChangeDarkThemeConfig = { darkThemeConfig ->
+            viewModel.onEvent(SettingsEvent.OnDarkThemeConfigChanged(darkThemeConfig))
+        },
+        onChangeColorPalette = { colorPalette ->
+            viewModel.onEvent(SettingsEvent.OnColorPaletteChanged(colorPalette))
+        },
+        onChangeVoiceInputMode = { mode ->
+            viewModel.onEvent(SettingsEvent.OnVoiceInputModeChanged(mode))
+        },
+        onYandexTokensChanged = { iamToken, folderId ->
+            viewModel.onEvent(SettingsEvent.OnYandexTokensChanged(iamToken, folderId))
+        },
     )
 }
 
@@ -52,29 +77,29 @@ fun SettingsScreen(
 fun SettingsScreen(
     @StringRes titleRes: Int,
     settingsUiState: SettingsUiState,
+    effects: Flow<SettingsEffect>,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
+    onYandexTokensChanged: (String, String) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                titleRes = titleRes
-            )
+    val snackbar = remember { SnackbarHostState() }
+
+    LaunchedEffect(effects) {
+        effects.collect { effect ->
+            when (effect) {
+                is SettingsEffect.ShowSuccess -> snackbar.showSnackbar(effect.message)
+                is SettingsEffect.ShowError -> snackbar.showSnackbar(effect.message)
+            }
         }
+    }
+
+    Scaffold(
+        topBar = { TopAppBar(titleRes = titleRes) },
+        snackbarHost = { SnackbarHost(snackbar) }
     ) { paddingValues ->
         when (settingsUiState) {
-            SettingsUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
+            SettingsUiState.Loading -> { }
             is SettingsUiState.Success -> {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -83,42 +108,6 @@ fun SettingsScreen(
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp)
                 ) {
-                    item {
-                        SingleChoiceSegmentedButtonRow(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            SegmentedButton(
-                                modifier = Modifier.weight(1f),
-                                selected = settingsUiState.settings.voiceInputMode == VoiceInputMode.LIVE,
-                                onClick = { onChangeVoiceInputMode(VoiceInputMode.LIVE) },
-                                shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-                            ) {
-                                Text("Сразу")
-                            }
-
-                            SegmentedButton(
-                                modifier = Modifier.weight(1f),
-                                selected = settingsUiState.settings.voiceInputMode == VoiceInputMode.RECORD_THEN_RECOGNIZE,
-                                onClick = { onChangeVoiceInputMode(VoiceInputMode.RECORD_THEN_RECOGNIZE) },
-                                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-                            ) {
-                                Text("После записи")
-                            }
-                        }
-                    }
-
-                    item {
-                        SettingsSectionCard(
-                            title = stringResource(R.string.settings_tokens),
-                            content = {
-                                Text(
-                                    text = "0",
-                                    style = MaterialTheme.typography.headlineMedium
-                                )
-                            }
-                        )
-                    }
-
                     item {
                         SettingsSectionCard(
                             title = stringResource(R.string.settings_theme),
@@ -143,27 +132,88 @@ fun SettingsScreen(
                         )
                     }
 
-//                    item {
-//                        Button(
-//                            onClick = viewModel::resetSettings,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(48.dp),
-//                            colors = ButtonDefaults.buttonColors(
-//                                containerColor = MaterialTheme.colorScheme.errorContainer,
-//                                contentColor = MaterialTheme.colorScheme.onErrorContainer
-//                            ),
-//                            border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline)
-//                        ) {
-//                            Text("Сбросить настройки")
-//                        }
-//                    }
+                    item {
+                        var isVoiceInputExpanded by remember { mutableStateOf(true) }
+
+                        SettingsSectionCard(
+                            title = stringResource(R.string.settings_voice_input),
+                            isExpanded = isVoiceInputExpanded,
+                            onToggleExpanded = { isVoiceInputExpanded = !isVoiceInputExpanded },
+                            content = {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    val currentMode = settingsUiState.settings.voiceInputMode
+                                    val isSystemVoiceInputSelected = currentMode == VoiceInputMode.LIVE
+                                    VoiceInputMode.entries.forEachIndexed { index, mode ->
+                                        val isSelected = currentMode == mode
+                                        VoiceProviderOptionCard(
+                                            title = getVoiceModeTitle(mode),
+                                            subtitle = getVoiceModeSubtitle(mode),
+                                            selected = isSelected,
+                                            onClick = { onChangeVoiceInputMode(mode) }
+                                        )
+
+                                        if (isSelected) {
+                                            ProviderConfigFields(
+                                                voiceInputMode = mode,
+                                                onYandexTokensChanged = onYandexTokensChanged,
+                                                areYandexTokensConfigured = settingsUiState.areYandexTokensConfigured,
+                                                onFutureTokenChanged = { }
+                                            )
+                                        }
+
+                                        if (index < VoiceInputMode.entries.size - 1) {
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                        }
+                                    }
+
+                                    if (!settingsUiState.speechRecognizerAvailable && isSystemVoiceInputSelected) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.ic_info),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error,
+                                                modifier = Modifier.width(16.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = stringResource(R.string.voice_recognizer_unavailable_warning),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+@Composable
+private fun getVoiceModeTitle(mode: VoiceInputMode): String =
+    when (mode) {
+        VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live)
+        VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_speech)
+        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
+    }
+
+@Composable
+private fun getVoiceModeSubtitle(mode: VoiceInputMode): String =
+    when (mode) {
+        VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live_subtitle)
+        VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_subtitle)
+        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
+    }
 
 @Preview(showBackground = true)
 @Composable
@@ -175,12 +225,52 @@ private fun SettingsScreenPreview() {
                 settings = UserEditableSettings(
                     colorPalette = ColorPalette.CYAN,
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-                    voiceInputMode = VoiceInputMode.RECORD_THEN_RECOGNIZE,
+                    voiceInputMode = VoiceInputMode.LIVE,
                 ),
+                speechRecognizerAvailable = true,
             ),
+            effects = emptyFlow(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
+            onYandexTokensChanged = { _, _ -> },
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
+    TaskManagerTheme {
+        SettingsScreen(
+            titleRes = R.string.settings_title,
+            settingsUiState = SettingsUiState.Success(
+                settings = UserEditableSettings(
+                    colorPalette = ColorPalette.CYAN,
+                    darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
+                    voiceInputMode = VoiceInputMode.LIVE,
+                ),
+                speechRecognizerAvailable = false,
+            ),
+            effects = emptyFlow(),
+            onChangeDarkThemeConfig = {},
+            onChangeColorPalette = {},
+            onChangeVoiceInputMode = {},
+            onYandexTokensChanged = { _, _ -> },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+fun TokenTextFieldPreview() {
+    TaskManagerTheme {
+        TokenTextField(
+            value = "token",
+            onValueChange = { },
+            placeholder = R.string.yandex_iam_token_label,
         )
     }
 }
