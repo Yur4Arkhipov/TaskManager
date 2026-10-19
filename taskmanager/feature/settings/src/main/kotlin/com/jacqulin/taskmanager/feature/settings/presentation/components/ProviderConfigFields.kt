@@ -52,7 +52,11 @@ internal fun ProviderConfigFields(
                 Column {
                     Spacer(Modifier.height(6.dp))
                     Button(
-                        onClick = { onYandexTokensChanged(iamToken, folderId) },
+                        onClick = {
+                            onYandexTokensChanged(iamToken, folderId)
+                            iamToken = ""
+                            folderId = ""
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                     ) {
@@ -64,6 +68,8 @@ internal fun ProviderConfigFields(
         VoiceInputMode.FUTURE -> {
             var token by rememberSaveable { mutableStateOf("") }
             val hasChanged = token != ""
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             TokenTextField(
                 value = token,

@@ -1,6 +1,7 @@
 package com.jacqulin.taskmanager.ui
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,7 +14,6 @@ import com.jacqulin.taskmanager.core.designsystem.model.BottomBarItem
 import com.jacqulin.taskmanager.navigation.AppNavHost
 
 @Composable
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 internal fun App(
     appState: AppState,
 //    voiceRecognizer: VoiceRecognizer,
@@ -45,12 +45,14 @@ internal fun App(
                 items = bottomBarItems
             )
         }
-    ) { paddingValues  ->
+    ) { paddingValues ->
         AppNavHost(
             appState = appState,
-            modifier = Modifier.padding(
-                bottom = paddingValues.calculateBottomPadding()
-            )
+            modifier = Modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .imePadding()
         )
     }
 }
+

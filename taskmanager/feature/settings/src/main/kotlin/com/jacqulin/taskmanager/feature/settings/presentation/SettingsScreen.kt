@@ -14,8 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +43,10 @@ import com.jacqulin.taskmanager.feature.settings.presentation.components.Setting
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSchemeRow
 import com.jacqulin.taskmanager.feature.settings.presentation.components.TokenTextField
 import com.jacqulin.taskmanager.feature.settings.presentation.components.VoiceProviderOptionCard
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SettingsScreen(
@@ -51,10 +57,19 @@ fun SettingsScreen(
     SettingsScreen(
         titleRes = R.string.settings_title,
         settingsUiState = settingsUiState,
-        onChangeDarkThemeConfig = viewModel::onDarkThemeConfigChanged,
-        onChangeColorPalette = viewModel::onColorPaletteChanged,
-        onChangeVoiceInputMode = viewModel::onVoiceInputModeChanged,
-        onYandexTokensChanged = viewModel::onYandexTokensChanged,
+        effects = viewModel.effects,
+        onChangeDarkThemeConfig = { darkThemeConfig ->
+            viewModel.onEvent(SettingsEvent.OnDarkThemeConfigChanged(darkThemeConfig))
+        },
+        onChangeColorPalette = { colorPalette ->
+            viewModel.onEvent(SettingsEvent.OnColorPaletteChanged(colorPalette))
+        },
+        onChangeVoiceInputMode = { mode ->
+            viewModel.onEvent(SettingsEvent.OnVoiceInputModeChanged(mode))
+        },
+        onYandexTokensChanged = { iamToken, folderId ->
+            viewModel.onEvent(SettingsEvent.OnYandexTokensChanged(iamToken, folderId))
+        },
     )
 }
 
@@ -62,13 +77,26 @@ fun SettingsScreen(
 fun SettingsScreen(
     @StringRes titleRes: Int,
     settingsUiState: SettingsUiState,
+    effects: Flow<SettingsEffect>,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
     onYandexTokensChanged: (String, String) -> Unit,
 ) {
+    val snackbar = remember { SnackbarHostState() }
+
+    LaunchedEffect(effects) {
+        effects.collect { effect ->
+            when (effect) {
+                is SettingsEffect.ShowSuccess -> snackbar.showSnackbar(effect.message)
+                is SettingsEffect.ShowError -> snackbar.showSnackbar(effect.message)
+            }
+        }
+    }
+
     Scaffold(
-        topBar = { TopAppBar(titleRes = titleRes) }
+        topBar = { TopAppBar(titleRes = titleRes) },
+        snackbarHost = { SnackbarHost(snackbar) }
     ) { paddingValues ->
         when (settingsUiState) {
             SettingsUiState.Loading -> { }
@@ -200,6 +228,7 @@ private fun SettingsScreenPreview() {
                 ),
                 speechRecognizerAvailable = true,
             ),
+            effects = emptyFlow(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
@@ -222,6 +251,7 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
                 ),
                 speechRecognizerAvailable = false,
             ),
+            effects = emptyFlow(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},

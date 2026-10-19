@@ -11,10 +11,15 @@ import com.jacqulin.taskmanager.core.domain.settings.SetYandexTokensUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -30,6 +35,14 @@ class SettingsViewModel @Inject constructor(
     private val setYandexTokensUseCase: SetYandexTokensUseCase,
     checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
 ) : ViewModel() {
+
+    private val _effects = MutableSharedFlow<SettingsEffect>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val effects: SharedFlow<SettingsEffect> = _effects.asSharedFlow()
+
     val settingsUiState: StateFlow<SettingsUiState> =
         combine(
             observeUserDataUseCase(),
@@ -50,25 +63,40 @@ class SettingsViewModel @Inject constructor(
             initialValue = SettingsUiState.Loading
         )
 
-    fun onColorPaletteChanged(palette: ColorPalette) {
+    fun onEvent(event: SettingsEvent) {
+        when (event) {
+            is SettingsEvent.OnColorPaletteChanged -> onColorPaletteChanged(event.palette)
+            is SettingsEvent.OnDarkThemeConfigChanged -> onDarkThemeConfigChanged(event.config)
+            is SettingsEvent.OnVoiceInputModeChanged -> onVoiceInputModeChanged(event.mode)
+            is SettingsEvent.OnYandexTokensChanged -> onYandexTokensChanged(event.iamToken, event.folderId)
+        }
+    }
+
+    private fun onColorPaletteChanged(palette: ColorPalette) {
         viewModelScope.launch {
             setColorPaletteUseCase(palette)
         }
     }
 
-    fun onDarkThemeConfigChanged(config: DarkThemeConfig) {
+    private fun onDarkThemeConfigChanged(config: DarkThemeConfig) {
         viewModelScope.launch {
             setDarkThemeConfigUseCase(config)
         }
     }
 
-    fun onVoiceInputModeChanged(mode: VoiceInputMode) {
+    private fun onVoiceInputModeChanged(mode: VoiceInputMode) {
         viewModelScope.launch { setVoiceInputModeUseCase(mode) }
     }
 
-    fun onYandexTokensChanged(iamToken: String, folderId: String) {
+    private fun onYandexTokensChanged(iamToken: String, folderId: String) {
         viewModelScope.launch {
-            setYandexTokensUseCase(iamToken, folderId)
+            runCatching {
+                setYandexTokensUseCase(iamToken, folderId)
+            }.onSuccess {
+                _effects.emit(SettingsEffect.ShowSuccess("Данные для Yandex сохранены"))
+            }.onFailure { e ->
+                _effects.emit(SettingsEffect.ShowError(e.message ?: "Не удалось сохранить токены"))
+            }
         }
     }
 }
