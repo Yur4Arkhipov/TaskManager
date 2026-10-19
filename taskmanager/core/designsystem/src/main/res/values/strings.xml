@@ -51,6 +51,8 @@
     <string name="settings_color_scheme">"Цветовая схема"</string>
     <string name="settings_theme">Тема</string>
     <string name="settings_tokens">Баланс токенов</string>
+    <string name="settings_show_secret">Показать введённое значение</string>
+    <string name="settings_hide_secret">Скрыть введённое значение</string>
     <string name="settings_color_selected">Выбрано</string>
     <string name="settings_dark_theme">Темная</string>
     <string name="settings_light_theme">Светлая</string>
