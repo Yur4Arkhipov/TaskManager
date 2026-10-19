@@ -49,6 +49,9 @@ internal class UserDataRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun areYandexTokensConfigured(): Boolean =
+        getYandexTokens().isConfigured
+
     private companion object {
         const val YANDEX_IAM_TOKEN = "yandex.iam_token"
         const val YANDEX_FOLDER_ID = "yandex.folder_id"

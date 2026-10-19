@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.domain.settings.AreYandexTokensConfiguredUseCase
 import com.jacqulin.taskmanager.core.domain.settings.CheckSpeechRecognizerAvailabilityUseCase
 import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
@@ -16,6 +17,7 @@ import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +35,7 @@ class SettingsViewModel @Inject constructor(
     private val setDarkThemeConfigUseCase: SetDarkThemeConfigUseCase,
     private val setVoiceInputModeUseCase: SetVoiceInputModeUseCase,
     private val setYandexTokensUseCase: SetYandexTokensUseCase,
+    private val areYandexTokensConfiguredUseCase: AreYandexTokensConfiguredUseCase,
     checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
 ) : ViewModel() {
 
@@ -43,11 +46,23 @@ class SettingsViewModel @Inject constructor(
     )
     val effects: SharedFlow<SettingsEffect> = _effects.asSharedFlow()
 
+    private val yandexTokensConfigured = MutableStateFlow<Boolean?>(null)
+
+    init {
+        viewModelScope.launch {
+            yandexTokensConfigured.value = runCatching {
+                areYandexTokensConfiguredUseCase()
+            }.getOrDefault(false)
+        }
+    }
+
     val settingsUiState: StateFlow<SettingsUiState> =
         combine(
             observeUserDataUseCase(),
             checkSpeechRecognizerAvailabilityUseCase.isAvailable,
-        ) { userData, speechRecognizerAvailable ->
+            yandexTokensConfigured,
+        ) { userData, speechRecognizerAvailable, areTokensConfigured ->
+            if (areTokensConfigured == null) return@combine SettingsUiState.Loading
             SettingsUiState.Success(
                 settings = UserEditableSettings(
                     colorPalette = userData.colorPalette,
@@ -55,6 +70,7 @@ class SettingsViewModel @Inject constructor(
                     voiceInputMode = userData.voiceInputMode,
                 ),
                 speechRecognizerAvailable = speechRecognizerAvailable,
+                areYandexTokensConfigured = areTokensConfigured,
             )
         }
         .stateIn(
@@ -93,6 +109,7 @@ class SettingsViewModel @Inject constructor(
             runCatching {
                 setYandexTokensUseCase(iamToken, folderId)
             }.onSuccess {
+                yandexTokensConfigured.value = true
                 _effects.emit(SettingsEffect.ShowSuccess("Данные для Yandex сохранены"))
             }.onFailure { e ->
                 _effects.emit(SettingsEffect.ShowError(e.message ?: "Не удалось сохранить токены"))

@@ -7,5 +7,6 @@ sealed interface SettingsUiState {
     data class Success(
         val settings: UserEditableSettings,
         val speechRecognizerAvailable: Boolean = true,
+        val areYandexTokensConfigured: Boolean = false,
     ) : SettingsUiState
 }

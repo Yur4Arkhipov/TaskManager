@@ -159,6 +159,7 @@ fun SettingsScreen(
                                             ProviderConfigFields(
                                                 voiceInputMode = mode,
                                                 onYandexTokensChanged = onYandexTokensChanged,
+                                                areYandexTokensConfigured = settingsUiState.areYandexTokensConfigured,
                                                 onFutureTokenChanged = { }
                                             )
                                         }

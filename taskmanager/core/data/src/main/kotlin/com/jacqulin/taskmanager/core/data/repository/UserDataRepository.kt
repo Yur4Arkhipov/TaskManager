@@ -37,4 +37,6 @@ interface UserDataRepository {
      * Returns Yandex tokens
      */
     suspend fun getYandexTokens(): YandexTokens
+
+    suspend fun areYandexTokensConfigured(): Boolean
 }
