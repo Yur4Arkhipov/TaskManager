@@ -7,6 +7,7 @@ import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetDarkThemeConfigUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetVoiceInputModeUseCase
+import com.jacqulin.taskmanager.core.domain.settings.SetYandexTokensUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
@@ -26,6 +27,7 @@ class SettingsViewModel @Inject constructor(
     private val setColorPaletteUseCase: SetColorPaletteUseCase,
     private val setDarkThemeConfigUseCase: SetDarkThemeConfigUseCase,
     private val setVoiceInputModeUseCase: SetVoiceInputModeUseCase,
+    private val setYandexTokensUseCase: SetYandexTokensUseCase,
     checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
 ) : ViewModel() {
     val settingsUiState: StateFlow<SettingsUiState> =
@@ -62,5 +64,11 @@ class SettingsViewModel @Inject constructor(
 
     fun onVoiceInputModeChanged(mode: VoiceInputMode) {
         viewModelScope.launch { setVoiceInputModeUseCase(mode) }
+    }
+
+    fun onYandexTokensChanged(iamToken: String, folderId: String) {
+        viewModelScope.launch {
+            setYandexTokensUseCase(iamToken, folderId)
+        }
     }
 }

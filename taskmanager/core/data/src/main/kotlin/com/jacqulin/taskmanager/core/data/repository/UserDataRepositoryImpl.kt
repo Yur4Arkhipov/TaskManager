@@ -33,4 +33,7 @@ internal class UserDataRepositoryImpl @Inject constructor(
 
     override suspend fun setVoiceInputMode(mode: VoiceInputMode) =
         userPreferencesDataSource.setVoiceInputMode(mode)
+
+    override suspend fun setYandexTokens(iamToken: String, folderId: String) =
+        userPreferencesDataSource.setYandexTokens(iamToken, folderId)
 }

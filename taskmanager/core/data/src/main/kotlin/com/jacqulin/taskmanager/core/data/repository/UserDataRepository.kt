@@ -26,4 +26,9 @@ interface UserDataRepository {
      * Sets preferred voice input mode
      */
     suspend fun setVoiceInputMode(mode: VoiceInputMode)
+
+    /**
+     * Sets Yandex tokens
+     */
+    suspend fun setYandexTokens(iamToken: String, folderId: String)
 }

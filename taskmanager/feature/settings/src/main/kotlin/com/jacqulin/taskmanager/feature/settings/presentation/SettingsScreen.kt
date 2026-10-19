@@ -35,8 +35,10 @@ import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
+import com.jacqulin.taskmanager.feature.settings.presentation.components.ProviderConfigFields
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSchemeRow
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TokenTextField
 import com.jacqulin.taskmanager.feature.settings.presentation.components.VoiceProviderOptionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
 
@@ -52,6 +54,7 @@ fun SettingsScreen(
         onChangeDarkThemeConfig = viewModel::onDarkThemeConfigChanged,
         onChangeColorPalette = viewModel::onColorPaletteChanged,
         onChangeVoiceInputMode = viewModel::onVoiceInputModeChanged,
+        onYandexTokensChanged = viewModel::onYandexTokensChanged,
     )
 }
 
@@ -62,6 +65,7 @@ fun SettingsScreen(
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
+    onYandexTokensChanged: (String, String) -> Unit,
 ) {
     Scaffold(
         topBar = { TopAppBar(titleRes = titleRes) }
@@ -112,20 +116,31 @@ fun SettingsScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.Start
                                 ) {
+                                    val currentMode = settingsUiState.settings.voiceInputMode
+                                    val isSystemVoiceInputSelected = currentMode == VoiceInputMode.LIVE
                                     VoiceInputMode.entries.forEachIndexed { index, mode ->
-                                        val isSelected = settingsUiState.settings.voiceInputMode == mode
+                                        val isSelected = currentMode == mode
                                         VoiceProviderOptionCard(
                                             title = getVoiceModeTitle(mode),
                                             subtitle = getVoiceModeSubtitle(mode),
                                             selected = isSelected,
                                             onClick = { onChangeVoiceInputMode(mode) }
                                         )
+
+                                        if (isSelected) {
+                                            ProviderConfigFields(
+                                                voiceInputMode = mode,
+                                                onYandexTokensChanged = onYandexTokensChanged,
+                                                onFutureTokenChanged = { }
+                                            )
+                                        }
+
                                         if (index < VoiceInputMode.entries.size - 1) {
                                             Spacer(modifier = Modifier.height(8.dp))
                                         }
                                     }
 
-                                    if (!settingsUiState.speechRecognizerAvailable) {
+                                    if (!settingsUiState.speechRecognizerAvailable && isSystemVoiceInputSelected) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
@@ -160,6 +175,7 @@ private fun getVoiceModeTitle(mode: VoiceInputMode): String =
     when (mode) {
         VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live)
         VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_speech)
+        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
     }
 
 @Composable
@@ -167,6 +183,7 @@ private fun getVoiceModeSubtitle(mode: VoiceInputMode): String =
     when (mode) {
         VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live_subtitle)
         VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_subtitle)
+        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
     }
 
 @Preview(showBackground = true)
@@ -186,6 +203,7 @@ private fun SettingsScreenPreview() {
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
+            onYandexTokensChanged = { _, _ -> },
         )
     }
 }
@@ -207,6 +225,21 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
+            onYandexTokensChanged = { _, _ -> },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+fun TokenTextFieldPreview() {
+    TaskManagerTheme {
+        TokenTextField(
+            value = "token",
+            onValueChange = { },
+            placeholder = R.string.yandex_iam_token_label,
         )
     }
 }

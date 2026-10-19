@@ -63,6 +63,10 @@
     <string name="voice_mode_future_title">Скоро</string>
     <string name="voice_mode_future_subtitle">Скоро</string>
     <string name="voice_recognizer_unavailable_warning">Системный сервис недоступен на текущем устройстве</string>
+    <string name="yandex_iam_token_label">IAM Token</string>
+    <string name="yandex_folder_id_label">Folder ID</string>
+    <string name="future_api_key_label">API Token</string>
+    <string name="coming_soon_label">Скоро</string>
 
     // Voice
     <string name="voice_error_recording_failed">Не удалось получить звук с микрофона. Проверьте разрешение на запись аудио</string>

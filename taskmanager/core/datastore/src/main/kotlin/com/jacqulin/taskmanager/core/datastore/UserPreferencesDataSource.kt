@@ -19,6 +19,8 @@ class UserPreferencesDataSource @Inject constructor(
         val DARK_THEME_CONFIG = stringPreferencesKey("dark_theme_config")
         val COLOR_PALETTE = stringPreferencesKey("color_palette")
         val VOICE_INPUT_MODE = stringPreferencesKey("voice_input_mode")
+        val YANDEX_IAM_TOKEN = stringPreferencesKey("yandex_iam_token")
+        val YANDEX_FOLDER_ID = stringPreferencesKey("yandex_folder_id")
     }
 
     val userPreferences: Flow<UserPreferences> = dataStore.data
@@ -33,6 +35,8 @@ class UserPreferencesDataSource @Inject constructor(
                 voiceInputMode = preferences[PreferencesKeys.VOICE_INPUT_MODE]
                     ?.let { runCatching { VoiceInputMode.valueOf(it) }.getOrNull() }
                     ?: VoiceInputMode.LIVE,
+                yandexIamToken = preferences[PreferencesKeys.YANDEX_IAM_TOKEN] ?: "",
+                yandexFolderId = preferences[PreferencesKeys.YANDEX_FOLDER_ID] ?: "",
             )
         }
 
@@ -51,6 +55,13 @@ class UserPreferencesDataSource @Inject constructor(
     suspend fun setVoiceInputMode(mode: VoiceInputMode) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.VOICE_INPUT_MODE] = mode.name
+        }
+    }
+
+    suspend fun setYandexTokens(iamToken: String, folderId: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.YANDEX_IAM_TOKEN] = iamToken
+            preferences[PreferencesKeys.YANDEX_FOLDER_ID] = folderId
         }
     }
 }

@@ -66,7 +66,9 @@ fun SettingsSectionCard(
             }
             if (isExpanded) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp)
                 ) {
                     content()
                 }

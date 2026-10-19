@@ -8,4 +8,6 @@ data class UserPreferences(
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     val colorPalette: ColorPalette = ColorPalette.CYAN,
     val voiceInputMode: VoiceInputMode = VoiceInputMode.LIVE,
+    val yandexIamToken: String = "",
+    val yandexFolderId: String = "",
 )
