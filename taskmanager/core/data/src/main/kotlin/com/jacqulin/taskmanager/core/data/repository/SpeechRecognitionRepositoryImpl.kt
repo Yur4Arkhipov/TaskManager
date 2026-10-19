@@ -9,10 +9,13 @@ internal class SpeechRecognitionRepositoryImpl @Inject constructor(
     private val network: NetworkDataSource,
 ) : SpeechRecognitionRepository {
 
-    override suspend fun recognize(audio: ByteArray): Result<String> =
-        network.recognize(
-            audio = audio,
-            folderId = "",
-            iamToken = ""
-        )
+    override suspend fun recognizeYandex(
+        audio: ByteArray,
+        iamToken: String,
+        folderId: String,
+    ): Result<String> = network.recognize(
+        audio = audio,
+        folderId = folderId,
+        iamToken = iamToken,
+    )
 }

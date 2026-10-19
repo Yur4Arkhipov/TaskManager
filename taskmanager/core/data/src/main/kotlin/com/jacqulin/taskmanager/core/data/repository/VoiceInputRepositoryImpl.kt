@@ -120,15 +120,30 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
                     log("stop(): liveResult completed; coroutine resumed with ${text.length} chars")
                     Result.success(text)
                 }
-                else -> {
+                VoiceInputMode.YANDEX_SPEECH -> {
                     log("stop(): stopping audio recorder")
                     val audio = audioRecorderRepository.stop()
+                    val tokens = userDataRepository.getYandexTokens()
+                    if (!tokens.isConfigured) {
+                        Log.w(TAG, "stop(): Yandex tokens are not configured")
+                        return Result.failure(
+                            IllegalStateException("Yandex IAM token / folder ID не заданы")
+                        )
+                    }
+
                     log("stop(): got ${audio.size} audio bytes; requesting recognition")
-                    speechRecognitionRepository.recognize(audio).mapCatching { text ->
+                    speechRecognitionRepository
+                        .recognizeYandex(audio, tokens.iamToken, tokens.folderId)
+                        .mapCatching { text ->
                         log("stop(): recognition returned ${text.length} chars")
                         text.takeIf(String::isNotBlank)
                             ?: throw IllegalStateException("Empty recognition result")
                     }
+                }
+                VoiceInputMode.FUTURE -> {
+                    return Result.failure(
+                        IllegalStateException("Method is not configured")
+                    )
                 }
             }
         } catch (exception: TimeoutCancellationException) {

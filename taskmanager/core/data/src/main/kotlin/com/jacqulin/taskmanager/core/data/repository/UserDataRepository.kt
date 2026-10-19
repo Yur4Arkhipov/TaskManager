@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.core.data.repository
 
+import com.jacqulin.taskmanager.core.data.model.YandexTokens
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.UserData
@@ -31,4 +32,9 @@ interface UserDataRepository {
      * Sets Yandex tokens
      */
     suspend fun setYandexTokens(iamToken: String, folderId: String)
+
+    /**
+     * Returns Yandex tokens
+     */
+    suspend fun getYandexTokens(): YandexTokens
 }
