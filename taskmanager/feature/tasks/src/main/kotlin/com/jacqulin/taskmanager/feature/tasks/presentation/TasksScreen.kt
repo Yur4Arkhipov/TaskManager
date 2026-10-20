@@ -5,6 +5,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -155,6 +157,12 @@ fun TasksScreen(
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
         floatingActionButton = {
+            val iconRotation by animateFloatAsState(
+                targetValue = if (isCreateMenuExpanded) 45f else 0f,
+                animationSpec = tween(durationMillis = 220),
+                label = "createTaskFabIconRotation",
+            )
+
             Column(horizontalAlignment = Alignment.End) {
                 CreateTaskMenu(
                     expanded = isCreateMenuExpanded,
@@ -164,14 +172,13 @@ fun TasksScreen(
                 )
 
                 FloatingActionButton(
-                    icon = painterResource(
-                        if (isCreateMenuExpanded) R.drawable.ic_close else R.drawable.ic_add
-                    ),
+                    icon = painterResource(R.drawable.ic_add),
                     contentDescription = stringResource(
                         if (isCreateMenuExpanded) R.string.tasks_close_add_menu
                         else R.string.tasks_add_task
                     ),
-                    onClick = onCreateTaskMenuToggle
+                    onClick = onCreateTaskMenuToggle,
+                    iconRotationDegrees = iconRotation,
                 )
             }
         }

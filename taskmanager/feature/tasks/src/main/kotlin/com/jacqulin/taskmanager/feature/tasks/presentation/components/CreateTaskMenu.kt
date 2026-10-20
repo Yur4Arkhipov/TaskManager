@@ -1,5 +1,11 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,37 +35,41 @@ fun CreateTaskMenu(
     onVoiceClick: () -> Unit,
     onTextClick: () -> Unit,
 ) {
-    if (!expanded) return
-
-    Column(
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = Modifier.padding(bottom = 12.dp),
+    AnimatedVisibility(
+        visible = expanded,
+        enter = fadeIn(tween(180)) + slideInVertically(tween(220)) { it / 3 },
+        exit = fadeOut(tween(120)) + slideOutVertically(tween(160)) { it / 4 },
     ) {
-        CreateTaskMenuItem(
-            iconRes = R.drawable.ic_note_edit,
-            text = stringResource(R.string.tasks_add_task_thought),
-            emphasized = true,
-            onClick = {},
-        )
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.padding(bottom = 12.dp),
+        ) {
+            CreateTaskMenuItem(
+                iconRes = R.drawable.ic_note_edit,
+                text = stringResource(R.string.tasks_add_task_thought),
+                emphasized = true,
+                onClick = {},
+            )
 
-        CreateTaskMenuItem(
-            iconRes = R.drawable.ic_microphone,
-            text = stringResource(R.string.tasks_add_task_voice),
-            onClick = {
-                onDismissRequest()
-                onVoiceClick()
-            },
-        )
+            CreateTaskMenuItem(
+                iconRes = R.drawable.ic_microphone,
+                text = stringResource(R.string.tasks_add_task_voice),
+                onClick = {
+                    onDismissRequest()
+                    onVoiceClick()
+                },
+            )
 
-        CreateTaskMenuItem(
-            iconRes = R.drawable.ic_add,
-            text = stringResource(R.string.tasks_add_task_text),
-            onClick = {
-                onDismissRequest()
-                onTextClick()
-            },
-        )
+            CreateTaskMenuItem(
+                iconRes = R.drawable.ic_add,
+                text = stringResource(R.string.tasks_add_task_text),
+                onClick = {
+                    onDismissRequest()
+                    onTextClick()
+                },
+            )
+        }
     }
 }
 

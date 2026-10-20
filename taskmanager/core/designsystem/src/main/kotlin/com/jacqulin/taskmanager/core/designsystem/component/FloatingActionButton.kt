@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 
@@ -15,7 +16,8 @@ fun FloatingActionButton(
     icon: Painter,
     contentDescription: String?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    iconRotationDegrees: Float = 0f,
 ) {
     FloatingActionButton(
         onClick = onClick,
@@ -26,7 +28,9 @@ fun FloatingActionButton(
         Icon(
             painter = icon,
             contentDescription = contentDescription,
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier
+                .size(22.dp)
+                .graphicsLayer { rotationZ = iconRotationDegrees },
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
