@@ -8,4 +8,5 @@ data class MainScreenState(
     val sortType: SortType = SortType.NEW_TO_OLD,
     val filter: TaskFilter = TaskFilter.ALL,
     val isBottomSheetVisible: Boolean = false,
+    val isDeleteModeEnabled: Boolean = false,
 )

@@ -10,6 +10,7 @@ sealed interface TasksEvent {
     data class OnTaskFilterChanged(val filter: TaskFilter) : TasksEvent
     data class OnDeleteTaskClicked(val taskId: Int) : TasksEvent
     data object OnSaveTaskClicked : TasksEvent
+    data object OnDeleteModeToggled : TasksEvent
     data object OnCreateTaskByTextClicked : TasksEvent
     data object OnBottomSheetDismissed : TasksEvent
     data class OnTaskTextChanged(val title: String) : TasksEvent

@@ -122,6 +122,7 @@ fun TasksScreen(
         onVoiceInputCancel = {
             viewModel.onEvent(TasksEvent.VoiceInputCancel)
         },
+        onDeleteModeClick = { viewModel.onEvent(TasksEvent.OnDeleteModeToggled) }
     )
 }
 
@@ -144,6 +145,7 @@ fun TasksScreen(
     onVoiceInputRetry: () -> Unit,
     onVoiceInputCancel: () -> Unit,
     onTextTaskSheetEvent: (TasksEvent) -> Unit = {},
+    onDeleteModeClick: () -> Unit,
 ) {
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
@@ -182,9 +184,11 @@ fun TasksScreen(
         ) {
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,
+                isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
                 sortType = uiState.mainScreenState.sortType,
                 onSearchQueryChanged = onSearchQueryChanged,
-                onSortChanged = onSortChanged
+                onSortChanged = onSortChanged,
+                onDeleteModeClick = onDeleteModeClick
             )
 
             TasksFilter(
@@ -230,8 +234,9 @@ fun TasksScreen(
                     items(uiState.visibleTasks) { task ->
                         TaskItem(
                             task = task,
+                            isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
                             onDeleteClick = { onTaskDeleted(task.id) },
-                            onCompleteClick = { onTaskStatusUpdated(task) }
+                            onCompleteClick = { onTaskStatusUpdated(task) },
                         )
                     }
                 }
@@ -338,7 +343,8 @@ fun TasksScreenContentPreview() {
             onTextTaskClick = {},
             onVoiceInputStopClicked = {},
             onVoiceInputRetry = {},
-            onVoiceInputCancel = {}
+            onVoiceInputCancel = {},
+            onDeleteModeClick = {}
         )
     }
 }

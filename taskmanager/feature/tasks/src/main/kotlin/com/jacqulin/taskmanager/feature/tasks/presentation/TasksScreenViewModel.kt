@@ -135,6 +135,9 @@ class TasksScreenViewModel @Inject constructor(
                 mainScreenState.update { it.copy(isBottomSheetVisible = false) }
                 taskState.update { it.copy(title = "") }
             }
+            TasksEvent.OnDeleteModeToggled -> {
+                mainScreenState.update { it.copy(isDeleteModeEnabled = !it.isDeleteModeEnabled) }
+            }
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {
