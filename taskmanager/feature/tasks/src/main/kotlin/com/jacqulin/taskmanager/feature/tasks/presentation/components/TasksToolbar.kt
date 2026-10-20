@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.component.SearchField
 import com.jacqulin.taskmanager.core.designsystem.component.SortDropdownMenu
@@ -60,4 +61,15 @@ fun TasksToolbar(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun TasksToolbarPreview() {
+    TasksToolbar(
+        searchQuery = "",
+        sortType = SortType.NEW_TO_OLD,
+        onSearchQueryChanged = {},
+        onSortChanged = {}
+    )
 }

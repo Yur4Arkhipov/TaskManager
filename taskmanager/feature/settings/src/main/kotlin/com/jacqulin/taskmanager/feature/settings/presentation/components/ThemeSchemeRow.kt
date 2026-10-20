@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,12 +35,17 @@ fun ThemeSchemeRow(
     ) {
         DarkThemeConfig.entries.forEach { config ->
             val isSelected = config == selectedThemeConfig
+            val cardShape = MaterialTheme.shapes.medium
 
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onThemeConfigChanged(config) },
-                shape = MaterialTheme.shapes.medium,
+                    .clip(cardShape)
+                    .clickable(
+                        indication = null,
+                        interactionSource = null,
+                    ) { onThemeConfigChanged(config) },
+                shape = cardShape,
                 color = if (isSelected) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {

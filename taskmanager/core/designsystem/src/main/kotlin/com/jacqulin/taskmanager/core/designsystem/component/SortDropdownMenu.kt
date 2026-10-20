@@ -29,7 +29,7 @@ fun SortDropdownMenu(
         onDismissRequest = onDismissRequest,
         offset = DpOffset(x = 0.dp, y = 8.dp),
         shape = shape,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
         tonalElevation = 3.dp,
     ) {
         SortMenuItem(
@@ -59,17 +59,17 @@ private fun SortMenuItem(
     onClick: () -> Unit,
 ) {
     val background = if (selected)
-        MaterialTheme.colorScheme.secondaryContainer
+        MaterialTheme.colorScheme.surfaceContainerHigh
     else
         Color.Transparent
 
-    val contentColor = if (selected)
-        MaterialTheme.colorScheme.onSecondaryContainer
-    else
-        MaterialTheme.colorScheme.onSurface
-
     DropdownMenuItem(
-        text = { Text(text = text, color = contentColor) },
+        text = {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
         onClick = onClick,
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 2.dp)

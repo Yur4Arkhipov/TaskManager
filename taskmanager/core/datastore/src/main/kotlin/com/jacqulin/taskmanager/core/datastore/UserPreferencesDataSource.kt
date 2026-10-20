@@ -29,7 +29,7 @@ class UserPreferencesDataSource @Inject constructor(
                     ?: DarkThemeConfig.FOLLOW_SYSTEM,
                 colorPalette = preferences[PreferencesKeys.COLOR_PALETTE]
                     ?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
-                    ?: ColorPalette.CYAN,
+                    ?: ColorPalette.GREEN,
                 voiceInputMode = preferences[PreferencesKeys.VOICE_INPUT_MODE]
                     ?.let { runCatching { VoiceInputMode.valueOf(it) }.getOrNull() }
                     ?: VoiceInputMode.LIVE,

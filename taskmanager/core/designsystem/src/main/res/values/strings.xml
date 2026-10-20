@@ -22,8 +22,10 @@
     // Tasks
     <string name="tasks_title">Задачи</string>
     <string name="tasks_add_task">Новая задача</string>
+    <string name="tasks_add_task_thought">Разобрать мысль</string>
     <string name="tasks_add_task_voice">Голосом</string>
     <string name="tasks_add_task_text">Текстом</string>
+    <string name="tasks_close_add_menu">Закрыть меню создания</string>
     <string name="tasks_no_tasks_yet">Задач пока нет</string>
     <string name="tasks_status_summary">%1$d активных • %2$d выполнено</string>
     <string name="tasks_voice_processing">Отправляем ИИ и обрабатываем…</string>
@@ -36,6 +38,12 @@
     <string name="tasks_retry">Повторить</string>
     <string name="tasks_search">Поиск задач…</string>
     <string name="tasks_sort">Сортировка</string>
+    <string name="tasks_filter_all">Все</string>
+    <string name="tasks_filter_active">Активные</string>
+    <string name="tasks_filter_completed">Выполненные</string>
+    <string name="tasks_no_active_tasks">Активных задач нет</string>
+    <string name="tasks_no_completed_tasks">Выполненных задач нет</string>
+    <string name="tasks_search_no_results">Ничего не найдено</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>
     <string name="tasks_recording">Запись…</string>
     <string name="tasks_stop_recording">Остановить запись</string>

@@ -16,6 +16,7 @@ import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -44,6 +45,7 @@ class TasksScreenViewModel @Inject constructor(
 
     private val searchQuery = MutableStateFlow("")
     private val sortType = MutableStateFlow(SortType.NEW_TO_OLD)
+    private val taskFilter = MutableStateFlow(TaskFilter.ALL)
     private val draftTask = MutableStateFlow<DraftTaskUi?>(null)
     private val voiceState = MutableStateFlow<VoiceState>(VoiceState.Idle)
 
@@ -55,10 +57,18 @@ class TasksScreenViewModel @Inject constructor(
             observeTasksUseCase(),
             searchQuery,
             sortType,
+            taskFilter,
             draftTask
-        ) { tasks, searchQuery, sortType, draftTask ->
+        ) { tasks, searchQuery, sortType, taskFilter, draftTask ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
+                .filter { task ->
+                    when (taskFilter) {
+                        TaskFilter.ALL -> true
+                        TaskFilter.ACTIVE -> !task.isCompleted
+                        TaskFilter.COMPLETED -> task.isCompleted
+                    }
+                }
                 .filter { task ->
                     val query = searchQuery.trim()
                     query.isBlank() || task.title.contains(query, ignoreCase = true)
@@ -81,6 +91,8 @@ class TasksScreenViewModel @Inject constructor(
                 }
             TasksUiState(
                 searchQuery = searchQuery,
+                taskFilter = taskFilter,
+                sortType = sortType,
                 visibleTasks = visibleTasks,
                 isEmpty = visibleTasks.isEmpty(),
                 draftTask = draftTask
@@ -110,6 +122,9 @@ class TasksScreenViewModel @Inject constructor(
             }
             is TasksEvent.OnSortChanged -> {
                 sortType.value = event.sortType
+            }
+            is TasksEvent.OnTaskFilterChanged -> {
+                taskFilter.value = event.filter
             }
             is TasksEvent.OnDeleteTaskClicked -> {
                 deleteTask(event.taskId)

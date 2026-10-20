@@ -6,6 +6,6 @@ import com.jacqulin.taskmanager.core.model.VoiceInputMode
 
 data class UserPreferences(
     val darkThemeConfig: DarkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-    val colorPalette: ColorPalette = ColorPalette.CYAN,
+    val colorPalette: ColorPalette = ColorPalette.GREEN,
     val voiceInputMode: VoiceInputMode = VoiceInputMode.LIVE,
 )

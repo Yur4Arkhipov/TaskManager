@@ -52,7 +52,8 @@ fun NotesToolbar(
                 contentDescription = stringResource(R.string.notes_sort),
                 onClick = {
                     sortMenuExpanded = true
-                }
+                },
+                selected = sortMenuExpanded
             )
 
             SortDropdownMenu(
