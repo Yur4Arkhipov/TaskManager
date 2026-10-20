@@ -16,10 +16,16 @@ data object HomeRoute
 
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
 
-fun NavGraphBuilder.homeSection() {
-    navigation< HomeBaseRoute>(startDestination = HomeRoute) {
+fun NavGraphBuilder.homeSection(
+    onNavigateToTasks: () -> Unit,
+    onNavigateToCreateNote: () -> Unit,
+) {
+    navigation<HomeBaseRoute>(startDestination = HomeRoute) {
         composable<HomeRoute> {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToTasks = onNavigateToTasks,
+                onNavigateToNotes = onNavigateToCreateNote,
+            )
         }
     }
 }

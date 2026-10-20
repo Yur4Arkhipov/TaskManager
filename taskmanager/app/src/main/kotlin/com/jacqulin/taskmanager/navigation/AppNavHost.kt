@@ -3,8 +3,8 @@ package com.jacqulin.taskmanager.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.jacqulin.taskmanager.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.taskmanager.feature.home.navigation.homeSection
-import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
 import com.jacqulin.taskmanager.feature.settings.navigation.settingsSection
@@ -20,7 +20,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = NotesBaseRoute,
+        startDestination = HomeBaseRoute,
         modifier = modifier
     ) {
         notesSection(
@@ -36,6 +36,13 @@ fun AppNavHost(
         )
         tasksSection()
         settingsSection()
-        homeSection()
+        homeSection(
+            onNavigateToTasks = {
+
+            },
+            onNavigateToCreateNote = {
+                navController.navigateToNoteEditor()
+            },
+        )
     }
 }
