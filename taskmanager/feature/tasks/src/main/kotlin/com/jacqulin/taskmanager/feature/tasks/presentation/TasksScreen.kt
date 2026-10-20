@@ -130,6 +130,7 @@ fun TasksScreen(
 fun TasksScreen(
     uiState: TasksUiState,
     isCreateMenuExpanded: Boolean,
+    modifier: Modifier = Modifier,
     onSearchQueryChanged: (String) -> Unit,
     onSortChanged: (SortType) -> Unit,
     onTaskFilterChanged: (TaskFilter) -> Unit,
@@ -143,7 +144,6 @@ fun TasksScreen(
     onVoiceInputRetry: () -> Unit,
     onVoiceInputCancel: () -> Unit,
     onTextTaskSheetEvent: (TasksEvent) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },

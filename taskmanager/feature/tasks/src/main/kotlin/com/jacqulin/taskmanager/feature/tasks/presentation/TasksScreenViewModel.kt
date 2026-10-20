@@ -15,7 +15,6 @@ import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
 import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
@@ -134,6 +133,7 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.OnBottomSheetDismissed -> {
                 mainScreenState.update { it.copy(isBottomSheetVisible = false) }
+                taskState.update { it.copy(title = "") }
             }
 
             // Text
@@ -160,45 +160,17 @@ class TasksScreenViewModel @Inject constructor(
                 viewModelScope.launch {
                     voiceInputUseCase.stop()
                         .onSuccess { text ->
-                            if (text.isNotBlank()) {
-//                                appendRecognizedText(text)
-                                taskState.update { it.copy(title = text) }
-                                setVoiceState(VoiceState.Success(text))
-                            }
+                            showRecognizedTextInSheet(text)
                         }
                         .onFailure {
-                            setVoiceState(
-                                VoiceState.Error(VoiceError.RecognitionFailed))
+                            setVoiceState(VoiceState.Error(VoiceError.RecognitionFailed))
                         }
-//                    stopAndRecognizeVoiceUseCase()
-//                        .onSuccess { text ->
-//                            voiceState.value = VoiceState.Success(text)
-//                            delay(3000.milliseconds)
-//                            draftTask.value = DraftTaskUi(title = text)
-//                            voiceState.value = VoiceState.Idle
-//
-//                        }
-//                        .onFailure { error ->
-//                            Log.e("TasksVM", "[TasksEvent.VoiceInputStopClicked] Failed to record and recognize voice", error)
-//                            voiceState.value = VoiceState.Error
-//                            emitEffect(TasksEffect.ShowError("Ошибка с обработкой речи"))
-//                        }
                 }
             }
             is TasksEvent.VoicePermissionGranted -> {
                 log("Voice permission granted")
                 startSpeechRecognition()
-//                viewModelScope.launch {
-//                    startVoiceRecordingUseCase()
-//                        .onSuccess {
-//                            voiceState.value = VoiceState.Recording
-//                        }
-//                        .onFailure { error ->
-//                            Log.e("TasksVM", "[TasksEvent.VoicePermissionGranted] Failed to start voice recording", error)
-//                            voiceState.value = VoiceState.Error
-//                            emitEffect(TasksEffect.ShowError("Возникала ошибка при попытке записи речи"))
-//                        }
-//                }
+
             }
             TasksEvent.OnCreateTaskByVoiceClicked -> {
                 Log.d("TasksVM", "[TasksEvent.OnCreateTaskByVoiceClicked] need voice permission")
@@ -211,17 +183,6 @@ class TasksScreenViewModel @Inject constructor(
             TasksEvent.VoiceInputRetry -> {
                 log("Retry voice input clicked")
                 startSpeechRecognition()
-//                viewModelScope.launch {
-//                    startVoiceRecordingUseCase()
-//                        .onSuccess {
-//                            voiceState.value = VoiceState.Recording
-//                        }
-//                        .onFailure { error ->
-//                            Log.e("TasksVM", "[TasksEvent.VoiceInputRetry] Failed to start voice recording", error)
-//                            voiceState.value = VoiceState.Error
-//                            emitEffect(TasksEffect.ShowError("Возникала ошибка при попытке записи речи"))
-//                        }
-//                }
             }
             TasksEvent.VoiceInputCancel -> {
                 log("cancel voice recording")
@@ -239,9 +200,7 @@ class TasksScreenViewModel @Inject constructor(
         viewModelScope.launch {
             voiceInputUseCase.start()
                 .onFailure {
-                    setVoiceState(
-                        VoiceState.Error(
-                            VoiceError.RecordingFailed))
+                    setVoiceState(VoiceState.Error(VoiceError.RecordingFailed))
                     return@launch
                 }
             voiceInputUseCase.listen().collect { event ->
@@ -262,11 +221,7 @@ class TasksScreenViewModel @Inject constructor(
                     }
 
                     is SpeechRecognitionEvent.Result -> {
-//                        appendRecognizedText(event.text)
-                        taskState.update { it.copy(title = event.text) }
-                        setVoiceState(VoiceState.Success(event.text))
-                        delay(3000.milliseconds)
-                        setVoiceState(VoiceState.Idle)
+                        showRecognizedTextInSheet(event.text)
                     }
 
                     is SpeechRecognitionEvent.Error -> {
@@ -275,6 +230,20 @@ class TasksScreenViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun setVoiceState(state: VoiceState) {
+        voiceState.update { state }
+    }
+
+    private suspend fun showRecognizedTextInSheet(text: String) {
+        if (text.isBlank()) return
+
+        taskState.update { it.copy(title = text) }
+        setVoiceState(VoiceState.Success(text))
+        delay(3_000.milliseconds)
+        setVoiceState(VoiceState.Idle)
+        mainScreenState.update { it.copy(isBottomSheetVisible = true) }
     }
 
     private fun SpeechRecognitionFailure.toVoiceError(): VoiceError = when (this) {
@@ -307,6 +276,7 @@ class TasksScreenViewModel @Inject constructor(
             )
         }
 
+        taskState.update { it.copy(title = "") }
         onEvent(TasksEvent.OnBottomSheetDismissed)
     }
 
@@ -324,10 +294,6 @@ class TasksScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _effects.emit(effect)
         }
-    }
-
-    private fun setVoiceState(state: VoiceState) {
-        voiceState.update { state }
     }
 
     private fun log(message: String) {
