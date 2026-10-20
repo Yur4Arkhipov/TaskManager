@@ -21,7 +21,7 @@ fun TasksFilter(
     taskFilter: TaskFilter,
     onTaskFilterChanged: (TaskFilter) -> Unit,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         TaskFilter.entries.forEach { filter ->
             val selected = taskFilter == filter
             val label = when (filter) {
@@ -34,12 +34,12 @@ fun TasksFilter(
                 onClick = { onTaskFilterChanged(filter) },
                 shape = CircleShape,
                 color = if (selected) {
-                    MaterialTheme.colorScheme.secondaryContainer
+                    MaterialTheme.colorScheme.secondary
                 } else {
-                    MaterialTheme.colorScheme.surfaceVariant
+                    MaterialTheme.colorScheme.secondaryContainer
                 },
                 contentColor = if (selected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    MaterialTheme.colorScheme.onSecondary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },

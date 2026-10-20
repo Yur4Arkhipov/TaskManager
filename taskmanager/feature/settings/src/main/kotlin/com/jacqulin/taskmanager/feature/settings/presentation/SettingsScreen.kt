@@ -133,7 +133,7 @@ fun SettingsScreen(
                     }
 
                     item {
-                        var isVoiceInputExpanded by remember { mutableStateOf(true) }
+                        var isVoiceInputExpanded by remember { mutableStateOf(false) }
 
                         SettingsSectionCard(
                             title = stringResource(R.string.settings_voice_input),

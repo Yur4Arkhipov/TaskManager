@@ -155,7 +155,7 @@ fun TasksScreen(
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
         floatingActionButton = {
-            Box {
+            Column(horizontalAlignment = Alignment.End) {
                 CreateTaskMenu(
                     expanded = isCreateMenuExpanded,
                     onDismissRequest = onCreateTaskMenuDismissed,
@@ -164,8 +164,13 @@ fun TasksScreen(
                 )
 
                 FloatingActionButton(
-                    icon = painterResource(R.drawable.ic_note_edit),
-                    contentDescription = stringResource(R.string.tasks_add_task),
+                    icon = painterResource(
+                        if (isCreateMenuExpanded) R.drawable.ic_close else R.drawable.ic_add
+                    ),
+                    contentDescription = stringResource(
+                        if (isCreateMenuExpanded) R.string.tasks_close_add_menu
+                        else R.string.tasks_add_task
+                    ),
                     onClick = onCreateTaskMenuToggle
                 )
             }

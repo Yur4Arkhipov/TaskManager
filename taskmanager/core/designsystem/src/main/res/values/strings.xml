@@ -22,8 +22,10 @@
     // Tasks
     <string name="tasks_title">Задачи</string>
     <string name="tasks_add_task">Новая задача</string>
+    <string name="tasks_add_task_thought">Разобрать мысль</string>
     <string name="tasks_add_task_voice">Голосом</string>
     <string name="tasks_add_task_text">Текстом</string>
+    <string name="tasks_close_add_menu">Закрыть меню создания</string>
     <string name="tasks_no_tasks_yet">Задач пока нет</string>
     <string name="tasks_status_summary">%1$d активных • %2$d выполнено</string>
     <string name="tasks_voice_processing">Отправляем ИИ и обрабатываем…</string>
