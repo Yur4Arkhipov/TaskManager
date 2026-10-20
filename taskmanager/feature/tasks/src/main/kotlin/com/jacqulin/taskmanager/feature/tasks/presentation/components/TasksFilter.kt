@@ -34,14 +34,14 @@ fun TasksFilter(
                 onClick = { onTaskFilterChanged(filter) },
                 shape = CircleShape,
                 color = if (selected) {
-                    MaterialTheme.colorScheme.secondary
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colorScheme.secondaryContainer
+                    MaterialTheme.colorScheme.surface
                 },
                 contentColor = if (selected) {
-                    MaterialTheme.colorScheme.onSecondary
+                    MaterialTheme.colorScheme.onPrimary
                 } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    MaterialTheme.colorScheme.onSurface
                 },
             ) {
                 Text(
