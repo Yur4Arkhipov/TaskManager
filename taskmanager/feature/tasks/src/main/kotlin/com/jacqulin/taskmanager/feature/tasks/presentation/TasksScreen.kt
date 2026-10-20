@@ -43,6 +43,7 @@ import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskMenu
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskBottomSheet
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
@@ -103,22 +104,14 @@ fun TasksScreen(
         onTaskStatusUpdated = { task ->
             viewModel.onEvent(TasksEvent.UpdateTaskStatus(task))
         },
-        onDraftTaskTextChanged = { text ->
-            viewModel.onEvent(TasksEvent.OnDraftTaskTextChanged(text))
-        },
-        onDraftTaskSaveClicked = {
-            viewModel.onEvent(TasksEvent.OnDraftTaskSaveClicked)
-        },
-        onDraftTaskDeleteClicked = {
-            viewModel.onEvent(TasksEvent.OnDraftTaskDeleteClicked)
-        },
         onCreateTaskMenuToggle = { isCreateMenuExpanded = !isCreateMenuExpanded },
         onCreateTaskMenuDismissed = { isCreateMenuExpanded = false },
-        onVoiceTaskClick = {
-            viewModel.onEvent(TasksEvent.OnCreateTaskByVoiceClicked)
-        },
+        onTextTaskSheetEvent = viewModel::onEvent,
         onTextTaskClick = {
             viewModel.onEvent(TasksEvent.OnCreateTaskByTextClicked)
+        },
+        onVoiceTaskClick = {
+            viewModel.onEvent(TasksEvent.OnCreateTaskByVoiceClicked)
         },
         onVoiceInputStopClicked = {
             viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
@@ -142,9 +135,6 @@ fun TasksScreen(
     onTaskFilterChanged: (TaskFilter) -> Unit,
     onTaskDeleted: (Int) -> Unit,
     onTaskStatusUpdated: (TaskItemUi) -> Unit,
-    onDraftTaskTextChanged: (String) -> Unit,
-    onDraftTaskSaveClicked: () -> Unit,
-    onDraftTaskDeleteClicked: () -> Unit,
     onCreateTaskMenuToggle: () -> Unit,
     onCreateTaskMenuDismissed: () -> Unit,
     onVoiceTaskClick: () -> Unit,
@@ -152,6 +142,7 @@ fun TasksScreen(
     onVoiceInputStopClicked: () -> Unit,
     onVoiceInputRetry: () -> Unit,
     onVoiceInputCancel: () -> Unit,
+    onTextTaskSheetEvent: (TasksEvent) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -190,35 +181,16 @@ fun TasksScreen(
                 .padding(horizontal = 16.dp)
         ) {
             TasksToolbar(
-                searchQuery = uiState.searchQuery,
-                sortType = uiState.sortType,
+                searchQuery = uiState.mainScreenState.searchQuery,
+                sortType = uiState.mainScreenState.sortType,
                 onSearchQueryChanged = onSearchQueryChanged,
                 onSortChanged = onSortChanged
             )
 
             TasksFilter(
-                taskFilter = uiState.taskFilter,
+                taskFilter = uiState.mainScreenState.filter,
                 onTaskFilterChanged = onTaskFilterChanged,
             )
-
-            if (uiState.draftTask != null) {
-                TaskItem(
-                    task = TaskItemUi(
-                        id = -1,
-                        title = "",
-                        createdAtMillis = 0,
-                        isCompleted = false,
-                    ),
-                    isEditing = true,
-                    editingText = uiState.draftTask.title,
-                    onEditingTextChanged = onDraftTaskTextChanged,
-                    onSaveClick = onDraftTaskSaveClicked,
-                    onDeleteClick = onDraftTaskDeleteClicked,
-                    onCompleteClick = {
-
-                    }
-                )
-            }
 
             if (uiState.isEmpty) {
                 Box(
@@ -236,13 +208,13 @@ fun TasksScreen(
                         )
                         Text(
                             text = when {
-                                uiState.searchQuery.isNotBlank() -> {
+                                uiState.mainScreenState.searchQuery.isNotBlank() -> {
                                     stringResource(R.string.tasks_search_no_results)
                                 }
-                                uiState.taskFilter == TaskFilter.ACTIVE -> {
+                                uiState.mainScreenState.filter == TaskFilter.ACTIVE -> {
                                     stringResource(R.string.tasks_no_active_tasks)
                                 }
-                                uiState.taskFilter == TaskFilter.COMPLETED -> {
+                                uiState.mainScreenState.filter == TaskFilter.COMPLETED -> {
                                     stringResource(R.string.tasks_no_completed_tasks)
                                 }
                                 else -> stringResource(R.string.tasks_no_tasks_yet)
@@ -265,6 +237,30 @@ fun TasksScreen(
                 }
             }
         }
+    }
+
+    if (uiState.mainScreenState.isBottomSheetVisible) {
+        CreateTaskBottomSheet(
+            title = uiState.taskState.title,
+            onDismissRequest = {
+                onTextTaskSheetEvent(TasksEvent.OnBottomSheetDismissed)
+            },
+            onTitleChanged = { title ->
+                onTextTaskSheetEvent(TasksEvent.OnTaskTextChanged(title))
+            },
+            onTimeEstimateSelected = { estimate ->
+                onTextTaskSheetEvent(TasksEvent.OnTaskTimeEstimateSelected(estimate))
+            },
+            onPlanForTodayChanged = { enabled ->
+                onTextTaskSheetEvent(TasksEvent.OnTaskPlanForTodayChanged(enabled))
+            },
+            onAddTagClick = {
+                onTextTaskSheetEvent(TasksEvent.OnTaskAddTagClicked)
+            },
+            onSaveTaskClick = {
+                onTextTaskSheetEvent(TasksEvent.OnSaveTaskClicked)
+            },
+        )
     }
 
     when (val voiceState = uiState.voiceState) {
@@ -315,9 +311,6 @@ fun TasksScreenContentPreview() {
     TaskManagerTheme {
         TasksScreen(
             uiState = TasksUiState(
-                searchQuery = "",
-                sortType = SortType.NEW_TO_OLD,
-                taskFilter = TaskFilter.ALL,
                 visibleTasks = listOf(
                     TaskItemUi(
                         id = 1,
@@ -332,7 +325,6 @@ fun TasksScreenContentPreview() {
                         isCompleted = true
                     )
                 ),
-                isEmpty = false
             ),
             isCreateMenuExpanded = false,
             onSearchQueryChanged = {},
@@ -340,9 +332,6 @@ fun TasksScreenContentPreview() {
             onTaskFilterChanged = {},
             onTaskDeleted = {},
             onTaskStatusUpdated = {},
-            onDraftTaskTextChanged = {},
-            onDraftTaskSaveClicked = {},
-            onDraftTaskDeleteClicked = {},
             onCreateTaskMenuToggle = {},
             onCreateTaskMenuDismissed = {},
             onVoiceTaskClick = {},

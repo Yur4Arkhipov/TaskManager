@@ -1,16 +1,14 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation
 
-import com.jacqulin.taskmanager.core.designsystem.model.SortType
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.DraftTaskUi
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
+import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
+import com.jacqulin.taskmanager.feature.tasks.presentation.state.TaskState
 
 data class TasksUiState(
-    val searchQuery: String = "",
-    val sortType: SortType = SortType.NEW_TO_OLD,
-    val taskFilter: TaskFilter = TaskFilter.ALL,
+    val mainScreenState: MainScreenState = MainScreenState(),
+    val taskState: TaskState = TaskState(),
     val visibleTasks: List<TaskItemUi> = emptyList(),
-    val isEmpty: Boolean = true,
-    val draftTask: DraftTaskUi? = null,
     val voiceState: VoiceState = VoiceState.Idle,
-)
+) {
+    val isEmpty: Boolean get() = visibleTasks.isEmpty()
+}
