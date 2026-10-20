@@ -223,7 +223,7 @@ private fun SettingsScreenPreview() {
             titleRes = R.string.settings_title,
             settingsUiState = SettingsUiState.Success(
                 settings = UserEditableSettings(
-                    colorPalette = ColorPalette.CYAN,
+                    colorPalette = ColorPalette.GREEN,
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     voiceInputMode = VoiceInputMode.LIVE,
                 ),
@@ -246,7 +246,7 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
             titleRes = R.string.settings_title,
             settingsUiState = SettingsUiState.Success(
                 settings = UserEditableSettings(
-                    colorPalette = ColorPalette.CYAN,
+                    colorPalette = ColorPalette.GREEN,
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     voiceInputMode = VoiceInputMode.LIVE,
                 ),
