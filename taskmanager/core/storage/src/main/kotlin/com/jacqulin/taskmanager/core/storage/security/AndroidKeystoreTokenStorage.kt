@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.security
+package com.jacqulin.taskmanager.core.storage.security
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec

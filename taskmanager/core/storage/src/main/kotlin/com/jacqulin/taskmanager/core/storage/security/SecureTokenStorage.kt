@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.security
+package com.jacqulin.taskmanager.core.storage.security
 
 interface SecureTokenStorage {
     fun getToken(name: String): String?

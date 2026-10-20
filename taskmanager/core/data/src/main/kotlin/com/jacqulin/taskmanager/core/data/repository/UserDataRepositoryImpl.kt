@@ -6,7 +6,7 @@ import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.UserData
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
-import com.jacqulin.taskmanager.core.security.SecureTokenStorage
+import com.jacqulin.taskmanager.core.storage.security.SecureTokenStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
