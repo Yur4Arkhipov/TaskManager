@@ -82,8 +82,8 @@ private fun CreateTaskMenuItem(
 ) {
     val shape = RoundedCornerShape(50)
     val colors = MaterialTheme.colorScheme
-    val containerColor = if (emphasized) colors.primaryContainer else colors.surfaceContainer
-    val contentColor = if (emphasized) colors.onPrimaryContainer else colors.onSurface
+    val containerColor = if (emphasized) colors.primaryContainer else colors.secondaryContainer
+    val contentColor = if (emphasized) colors.onPrimaryContainer else colors.onSecondaryContainer
 
     Row(
         modifier = Modifier

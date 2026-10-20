@@ -50,7 +50,11 @@ fun ColorPaletteRow(
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .clickable { onPaletteSelected(palette) }
+                    .clip(CircleShape)
+                    .clickable(
+                        indication = null,
+                        interactionSource = null,
+                    ) { onPaletteSelected(palette) }
                     .then(
                         if (isSelected) {
                             Modifier.border(1.dp, borderColor, CircleShape)
@@ -58,7 +62,6 @@ fun ColorPaletteRow(
                             Modifier
                         }
                     )
-                    .clip(CircleShape)
                     .background(
                         color = when (palette) {
                             ColorPalette.GREEN -> GreenSchemeColor
