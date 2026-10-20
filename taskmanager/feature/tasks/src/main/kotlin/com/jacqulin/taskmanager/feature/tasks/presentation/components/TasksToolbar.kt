@@ -24,9 +24,11 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun TasksToolbar(
     searchQuery: String,
+    isDeleteModeEnabled: Boolean,
     sortType: SortType,
     onSearchQueryChanged: (String) -> Unit,
     onSortChanged: (SortType) -> Unit,
+    onDeleteModeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var sortMenuExpanded by remember { mutableStateOf(false) }
@@ -51,6 +53,7 @@ fun TasksToolbar(
                     sortMenuExpanded = true
                 }
             )
+
             SortDropdownMenu(
                 expanded = sortMenuExpanded,
                 sortType = sortType,
@@ -60,6 +63,13 @@ fun TasksToolbar(
                 onSortChanged = onSortChanged,
             )
         }
+
+        ToolbarButton(
+            icon = painterResource(R.drawable.ic_delete),
+            contentDescription = "",
+            onClick = onDeleteModeClick,
+            selected = isDeleteModeEnabled
+        )
     }
 }
 
@@ -68,8 +78,10 @@ fun TasksToolbar(
 fun TasksToolbarPreview() {
     TasksToolbar(
         searchQuery = "",
+        isDeleteModeEnabled = false,
         sortType = SortType.NEW_TO_OLD,
         onSearchQueryChanged = {},
-        onSortChanged = {}
+        onSortChanged = {},
+        onDeleteModeClick = { },
     )
 }
