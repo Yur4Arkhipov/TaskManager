@@ -36,6 +36,12 @@
     <string name="tasks_retry">Повторить</string>
     <string name="tasks_search">Поиск задач…</string>
     <string name="tasks_sort">Сортировка</string>
+    <string name="tasks_filter_all">Все</string>
+    <string name="tasks_filter_active">Активные</string>
+    <string name="tasks_filter_completed">Выполненные</string>
+    <string name="tasks_no_active_tasks">Активных задач нет</string>
+    <string name="tasks_no_completed_tasks">Выполненных задач нет</string>
+    <string name="tasks_search_no_results">Ничего не найдено</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>
     <string name="tasks_recording">Запись…</string>
     <string name="tasks_stop_recording">Остановить запись</string>
