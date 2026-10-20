@@ -108,5 +108,7 @@
     <string name="settings_expandable_collapse">Скрыть</string>
     <string name="settings_expandable_expand">Раскрыть</string>
 
+    // Home
+    <string name="home_title">Дом</string>
     
 </resources>

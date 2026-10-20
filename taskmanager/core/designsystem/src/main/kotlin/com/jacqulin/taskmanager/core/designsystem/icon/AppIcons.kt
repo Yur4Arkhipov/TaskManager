@@ -6,4 +6,5 @@ object AppIcons {
     val Notes = R.drawable.ic_note
     val Tasks = R.drawable.ic_task
     val Settings = R.drawable.ic_settings
+    val Home = R.drawable.ic_home
 }
