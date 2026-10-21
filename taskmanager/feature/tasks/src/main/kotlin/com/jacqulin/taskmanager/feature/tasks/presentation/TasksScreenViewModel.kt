@@ -133,7 +133,7 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.OnBottomSheetDismissed -> {
                 mainScreenState.update { it.copy(isBottomSheetVisible = false) }
-                taskState.update { it.copy(title = "") }
+                taskState.update { TaskState() }
             }
             TasksEvent.OnDeleteModeToggled -> {
                 mainScreenState.update {
@@ -185,11 +185,19 @@ class TasksScreenViewModel @Inject constructor(
             is TasksEvent.OnTaskTimeEstimateSelected -> {
 
             }
-            is TasksEvent.OnTaskPlanForTodayChanged -> {
-
+            is TasksEvent.OnTaskPlanForTodayChanged -> taskState.update {
+                it.copy(isPlannedForToday = event.enabled)
             }
-            TasksEvent.OnTaskAddTagClicked -> {
-
+            is TasksEvent.OnTaskTagAdded -> taskState.update { state ->
+                val tag = event.tag.trim()
+                if (tag.isBlank() || state.tags.any { it.equals(tag, ignoreCase = true) }) {
+                    state
+                } else {
+                    state.copy(tags = state.tags + tag)
+                }
+            }
+            is TasksEvent.OnTaskTagRemoved -> taskState.update { state ->
+                state.copy(tags = state.tags.filterNot { it == event.tag })
             }
 
             // Voice
@@ -311,11 +319,12 @@ class TasksScreenViewModel @Inject constructor(
                     title = taskState.value.title,
                     createdAtMillis = System.currentTimeMillis(),
                     isCompleted = false,
+                    tags = taskState.value.tags,
+                    isPlannedForToday = taskState.value.isPlannedForToday,
                 )
             )
         }
 
-        taskState.update { it.copy(title = "") }
         onEvent(TasksEvent.OnBottomSheetDismissed)
     }
 

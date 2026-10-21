@@ -7,13 +7,13 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,7 +43,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 fun TaskItem(
     task: TaskItemUi,
     isDeleteModeEnabled: Boolean,
@@ -51,6 +52,7 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     showCreationDate: Boolean = true,
+    showTags: Boolean = true,
     isCompact: Boolean = false,
     onSelectionClick: () -> Unit = {},
     onLongPress: () -> Unit = {},
@@ -74,9 +76,12 @@ fun TaskItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 64.dp)
-                .padding(10.dp),
+                .padding(
+                    horizontal = 10.dp,
+                    vertical = 16.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             RoundedCheckbox(
                 checked = if (isDeleteModeEnabled) isSelected else task.isCompleted,
@@ -85,11 +90,9 @@ fun TaskItem(
                 },
             )
 
-            Spacer(modifier = Modifier.width(4.dp))
-
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
                     text = task.title,
@@ -106,6 +109,21 @@ fun TaskItem(
                         TextDecoration.None
                     }
                 )
+                val visibleTags = if (showTags) task.tags else emptyList()
+                if (visibleTags.isNotEmpty() || task.isPlannedForToday) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        if (task.isPlannedForToday) {
+                            TaskTagChip(
+                                text = stringResource(R.string.tasks_today_tag),
+                                isToday = true,
+                            )
+                        }
+                        visibleTags.forEach { tag -> TaskTagChip(text = tag) }
+                    }
+                }
             }
 
             if (isDeleteModeEnabled) {
@@ -129,10 +147,10 @@ fun TaskItem(
             }
         }
 
-        if (!isDeleteModeEnabled && showCreationDate) {
+        if (showCreationDate) {
             Box(
-               contentAlignment = Alignment.TopEnd,
-                modifier = Modifier.padding(4.dp)
+                contentAlignment = Alignment.TopEnd,
+                modifier = Modifier.padding(6.dp)
             ) {
                 Text(
                     text = task.createdAtMillis.toFormattedDate(),
@@ -141,6 +159,28 @@ fun TaskItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun TaskTagChip(
+    text: String,
+    isToday: Boolean = false,
+) {
+    Surface(
+        shape = RoundedCornerShape(6.dp),
+        color = if (isToday) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onSurfaceVariant,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+        )
     }
 }
 
@@ -163,6 +203,7 @@ private fun TaskItemPreview() {
                 title = "Подготовить презентацию",
                 createdAtMillis = System.currentTimeMillis(),
                 isCompleted = false,
+                isPlannedForToday = true
             ),
             isDeleteModeEnabled = false,
             onDeleteClick = {},
@@ -181,6 +222,8 @@ private fun TaskItemCompletedPreview() {
                 title = "Выполнить код-ревью",
                 createdAtMillis = System.currentTimeMillis() - 86400000,
                 isCompleted = true,
+                tags = listOf("tag1", "tag2"),
+                isPlannedForToday = true,
             ),
             isDeleteModeEnabled = true,
             onDeleteClick = {},

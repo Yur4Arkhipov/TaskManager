@@ -4,5 +4,7 @@ data class Task(
     val id: Int,
     val title: String,
     val createdAtMillis: Long,
-    val isCompleted: Boolean
+    val isCompleted: Boolean,
+    val tags: List<String> = emptyList(),
+    val isPlannedForToday: Boolean = false,
 )

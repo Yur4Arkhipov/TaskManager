@@ -5,21 +5,22 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -36,14 +37,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.designsystem.R
@@ -52,15 +52,17 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun CreateTaskBottomSheet(
     title: String,
+    tags: List<String>,
+    isPlannedForToday: Boolean,
     onTitleChanged: (String) -> Unit,
     onDismissRequest: () -> Unit,
     onTimeEstimateSelected: (String) -> Unit,
     onPlanForTodayChanged: (Boolean) -> Unit,
-    onAddTagClick: () -> Unit,
+    onTagAdded: (String) -> Unit,
+    onTagRemoved: (String) -> Unit,
     onSaveTaskClick: () -> Unit,
 ) {
     var selectedEstimate by rememberSaveable { mutableStateOf("none") }
-    var addToToday by rememberSaveable { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
 
     val sheetState = rememberModalBottomSheetState(
@@ -80,12 +82,15 @@ fun CreateTaskBottomSheet(
                 title = title,
                 saveButtonEnabled = title.isNotBlank(),
                 selectedEstimate = selectedEstimate,
-                addToTodayPlan = addToToday,
+                tags = tags,
+                addToTodayPlan = isPlannedForToday,
                 onDismissRequest = onDismissRequest,
                 onTitleChanged = onTitleChanged,
                 onTimeEstimateSelected = onTimeEstimateSelected,
                 onPlanForTodayChanged = onPlanForTodayChanged,
-                onAddTagClick = onAddTagClick,
+                onCreateTagClick = { },
+                onTagAdded = onTagAdded,
+                onTagRemoved = onTagRemoved,
                 onSaveTaskClick = onSaveTaskClick,
             )
         }
@@ -96,12 +101,15 @@ fun ModalBottomSheetContent(
     title: String,
     saveButtonEnabled: Boolean,
     selectedEstimate: String,
+    tags: List<String>,
     addToTodayPlan: Boolean,
     onDismissRequest: () -> Unit,
     onTitleChanged: (String) -> Unit,
     onTimeEstimateSelected: (String) -> Unit,
     onPlanForTodayChanged: (Boolean) -> Unit,
-    onAddTagClick: () -> Unit,
+    onCreateTagClick: () -> Unit,
+    onTagAdded: (String) -> Unit,
+    onTagRemoved: (String) -> Unit,
     onSaveTaskClick: () -> Unit,
 ) {
     Column(
@@ -125,14 +133,17 @@ fun ModalBottomSheetContent(
 //            onTimeEstimateSelected = onTimeEstimateSelected
 //        )
 
-//        PlanForTodayRow(
-//            addToTodayPlan = addToTodayPlan,
-//            onPlanForTodayChanged = onPlanForTodayChanged
-//        )
+        PlanForTodayRow(
+            addToTodayPlan = addToTodayPlan,
+            onPlanForTodayChanged = onPlanForTodayChanged
+        )
 
-//        TagRow(
-//            onAddTagClick = onAddTagClick,
-//        )
+        TagRow(
+            tags = tags,
+            onTagAdded = onTagAdded,
+            onTagRemoved = onTagRemoved,
+            onCreateTag = onCreateTagClick
+        )
 
         Button(
             onClick = onSaveTaskClick,
@@ -168,7 +179,10 @@ private fun TitleRow(
         )
         FilledTonalIconButton(
             onClick = onDismissRequest,
-            modifier = Modifier.size(36.dp)
+            modifier = Modifier.size(36.dp),
+            colors = IconButtonDefaults.filledTonalIconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_close),
@@ -219,108 +233,108 @@ private fun TextRow(
     }
 }
 
-@Composable
-private fun EstimateTimeRow(
-    selectedEstimate: String,
-    onTimeEstimateSelected: (String) -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.tasks_time_estimate),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = stringResource(R.string.tasks_optional),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            EstimateChip(
-                text = stringResource(R.string.tasks_no_estimate),
-                selected = selectedEstimate == "none",
-                onClick = {
-                    onTimeEstimateSelected("none")
-                },
-            )
-            EstimateChip(
-                text = stringResource(R.string.tasks_15_minutes),
-                selected = selectedEstimate == "15",
-                onClick = {
-                    onTimeEstimateSelected("15")
-                },
-            )
-            EstimateChip(
-                text = stringResource(R.string.tasks_25_minutes),
-                selected = selectedEstimate == "25",
-                onClick = {
-                    onTimeEstimateSelected("25")
-                },
-            )
-            EstimateChip(
-                text = stringResource(R.string.tasks_45_minutes),
-                selected = selectedEstimate == "45",
-                onClick = {
-                    onTimeEstimateSelected("45")
-                },
-            )
-            EstimateChip(
-                text = stringResource(R.string.tasks_1_hour),
-                selected = selectedEstimate == "60",
-                onClick = {
-                    onTimeEstimateSelected("60")
-                },
-            )
-        }
-
-            EstimateChip(
-                text = stringResource(R.string.tasks_other_duration),
-                selected = selectedEstimate == "other",
-                onClick = {
-                    onTimeEstimateSelected("other")
-                },
-            )
-
-        Text(
-            text = stringResource(R.string.tasks_time_estimate_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-@Composable
-private fun EstimateChip(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    val colors = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(50)
-    Text(
-        text = text,
-        modifier = Modifier
-            .clip(shape)
-            .background(if (selected) colors.primaryContainer else colors.surfaceContainer)
-            .clickable(
-                indication = null,
-                interactionSource = null,
-                role = Role.Button,
-                onClick = onClick,
-            )
-            .padding(horizontal = 10.dp, vertical = 8.dp),
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-        color = if (selected) colors.onPrimaryContainer else colors.onSurfaceVariant,
-    )
-}
+//@Composable
+//private fun EstimateTimeRow(
+//    selectedEstimate: String,
+//    onTimeEstimateSelected: (String) -> Unit,
+//) {
+//    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically,
+//        ) {
+//            Text(
+//                text = stringResource(R.string.tasks_time_estimate),
+//                style = MaterialTheme.typography.labelMedium,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant,
+//            )
+//            Text(
+//                text = stringResource(R.string.tasks_optional),
+//                style = MaterialTheme.typography.labelSmall,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant,
+//            )
+//        }
+//
+//        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_no_estimate),
+//                selected = selectedEstimate == "none",
+//                onClick = {
+//                    onTimeEstimateSelected("none")
+//                },
+//            )
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_15_minutes),
+//                selected = selectedEstimate == "15",
+//                onClick = {
+//                    onTimeEstimateSelected("15")
+//                },
+//            )
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_25_minutes),
+//                selected = selectedEstimate == "25",
+//                onClick = {
+//                    onTimeEstimateSelected("25")
+//                },
+//            )
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_45_minutes),
+//                selected = selectedEstimate == "45",
+//                onClick = {
+//                    onTimeEstimateSelected("45")
+//                },
+//            )
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_1_hour),
+//                selected = selectedEstimate == "60",
+//                onClick = {
+//                    onTimeEstimateSelected("60")
+//                },
+//            )
+//        }
+//
+//            EstimateChip(
+//                text = stringResource(R.string.tasks_other_duration),
+//                selected = selectedEstimate == "other",
+//                onClick = {
+//                    onTimeEstimateSelected("other")
+//                },
+//            )
+//
+//        Text(
+//            text = stringResource(R.string.tasks_time_estimate_hint),
+//            style = MaterialTheme.typography.bodySmall,
+//            color = MaterialTheme.colorScheme.onSurfaceVariant,
+//        )
+//    }
+//}
+//
+//@Composable
+//private fun EstimateChip(
+//    text: String,
+//    selected: Boolean,
+//    onClick: () -> Unit,
+//) {
+//    val colors = MaterialTheme.colorScheme
+//    val shape = RoundedCornerShape(50)
+//    Text(
+//        text = text,
+//        modifier = Modifier
+//            .clip(shape)
+//            .background(if (selected) colors.primaryContainer else colors.surfaceContainer)
+//            .clickable(
+//                indication = null,
+//                interactionSource = null,
+//                role = Role.Button,
+//                onClick = onClick,
+//            )
+//            .padding(horizontal = 10.dp, vertical = 8.dp),
+//        style = MaterialTheme.typography.labelSmall,
+//        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+//        color = if (selected) colors.onPrimaryContainer else colors.onSurfaceVariant,
+//    )
+//}
 
 @Composable
 private fun PlanForTodayRow(
@@ -336,18 +350,17 @@ private fun PlanForTodayRow(
                 indication = null,
                 interactionSource = null,
             ) {
-                onPlanForTodayChanged(addToTodayPlan)
+                onPlanForTodayChanged(!addToTodayPlan)
             }
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .heightIn(min = 56.dp)
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Checkbox(
+        RoundedCheckbox(
             checked = addToTodayPlan,
-            onCheckedChange = {
-                onPlanForTodayChanged(it)
-            },
+            onCheckedChange = onPlanForTodayChanged
         )
-        Spacer(Modifier.width(4.dp))
         Text(
             text = stringResource(R.string.tasks_add_to_today_plan),
             style = MaterialTheme.typography.labelLarge,
@@ -356,66 +369,90 @@ private fun PlanForTodayRow(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TagRow(
-    onAddTagClick: () -> Unit,
+    tags: List<String>,
+    onTagAdded: (String) -> Unit,
+    onCreateTag: () -> Unit,
+    onTagRemoved: (String) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.tasks_tags),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = stringResource(R.string.tasks_optional),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+    val suggestedTags = listOf("hghghf", "павпавп", "пвпвпавп", "gfgfgf", "fdsfdsfdsfdsf", "fdsf")
 
-        Row(
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = stringResource(R.string.tasks_tags),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-                .background(Color.Transparent)
-                .clickable(
-                    indication = null,
-                    interactionSource = null,
-                ) { onAddTagClick() }
-                .padding(horizontal = 12.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_label),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(18.dp),
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = stringResource(R.string.tasks_add_tag),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
-            )
-            Text(
-                text = stringResource(R.string.tasks_add),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            (suggestedTags + tags.filterNot(suggestedTags::contains))
+                .distinct()
+                .forEach { tag ->
+                    val selected = tag in tags
+                    Text(
+                        text = tag,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.onSecondaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.secondaryContainer
+                                else MaterialTheme.colorScheme.surfaceContainerHighest,
+                            )
+                            .clickable {
+                                if (selected) onTagRemoved(tag) else onTagAdded(tag)
+                            }
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                }
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(50),
+                    )
+                    .clickable(onClick = onCreateTag)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = stringResource(R.string.tasks_create_tag),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
     }
 }
 
-@Preview(
-    showSystemUi = true
-)
+@Preview(showSystemUi = true)
 @Composable
 fun ModalBottomSheetContentPreview() {
     TaskManagerTheme(
@@ -426,11 +463,38 @@ fun ModalBottomSheetContentPreview() {
             saveButtonEnabled = true,
             selectedEstimate = "none",
             addToTodayPlan = false,
+            tags = emptyList(),
             onDismissRequest = { },
             onTitleChanged = { },
             onTimeEstimateSelected = { },
             onPlanForTodayChanged = { },
-            onAddTagClick = { },
+            onCreateTagClick = { },
+            onTagAdded = { },
+            onTagRemoved = { },
+            onSaveTaskClick = { },
+        )
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun ModalBottomSheetContentPreview_WithTags() {
+    TaskManagerTheme(
+        colorPalette = ColorPalette.BLUE
+    ) {
+        ModalBottomSheetContent(
+            title = "title",
+            saveButtonEnabled = true,
+            selectedEstimate = "none",
+            addToTodayPlan = false,
+            tags = listOf("tag1", "tag2"),
+            onDismissRequest = { },
+            onTitleChanged = { },
+            onTimeEstimateSelected = { },
+            onPlanForTodayChanged = { },
+            onCreateTagClick = { },
+            onTagAdded = { },
+            onTagRemoved = { },
             onSaveTaskClick = { },
         )
     }

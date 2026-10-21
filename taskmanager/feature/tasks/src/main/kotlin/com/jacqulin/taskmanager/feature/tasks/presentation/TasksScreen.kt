@@ -160,7 +160,8 @@ fun TasksScreen(
                 searchQuery = uiState.mainScreenState.searchQuery,
                 isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
                 selectedCount = uiState.mainScreenState.selectedTaskIds.size,
-                allSelected = uiState.visibleTasks.isNotEmpty() && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
+                allSelected = uiState.visibleTasks.isNotEmpty()
+                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
                 sortType = uiState.mainScreenState.sortType,
                 showCreationDate = uiState.mainScreenState.showCreationDate,
                 showTags = uiState.mainScreenState.showTags,
@@ -234,6 +235,7 @@ fun TasksScreen(
                             isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
                             isSelected = task.id in uiState.mainScreenState.selectedTaskIds,
                             showCreationDate = uiState.mainScreenState.showCreationDate,
+                            showTags = uiState.mainScreenState.showTags,
                             isCompact = uiState.mainScreenState.isCompactView,
                             onSelectionClick = { onEvent(TasksEvent.OnTaskSelectionToggled(task.id)) },
                             onLongPress = {
@@ -252,6 +254,8 @@ fun TasksScreen(
     if (uiState.mainScreenState.isBottomSheetVisible) {
         CreateTaskBottomSheet(
             title = uiState.taskState.title,
+            tags = uiState.taskState.tags,
+            isPlannedForToday = uiState.taskState.isPlannedForToday,
             onDismissRequest = {
                 onEvent(TasksEvent.OnBottomSheetDismissed)
             },
@@ -264,8 +268,11 @@ fun TasksScreen(
             onPlanForTodayChanged = { enabled ->
                 onEvent(TasksEvent.OnTaskPlanForTodayChanged(enabled))
             },
-            onAddTagClick = {
-                onEvent(TasksEvent.OnTaskAddTagClicked)
+            onTagAdded = { tag ->
+                onEvent(TasksEvent.OnTaskTagAdded(tag))
+            },
+            onTagRemoved = { tag ->
+                onEvent(TasksEvent.OnTaskTagRemoved(tag))
             },
             onSaveTaskClick = {
                 onEvent(TasksEvent.OnSaveTaskClicked)

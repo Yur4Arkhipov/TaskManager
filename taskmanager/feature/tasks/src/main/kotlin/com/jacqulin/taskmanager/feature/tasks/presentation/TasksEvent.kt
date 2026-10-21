@@ -23,7 +23,8 @@ sealed interface TasksEvent {
     data class OnTaskTextChanged(val title: String) : TasksEvent
     data class OnTaskTimeEstimateSelected(val estimate: String) : TasksEvent
     data class OnTaskPlanForTodayChanged(val enabled: Boolean) : TasksEvent
-    data object OnTaskAddTagClicked : TasksEvent
+    data class OnTaskTagAdded(val tag: String) : TasksEvent
+    data class OnTaskTagRemoved(val tag: String) : TasksEvent
     data class UpdateTaskStatus(val task: TaskItemUi) : TasksEvent
     data object OnCreateTaskByVoiceClicked : TasksEvent
     data object VoiceInputStopClicked : TasksEvent

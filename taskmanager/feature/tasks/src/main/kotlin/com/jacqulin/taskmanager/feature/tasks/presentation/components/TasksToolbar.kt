@@ -136,10 +136,8 @@ fun TasksToolbar(
                     text = { Text(stringResource(R.string.tasks_show_tags)) },
                     trailingIcon = {
                         CustomSwitch(
-//                            checked = showTags,
-//                            onCheckedChange = onShowTagsChanged,
-                            checked = false,
-                            onCheckedChange = { _ -> } ,
+                            checked = showTags,
+                            onCheckedChange = onShowTagsChanged,
                         )
                     },
                     onClick = { onShowTagsChanged(!showTags) },
