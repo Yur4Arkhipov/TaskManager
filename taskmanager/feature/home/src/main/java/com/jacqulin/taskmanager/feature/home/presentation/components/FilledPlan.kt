@@ -43,58 +43,7 @@ fun FilledPlan(
     onEvent: (HomeEvent) -> Unit,
 ) {
     Column {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            ),
-        ) {
-            Column(
-                modifier = Modifier.padding(
-                    vertical = 16.dp,
-                    horizontal = 12.dp
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.home_today_plan),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        stringResource(
-                            R.string.home_task_count,
-                            uiState.tasks.size,
-                            taskCountWord(uiState.tasks.size),
-                            uiState.totalMinutes
-                        ),
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.weight(1f),
-                    )
-                    Text(
-                        text = stringResource(
-                            R.string.home_progress_percentage,
-                            (uiState.progress * 100).toInt()
-                        ),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelMedium)
-                }
-                Spacer(Modifier.height(12.dp))
-                LinearProgressIndicator(
-                    progress = { uiState.progress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(CircleShape),
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                )
-            }
-        }
+        PlanHeader(uiState = uiState)
 
         Spacer(Modifier.height(12.dp))
 
@@ -129,56 +78,140 @@ fun FilledPlan(
 
 //        Spacer(Modifier.height(12.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        PlanTaskList(
+            uiState = uiState,
+            onEvent = onEvent
+        )
+    }
+}
+
+@Composable
+private fun PlanTaskList(
+    uiState: HomeUiState,
+    onEvent: (HomeEvent) -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.home_day_plan),
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = stringResource(R.string.tasks_add),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = { onEvent(HomeEvent.OnAddToPlanClicked) },
+                )
+        )
+    }
+
+    Spacer(Modifier.height(12.dp))
+
+    val visibleTasks = if (uiState.isFullPlanShown) uiState.tasks
+        else uiState.tasks.take(3)
+
+    visibleTasks.forEachIndexed { index, task ->
+        PlanTaskRow(
+            task = task,
+            position = index + 1,
+            onComplete = { },
+            onDelete = { onEvent(HomeEvent.OnTaskDeleted(task.id)) },
+        )
+        Spacer(Modifier.height(6.dp))
+    }
+    if (uiState.tasks.size > 3) {
+        Text(
+            if (uiState.isFullPlanShown)
+                stringResource(R.string.home_collapse_plan)
+            else
+                stringResource(R.string.home_expand_plan),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .clickable { onEvent(HomeEvent.OnShowFullPlanClicked) }
+                .padding(vertical = 4.dp),
+        )
+    }
+}
+
+@Composable
+private fun PlanHeader(uiState: HomeUiState) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                vertical = 16.dp,
+                horizontal = 12.dp
+            ),
         ) {
-            val interactionSource = remember { MutableInteractionSource() }
-
             Text(
-                text = stringResource(R.string.home_day_plan),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.tasks_add),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = { onEvent(HomeEvent.OnAddToPlanClicked) },
-                    )
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        val visibleTasks = if (uiState.isFullPlanShown) uiState.tasks
-            else uiState.tasks.take(3)
-
-        visibleTasks.forEachIndexed { index, task ->
-            PlanTaskRow(
-                task = task,
-                position = index + 1,
-                onComplete = {  },
-                onDelete = { onEvent(HomeEvent.OnTaskDeleted(task.id)) },
-            )
-            Spacer(Modifier.height(6.dp))
-        }
-        if (uiState.tasks.size > 3) {
-            Text(
-                if (uiState.isFullPlanShown)
-                    stringResource(R.string.home_collapse_plan)
-                else
-                    stringResource(R.string.home_expand_plan),
-                color = MaterialTheme.colorScheme.primary,
+                text = stringResource(R.string.home_today_plan),
                 style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(
+                        R.string.home_task_count,
+                        uiState.tasks.size,
+                        taskCountWord(uiState.tasks.size),
+                        uiState.totalMinutes
+                    ),
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = stringResource(
+                        R.string.home_progress_percentage,
+                        (uiState.progress * 100).toInt()
+                    ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium)
+            }
+            Spacer(Modifier.height(12.dp))
+            LinearProgressIndicator(
+                progress = { uiState.progress },
                 modifier = Modifier
-                    .clickable { onEvent(HomeEvent.OnShowFullPlanClicked) }
-                    .padding(vertical = 4.dp),
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(CircleShape),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.onSecondary,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PlanHeaderPreview() {
+    TaskManagerTheme {
+        PlanHeader(
+            uiState = HomeUiState(
+                tasks = listOf(
+                    HomeTaskUi(id = 1, title = "Задача 1", durationMinutes = 45),
+                    HomeTaskUi(id = 2, title = "Задача 2", durationMinutes = 30),
+                    HomeTaskUi(id = 3, title = "Задача 3", durationMinutes = 20),
+                )
+            )
+        )
     }
 }
 
@@ -191,10 +224,10 @@ private fun PlanTaskRow(
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
         border = BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
         ),
     ) {
         Row(
@@ -211,14 +244,6 @@ private fun PlanTaskRow(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-//            Spacer(Modifier.width(10.dp))
-
-//            Text(
-//                text = position.toString(),
-//                color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                style = MaterialTheme.typography.labelMedium
-//            )
-
             Spacer(Modifier.width(10.dp))
 
             RoundedCheckbox(
@@ -234,7 +259,7 @@ private fun PlanTaskRow(
             ) {
                 Text(
                     text = task.title,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -265,7 +290,7 @@ private fun taskCountWord(count: Int): String = when {
 fun PlanFilledPreview() {
     TaskManagerTheme {
         val mockTasks = listOf(
-            HomeTaskUi(id = 1, title = "Подготовить презентацию", durationMinutes = 45),
+            HomeTaskUi(id = 1, title = "Подготовить презентациюрпрпрпрпрпрпрпр", durationMinutes = 45),
             HomeTaskUi(id = 2, title = "Провести код-ревью", durationMinutes = 30),
             HomeTaskUi(id = 3, title = "Созвон с командой", durationMinutes = null),
             HomeTaskUi(id = 4, title = "Обновить документацию", durationMinutes = 20),

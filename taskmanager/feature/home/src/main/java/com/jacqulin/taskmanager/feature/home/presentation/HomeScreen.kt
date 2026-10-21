@@ -19,6 +19,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCa
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
 import com.jacqulin.taskmanager.feature.home.presentation.components.AiFeatureCard
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 
 @Composable
 fun HomeScreen(
@@ -98,7 +99,15 @@ fun HomeContentPreview() {
     ) {
         HomeContent(
             uiState = HomeUiState(
-                dateLabel = "вторник, 23 сентября"
+                dateLabel = "вторник, 23 сентября",
+                tasks = listOf(
+                    HomeTaskUi(
+                        id =1,
+                        title = "написать реферат",
+                        durationMinutes = 25,
+                        isCompleted = false
+                    )
+                )
             )
         ) { }
     }
