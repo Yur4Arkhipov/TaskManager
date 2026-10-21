@@ -1,18 +1,20 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,10 +22,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import java.time.Instant
@@ -51,13 +59,12 @@ fun TaskItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = 8.dp,
-                    vertical = 8.dp,
-                ),
-            verticalAlignment = Alignment.CenterVertically
+                .heightIn(min = 64.dp)
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Checkbox(
+            RoundedCheckbox(
                 checked = task.isCompleted,
                 onCheckedChange = { checked ->
                     onCompleteClick(checked)
@@ -76,6 +83,7 @@ fun TaskItem(
                     text = task.title,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,
+                    lineHeight = 16.sp,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.alpha(
                         if (task.isCompleted) 0.5f else 1f
@@ -95,14 +103,21 @@ fun TaskItem(
             }
 
             if (isDeleteModeEnabled) {
-                IconButton(
-                    onClick = onDeleteClick
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .clickable(
+                            role = Role.Button,
+                            onClick = onDeleteClick
+                        ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = "Удалить задачу",
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
@@ -117,4 +132,40 @@ private fun Long.toFormattedDate(): String {
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
         .format(formatter)
+}
+
+@Preview
+@Composable
+private fun TaskItemPreview() {
+    TaskManagerTheme {
+        TaskItem(
+            task = TaskItemUi(
+                id = 1,
+                title = "Подготовить презентацию",
+                createdAtMillis = System.currentTimeMillis(),
+                isCompleted = false,
+            ),
+            isDeleteModeEnabled = false,
+            onDeleteClick = {},
+            onCompleteClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TaskItemCompletedPreview() {
+    TaskManagerTheme {
+        TaskItem(
+            task = TaskItemUi(
+                id = 2,
+                title = "Выполнить код-ревью",
+                createdAtMillis = System.currentTimeMillis() - 86400000,
+                isCompleted = true,
+            ),
+            isDeleteModeEnabled = true,
+            onDeleteClick = {},
+            onCompleteClick = {}
+        )
+    }
 }
