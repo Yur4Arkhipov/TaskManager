@@ -110,5 +110,20 @@
 
     // Home
     <string name="home_title">Дом</string>
+    <string name="home_empty_plan_title">Соберите свой план</string>
+    <string name="home_empty_plan_subtitle">Выберите несколько задач на сегодня. План всегда можно изменить.</string>
+    <string name="home_add_first_task">Добавить первую задачу</string>
+    <string name="home_today_plan">План дня</string>
+    <string name="home_task_count">%d %s · %d мин</string>
+    <string name="home_task_count_word">задача|задачи|задач</string>
+    <string name="home_progress_percentage">%d%%</string>
+    <string name="home_day_plan">План на день</string>
+    <string name="home_collapse_plan">Свернуть план ↑</string>
+    <string name="home_expand_plan">Открыть весь план →</string>
+    <string name="home_quick_capture">Быстрый захват</string>
+    <string name="home_task">Задача</string>
+    <string name="home_note">Заметка</string>
+    <string name="home_thought_breakdown_title">Разобрать мысль</string>
+    <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
     
 </resources>
