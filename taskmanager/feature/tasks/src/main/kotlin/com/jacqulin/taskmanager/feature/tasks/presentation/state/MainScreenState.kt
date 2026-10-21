@@ -9,4 +9,8 @@ data class MainScreenState(
     val filter: TaskFilter = TaskFilter.ALL,
     val isBottomSheetVisible: Boolean = false,
     val isDeleteModeEnabled: Boolean = false,
+    val selectedTaskIds: Set<Int> = emptySet(),
+    val showCreationDate: Boolean = true,
+    val showTags: Boolean = true,
+    val isCompactView: Boolean = false,
 )

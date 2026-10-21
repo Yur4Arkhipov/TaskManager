@@ -18,8 +18,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
@@ -29,9 +31,9 @@ fun RoundedCheckbox(
     modifier: Modifier = Modifier,
     size: Dp = 20.dp,
     cornerRadius: Dp = 6.dp,
-    uncheckedColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    checkedColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    checkmarkColor: Color = MaterialTheme.colorScheme.surface,
+    uncheckedColor: Color = MaterialTheme.colorScheme.outlineVariant,
+    checkedColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    checkmarkColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
 ) {
     val shape = RoundedCornerShape(cornerRadius)
     val interactionSource = remember { MutableInteractionSource() }
@@ -66,5 +68,16 @@ fun RoundedCheckbox(
                 modifier = Modifier.size(size * 0.7f),
             )
         }
+    }
+}
+
+@Composable
+@Preview
+fun RoundedCheckboxPreview() {
+    TaskManagerTheme {
+        RoundedCheckbox(
+            checked = true,
+            onCheckedChange = {},
+        )
     }
 }

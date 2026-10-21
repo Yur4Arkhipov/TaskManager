@@ -114,13 +114,13 @@ class TasksScreenViewModel @Inject constructor(
     fun onEvent(event: TasksEvent) {
         when (event) {
             is TasksEvent.OnSearchQueryChanged -> {
-                mainScreenState.update { it.copy(searchQuery = event.query) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(searchQuery = event.query) }
             }
             is TasksEvent.OnSortChanged -> {
-                mainScreenState.update { it.copy(sortType = event.sortType) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(sortType = event.sortType) }
             }
             is TasksEvent.OnTaskFilterChanged -> {
-                mainScreenState.update { it.copy(filter = event.filter) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(filter = event.filter) }
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
@@ -136,8 +136,44 @@ class TasksScreenViewModel @Inject constructor(
                 taskState.update { it.copy(title = "") }
             }
             TasksEvent.OnDeleteModeToggled -> {
-                mainScreenState.update { it.copy(isDeleteModeEnabled = !it.isDeleteModeEnabled) }
+                mainScreenState.update {
+                    it.copy(isDeleteModeEnabled = !it.isDeleteModeEnabled, selectedTaskIds = emptySet())
+                }
             }
+            is TasksEvent.OnTaskSelectionToggled -> mainScreenState.update { state ->
+                if (!state.isDeleteModeEnabled) state else state.copy(
+                    selectedTaskIds = state.selectedTaskIds
+                        .toMutableSet()
+                        .apply { if (!add(event.taskId)) remove(event.taskId) }
+                )
+            }
+            is TasksEvent.OnEnterDeleteMode -> mainScreenState.update {
+                it.copy(isDeleteModeEnabled = true, selectedTaskIds = setOf(event.taskId))
+            }
+            TasksEvent.OnSelectAllTasks -> mainScreenState.update { state ->
+                state.copy(
+                    selectedTaskIds = state.selectedTaskIds
+                        .toMutableSet()
+                        .let { selected ->
+                            val visibleIds = uiState.value.visibleTasks
+                                .map { it.id }
+                                .toSet()
+                            if (selected.containsAll(visibleIds))
+                                selected.removeAll(visibleIds)
+                            else
+                                selected.addAll(visibleIds)
+                            selected
+                        }
+                )
+            }
+            TasksEvent.OnDeleteSelectedTasks -> {
+                val ids = mainScreenState.value.selectedTaskIds.toList()
+                ids.forEach(::deleteTask)
+                mainScreenState.update { it.copy(isDeleteModeEnabled = false, selectedTaskIds = emptySet()) }
+            }
+            is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
+            is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
+            is TasksEvent.OnCompactViewChanged -> mainScreenState.update { it.copy(isCompactView = event.enabled) }
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {

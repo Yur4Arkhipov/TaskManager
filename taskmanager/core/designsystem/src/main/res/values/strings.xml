@@ -62,6 +62,17 @@
     <string name="tasks_no_active_tasks">Активных задач нет</string>
     <string name="tasks_no_completed_tasks">Выполненных задач нет</string>
     <string name="tasks_search_no_results">Ничего не найдено</string>
+    <string name="tasks_list_settings">Настройки списка</string>
+    <string name="tasks_list_view">Вид списка</string>
+    <string name="tasks_show_creation_date">Дата создания</string>
+    <string name="tasks_show_tags">Метки</string>
+    <string name="tasks_compact_view">Компактный вид</string>
+    <string name="tasks_select_tasks">Выбрать задачи</string>
+    <string name="tasks_selected_count">Выбрано: %d</string>
+    <string name="tasks_select_all">Выбрать все</string>
+    <string name="tasks_deselect_all">Снять выделение</string>
+    <string name="tasks_exit_selection">Выйти из режима выбора</string>
+    <string name="tasks_delete_selected">Удалить (%d)</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>
     <string name="tasks_recording">Запись…</string>
     <string name="tasks_stop_recording">Остановить запись</string>

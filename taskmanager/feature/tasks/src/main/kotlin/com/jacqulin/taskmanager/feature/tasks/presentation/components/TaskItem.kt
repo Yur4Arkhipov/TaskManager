@@ -1,7 +1,9 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,15 +42,27 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun TaskItem(
     task: TaskItemUi,
     isDeleteModeEnabled: Boolean,
     onDeleteClick: () -> Unit,
     onCompleteClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    showCreationDate: Boolean = true,
+    isCompact: Boolean = false,
+    onSelectionClick: () -> Unit = {},
+    onLongPress: () -> Unit = {},
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .combinedClickable(
+                onClick = { if (isDeleteModeEnabled) onSelectionClick() },
+                onLongClick = onLongPress,
+            ),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
         border = BorderStroke(
@@ -65,9 +79,9 @@ fun TaskItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             RoundedCheckbox(
-                checked = task.isCompleted,
+                checked = if (isDeleteModeEnabled) isSelected else task.isCompleted,
                 onCheckedChange = { checked ->
-                    onCompleteClick(checked)
+                    if (isDeleteModeEnabled) onSelectionClick() else onCompleteClick(checked)
                 },
             )
 
@@ -115,7 +129,7 @@ fun TaskItem(
             }
         }
 
-        if (!isDeleteModeEnabled) {
+        if (!isDeleteModeEnabled && showCreationDate) {
             Box(
                contentAlignment = Alignment.TopEnd,
                 modifier = Modifier.padding(4.dp)
@@ -152,7 +166,7 @@ private fun TaskItemPreview() {
             ),
             isDeleteModeEnabled = false,
             onDeleteClick = {},
-            onCompleteClick = {}
+            onCompleteClick = {},
         )
     }
 }
