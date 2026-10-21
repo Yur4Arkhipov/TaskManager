@@ -1,7 +1,6 @@
 package com.jacqulin.taskmanager.feature.home.presentation.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,15 +34,14 @@ fun AiFeatureCard(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         border = BorderStroke(
             width = 1.dp,
             color = MaterialTheme.colorScheme.primary.copy(alpha = .4f)
         ),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
