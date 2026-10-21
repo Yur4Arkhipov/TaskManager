@@ -1,6 +1,5 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -21,7 +20,7 @@ fun TasksFilter(
     taskFilter: TaskFilter,
     onTaskFilterChanged: (TaskFilter) -> Unit,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    Row {
         TaskFilter.entries.forEach { filter ->
             val selected = taskFilter == filter
             val label = when (filter) {

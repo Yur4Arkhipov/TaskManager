@@ -74,9 +74,7 @@ fun TaskItem(
             Spacer(modifier = Modifier.width(4.dp))
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
@@ -93,12 +91,6 @@ fun TaskItem(
                     } else {
                         TextDecoration.None
                     }
-                )
-
-                Text(
-                    text = task.createdAtMillis.toFormattedDate(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
@@ -120,6 +112,19 @@ fun TaskItem(
                         modifier = Modifier.size(20.dp),
                     )
                 }
+            }
+        }
+
+        if (!isDeleteModeEnabled) {
+            Box(
+               contentAlignment = Alignment.TopEnd,
+                modifier = Modifier.padding(4.dp)
+            ) {
+                Text(
+                    text = task.createdAtMillis.toFormattedDate(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                )
             }
         }
     }
