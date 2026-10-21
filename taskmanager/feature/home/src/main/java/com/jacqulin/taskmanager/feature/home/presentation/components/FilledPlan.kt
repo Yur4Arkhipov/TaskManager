@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
+    onOpenFullPlan: () -> Unit = {},
 ) {
     Column {
         PlanHeader(uiState = uiState)
@@ -80,7 +82,8 @@ fun FilledPlan(
 
         PlanTaskList(
             uiState = uiState,
-            onEvent = onEvent
+            onEvent = onEvent,
+            onOpenFullPlan = onOpenFullPlan,
         )
     }
 }
@@ -89,6 +92,7 @@ fun FilledPlan(
 private fun PlanTaskList(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
+    onOpenFullPlan: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -116,8 +120,7 @@ private fun PlanTaskList(
 
     Spacer(Modifier.height(12.dp))
 
-    val visibleTasks = if (uiState.isFullPlanShown) uiState.tasks
-        else uiState.tasks.take(3)
+    val visibleTasks = uiState.tasks.take(3)
 
     visibleTasks.forEachIndexed { index, task ->
         PlanTaskRow(
@@ -128,18 +131,31 @@ private fun PlanTaskList(
         )
         Spacer(Modifier.height(6.dp))
     }
-    if (uiState.tasks.size > 3) {
-        Text(
-            if (uiState.isFullPlanShown)
-                stringResource(R.string.home_collapse_plan)
-            else
-                stringResource(R.string.home_expand_plan),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier
-                .clickable { onEvent(HomeEvent.OnShowFullPlanClicked) }
-                .padding(vertical = 4.dp),
-        )
+    if (uiState.tasks.isNotEmpty()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable(onClick = onOpenFullPlan)
+                    .padding(vertical = 2.dp, horizontal = 6.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.home_expand_plan),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                Icon(
+                    painter = painterResource(R.drawable.keyboard_arrow_right),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
     }
 }
 

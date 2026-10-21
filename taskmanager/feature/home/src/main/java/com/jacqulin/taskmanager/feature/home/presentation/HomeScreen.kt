@@ -25,6 +25,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 fun HomeScreen(
     onNavigateToTasks: () -> Unit,
     onNavigateToNotes: () -> Unit,
+    onNavigateToFullPlan: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -41,6 +42,7 @@ fun HomeScreen(
     HomeContent(
         uiState = uiState,
         onEvent = viewModel::onEvent,
+        onOpenFullPlan = onNavigateToFullPlan,
     )
 }
 
@@ -48,6 +50,7 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
+    onOpenFullPlan: () -> Unit = {},
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -75,6 +78,7 @@ private fun HomeContent(
                 FilledPlan(
                     uiState = uiState,
                     onEvent = onEvent,
+                    onOpenFullPlan = onOpenFullPlan,
                 )
             }
         }
@@ -108,7 +112,8 @@ fun HomeContentPreview() {
                         isCompleted = false
                     )
                 )
-            )
+            ),
+            onEvent = { }
         ) { }
     }
 }

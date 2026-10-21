@@ -39,6 +39,13 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             is HomeEvent.OnTaskDeleted -> _uiState.update { state ->
                 state.copy(tasks = state.tasks.filterNot { it.id == event.taskId })
             }
+            is HomeEvent.OnTaskCompletionChanged -> _uiState.update { state ->
+                state.copy(
+                    tasks = state.tasks.map { task ->
+                        if (task.id == event.taskId) task.copy(isCompleted = event.isCompleted) else task
+                    }
+                )
+            }
             HomeEvent.OnAddTaskClicked,
             HomeEvent.OnAddToPlanClicked -> emitEffect(HomeEffect.NavigateToCreateTask)
             HomeEvent.OnAddNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
