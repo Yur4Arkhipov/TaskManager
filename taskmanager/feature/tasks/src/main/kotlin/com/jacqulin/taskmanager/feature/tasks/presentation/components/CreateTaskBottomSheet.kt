@@ -46,20 +46,21 @@ import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.ColorPalette
+import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTaskBottomSheet(
     title: String,
-    tags: List<String>,
+    tags: List<Tag>,
     isPlannedForToday: Boolean,
     onTitleChanged: (String) -> Unit,
     onDismissRequest: () -> Unit,
     onTimeEstimateSelected: (String) -> Unit,
     onPlanForTodayChanged: (Boolean) -> Unit,
-    onTagAdded: (String) -> Unit,
-    onTagRemoved: (String) -> Unit,
+    onTagAdded: (Tag) -> Unit,
+    onTagRemoved: (Tag) -> Unit,
     onSaveTaskClick: () -> Unit,
 ) {
     var selectedEstimate by rememberSaveable { mutableStateOf("none") }
@@ -101,15 +102,15 @@ fun ModalBottomSheetContent(
     title: String,
     saveButtonEnabled: Boolean,
     selectedEstimate: String,
-    tags: List<String>,
+    tags: List<Tag>,
     addToTodayPlan: Boolean,
     onDismissRequest: () -> Unit,
     onTitleChanged: (String) -> Unit,
     onTimeEstimateSelected: (String) -> Unit,
     onPlanForTodayChanged: (Boolean) -> Unit,
     onCreateTagClick: () -> Unit,
-    onTagAdded: (String) -> Unit,
-    onTagRemoved: (String) -> Unit,
+    onTagAdded: (Tag) -> Unit,
+    onTagRemoved: (Tag) -> Unit,
     onSaveTaskClick: () -> Unit,
 ) {
     Column(
@@ -372,12 +373,13 @@ private fun PlanForTodayRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TagRow(
-    tags: List<String>,
-    onTagAdded: (String) -> Unit,
+    tags: List<Tag>,
+    onTagAdded: (Tag) -> Unit,
     onCreateTag: () -> Unit,
-    onTagRemoved: (String) -> Unit,
+    onTagRemoved: (Tag) -> Unit,
 ) {
     val suggestedTags = listOf("hghghf", "павпавп", "пвпвпавп", "gfgfgf", "fdsfdsfdsfdsf", "fdsf")
+        .mapIndexed { index, name -> Tag(id = index + 1, name = name) }
 
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
@@ -399,12 +401,15 @@ private fun TagRow(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            (suggestedTags + tags.filterNot(suggestedTags::contains))
-                .distinct()
+            (suggestedTags + tags.filterNot { selectedTag ->
+                suggestedTags.any { it.name.equals(selectedTag.name, ignoreCase = true) }
+            })
+                .distinctBy { it.name.lowercase() }
                 .forEach { tag ->
-                    val selected = tag in tags
+                    val selectedTag = tags.firstOrNull { it.name.equals(tag.name, ignoreCase = true) }
+                    val selected = selectedTag != null
                     Text(
-                        text = tag,
+                        text = tag.name,
                         style = MaterialTheme.typography.labelMedium,
                         color = if (selected) {
                             MaterialTheme.colorScheme.onSecondaryContainer
@@ -418,7 +423,7 @@ private fun TagRow(
                                 else MaterialTheme.colorScheme.surfaceContainerHighest,
                             )
                             .clickable {
-                                if (selected) onTagRemoved(tag) else onTagAdded(tag)
+                                selectedTag?.let(onTagRemoved) ?: onTagAdded(tag)
                             }
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                     )
@@ -487,7 +492,7 @@ fun ModalBottomSheetContentPreview_WithTags() {
             saveButtonEnabled = true,
             selectedEstimate = "none",
             addToTodayPlan = false,
-            tags = listOf("tag1", "tag2"),
+            tags = listOf(Tag(id = 1, name = "tag1"), Tag(id = 2, name = "tag2")),
             onDismissRequest = { },
             onTitleChanged = { },
             onTimeEstimateSelected = { },

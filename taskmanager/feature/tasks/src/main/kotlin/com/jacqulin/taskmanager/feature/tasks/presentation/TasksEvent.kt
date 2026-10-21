@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.tasks.presentation
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
+import com.jacqulin.taskmanager.core.model.Tag
 
 sealed interface TasksEvent {
     data class OnSearchQueryChanged(val query: String) : TasksEvent
@@ -23,8 +24,8 @@ sealed interface TasksEvent {
     data class OnTaskTextChanged(val title: String) : TasksEvent
     data class OnTaskTimeEstimateSelected(val estimate: String) : TasksEvent
     data class OnTaskPlanForTodayChanged(val enabled: Boolean) : TasksEvent
-    data class OnTaskTagAdded(val tag: String) : TasksEvent
-    data class OnTaskTagRemoved(val tag: String) : TasksEvent
+    data class OnTaskTagAdded(val tag: Tag) : TasksEvent
+    data class OnTaskTagRemoved(val tag: Tag) : TasksEvent
     data class UpdateTaskStatus(val task: TaskItemUi) : TasksEvent
     data object OnCreateTaskByVoiceClicked : TasksEvent
     data object VoiceInputStopClicked : TasksEvent

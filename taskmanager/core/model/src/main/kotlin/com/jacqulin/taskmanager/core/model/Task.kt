@@ -5,6 +5,6 @@ data class Task(
     val title: String,
     val createdAtMillis: Long,
     val isCompleted: Boolean,
-    val tags: List<String> = emptyList(),
-    val isPlannedForToday: Boolean = false,
+    val tags: List<Tag>,
+    val isPlannedForToday: Boolean,
 )

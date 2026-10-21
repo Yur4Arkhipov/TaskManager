@@ -189,15 +189,10 @@ class TasksScreenViewModel @Inject constructor(
                 it.copy(isPlannedForToday = event.enabled)
             }
             is TasksEvent.OnTaskTagAdded -> taskState.update { state ->
-                val tag = event.tag.trim()
-                if (tag.isBlank() || state.tags.any { it.equals(tag, ignoreCase = true) }) {
-                    state
-                } else {
-                    state.copy(tags = state.tags + tag)
-                }
+                state.copy(tags = state.tags + event.tag)
             }
             is TasksEvent.OnTaskTagRemoved -> taskState.update { state ->
-                state.copy(tags = state.tags.filterNot { it == event.tag })
+                state.copy(tags = state.tags - event.tag)
             }
 
             // Voice

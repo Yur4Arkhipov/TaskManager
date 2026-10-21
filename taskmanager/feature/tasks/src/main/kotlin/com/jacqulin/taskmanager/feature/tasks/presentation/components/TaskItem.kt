@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import java.time.Instant
@@ -121,7 +122,7 @@ fun TaskItem(
                                 isToday = true,
                             )
                         }
-                        visibleTags.forEach { tag -> TaskTagChip(text = tag) }
+                        visibleTags.forEach { tag -> TaskTagChip(text = tag.name) }
                     }
                 }
             }
@@ -222,7 +223,7 @@ private fun TaskItemCompletedPreview() {
                 title = "Выполнить код-ревью",
                 createdAtMillis = System.currentTimeMillis() - 86400000,
                 isCompleted = true,
-                tags = listOf("tag1", "tag2"),
+                tags = listOf(Tag(id = 1, name = "tag1"), Tag(id = 2, name = "tag2")),
                 isPlannedForToday = true,
             ),
             isDeleteModeEnabled = true,
