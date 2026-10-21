@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.jacqulin.taskmanager.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.taskmanager.feature.home.navigation.homeSection
+import com.jacqulin.taskmanager.feature.home.navigation.navigateToDayPlanRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
 import com.jacqulin.taskmanager.feature.settings.navigation.settingsSection
@@ -40,9 +41,11 @@ fun AppNavHost(
             onNavigateToTasks = {
 
             },
-            onNavigateToCreateNote = {
+            onNavigateToNoteEditor = {
                 navController.navigateToNoteEditor()
             },
+            onNavigateToDayPlan = { navController.navigateToDayPlanRoute() },
+            onBackFromDayPlan = { navController.popBackStack() },
         )
     }
 }
