@@ -8,6 +8,7 @@ import com.jacqulin.taskmanager.feature.home.navigation.homeSection
 import com.jacqulin.taskmanager.feature.home.navigation.navigateToDayPlanRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
+import com.jacqulin.taskmanager.feature.settings.navigation.navigateToTags
 import com.jacqulin.taskmanager.feature.settings.navigation.settingsSection
 import com.jacqulin.taskmanager.feature.tasks.navigation.tasksSection
 import com.jacqulin.taskmanager.ui.AppState
@@ -36,7 +37,10 @@ fun AppNavHost(
             }
         )
         tasksSection()
-        settingsSection()
+        settingsSection(
+            onNavigateToTags = { navController.navigateToTags() },
+            onBackClick = { navController.popBackStack() },
+        )
         homeSection(
             onNavigateToTasks = {
 
