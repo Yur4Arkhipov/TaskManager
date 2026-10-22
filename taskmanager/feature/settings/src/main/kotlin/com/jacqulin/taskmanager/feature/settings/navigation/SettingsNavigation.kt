@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
 import com.jacqulin.taskmanager.feature.settings.presentation.SettingsScreen
-import com.jacqulin.taskmanager.feature.settings.presentation.TagsScreen
+import com.jacqulin.taskmanager.feature.settings.presentation.tags.TagsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

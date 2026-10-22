@@ -50,7 +50,8 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
+    onNavigateToTags: () -> Unit = {},
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 
@@ -70,6 +71,7 @@ fun SettingsScreen(
         onYandexTokensChanged = { iamToken, folderId ->
             viewModel.onEvent(SettingsEvent.OnYandexTokensChanged(iamToken, folderId))
         },
+        onNavigateToTags = onNavigateToTags,
     )
 }
 
@@ -82,6 +84,7 @@ fun SettingsScreen(
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
     onYandexTokensChanged: (String, String) -> Unit,
+    onNavigateToTags: () -> Unit = {},
 ) {
     val snackbar = remember { SnackbarHostState() }
 
@@ -128,6 +131,31 @@ fun SettingsScreen(
                                     selectedPalette = settingsUiState.settings.colorPalette,
                                     onPaletteSelected = onChangeColorPalette
                                 )
+                            }
+                        )
+                    }
+
+                    item {
+                        SettingsSectionCard(
+                            title = "Метки",
+                            onClick = onNavigateToTags,
+                            content = {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = "Управление метками задач",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Icon(
+                                        painter = painterResource(R.drawable.keyboard_arrow_right),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         )
                     }
