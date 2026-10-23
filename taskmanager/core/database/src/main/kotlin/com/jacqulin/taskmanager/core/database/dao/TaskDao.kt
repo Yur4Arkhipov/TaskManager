@@ -24,7 +24,7 @@ interface TaskDao {
 
     @Transaction
     suspend fun insertTask(task: Task) {
-        val taskId = insertTaskEntity(task.toEntity())
+        val taskId = insertTaskEntity(task.toEntity()).toInt()
         replaceTaskTags(taskId, task.tags)
     }
 
@@ -48,7 +48,7 @@ interface TaskDao {
     suspend fun insertTaskTag(crossRef: TaskTagCrossRef)
 
     @Insert
-    suspend fun insertTaskEntity(task: TaskEntity): Int
+    suspend fun insertTaskEntity(task: TaskEntity): Long
 
     @Update
     suspend fun updateTaskEntity(task: TaskEntity)
@@ -59,9 +59,7 @@ interface TaskDao {
 
 private suspend fun TaskDao.replaceTaskTags(taskId: Int, tags: List<Tag>) {
     deleteTaskTags(taskId)
-    tags.map { it.name.trim() }
-        .filter { it.isNotEmpty() }
-        .distinctBy { it.lowercase() }
+    tags.map { it.name }
         .forEach { name ->
             insertTag(TagEntity(title = name))
             insertTaskTag(TaskTagCrossRef(taskId = taskId, tagId = getTagId(name)))
