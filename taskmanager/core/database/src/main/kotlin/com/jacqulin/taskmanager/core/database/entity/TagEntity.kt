@@ -12,7 +12,6 @@ import androidx.room.PrimaryKey
 data class TagEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @ColumnInfo(collate = ColumnInfo.NOCASE)
     val title: String,
     @ColumnInfo(defaultValue = "-1720320")
     val color: Long = 0xFFE59A00.toInt().toLong(),

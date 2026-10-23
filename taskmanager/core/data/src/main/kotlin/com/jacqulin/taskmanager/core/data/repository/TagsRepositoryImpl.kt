@@ -22,6 +22,14 @@ internal class TagsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTags(): List<Tag> = dao.getTags().map { tagEntity ->
+        Tag(
+            id = tagEntity.id,
+            name = tagEntity.title,
+            color = tagEntity.color
+        )
+    }
+
     override suspend fun createTag(title: String) = dao.createTag(title)
 
     override suspend fun renameTag(tagId: Int, title: String) = dao.renameTag(tagId, title)
