@@ -69,7 +69,8 @@ fun TagCard(
             ) {
                 TagChip(
                     text = item.tag.name,
-                    textStyle = MaterialTheme.typography.labelLarge
+                    textStyle = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
 //                        color = Color(item.tag.color.toInt())
                 )
                 Text(

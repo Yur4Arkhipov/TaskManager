@@ -122,12 +122,14 @@ fun TaskItem(
                                 text = stringResource(R.string.tasks_today_tag),
                                 textStyle = MaterialTheme.typography.labelSmall,
                                 isToday = true,
+                                modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                             )
                         }
                         visibleTags.forEach { tag ->
                             TagChip(
                                 text = tag.name,
-                                textStyle = MaterialTheme.typography.labelSmall
+                                textStyle = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                             )
                         }
                     }

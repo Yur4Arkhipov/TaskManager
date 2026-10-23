@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.settings.presentation.tags
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.tags.ManageTagsUseCases
+import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,9 +17,10 @@ import javax.inject.Inject
 class TagsViewModel @Inject constructor(
     private val tags: ManageTagsUseCases,
     observeTasks: ObserveTasksUseCase,
+    observeTags: ObserveTagsUseCase
 ) : ViewModel() {
     val items = combine(
-        tags.observeTags(),
+        observeTags(),
         observeTasks()
     ) { allTags, tasks ->
         allTags.map { tag ->

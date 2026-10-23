@@ -125,12 +125,14 @@ fun TagCreateCard(
                 if (value.isNotBlank()) {
                     TagChip(
                         text = value,
-                        textStyle = MaterialTheme.typography.labelLarge
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                     )
                 } else {
                     TagChip(
                         text = "Работа",
-                        textStyle = MaterialTheme.typography.labelLarge
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                     )
                 }
             }

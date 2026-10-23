@@ -44,6 +44,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
+import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.Tag
@@ -53,7 +54,8 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun CreateTaskBottomSheet(
     title: String,
-    tags: List<Tag>,
+    availableTags: List<Tag>,
+    selectedTags: List<Tag>,
     isPlannedForToday: Boolean,
     onTitleChanged: (String) -> Unit,
     onDismissRequest: () -> Unit,
@@ -83,7 +85,8 @@ fun CreateTaskBottomSheet(
                 title = title,
                 saveButtonEnabled = title.isNotBlank(),
                 selectedEstimate = selectedEstimate,
-                tags = tags,
+                availableTags = availableTags,
+                selectedTags = selectedTags,
                 addToTodayPlan = isPlannedForToday,
                 onDismissRequest = onDismissRequest,
                 onTitleChanged = onTitleChanged,
@@ -102,7 +105,8 @@ fun ModalBottomSheetContent(
     title: String,
     saveButtonEnabled: Boolean,
     selectedEstimate: String,
-    tags: List<Tag>,
+    availableTags: List<Tag>,
+    selectedTags: List<Tag>,
     addToTodayPlan: Boolean,
     onDismissRequest: () -> Unit,
     onTitleChanged: (String) -> Unit,
@@ -140,7 +144,8 @@ fun ModalBottomSheetContent(
         )
 
         TagRow(
-            tags = tags,
+            availableTags = availableTags,
+            selectedTags = selectedTags,
             onTagAdded = onTagAdded,
             onTagRemoved = onTagRemoved,
             onCreateTag = onCreateTagClick
@@ -373,14 +378,12 @@ private fun PlanForTodayRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TagRow(
-    tags: List<Tag>,
+    availableTags: List<Tag>,
+    selectedTags: List<Tag>,
     onTagAdded: (Tag) -> Unit,
-    onCreateTag: () -> Unit,
     onTagRemoved: (Tag) -> Unit,
+    onCreateTag: () -> Unit,
 ) {
-    val suggestedTags = listOf("hghghf", "павпавп", "пвпвпавп", "gfgfgf", "fdsfdsfdsfdsf", "fdsf")
-        .mapIndexed { index, name -> Tag(id = index + 1, name = name) }
-
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
             text = stringResource(R.string.tasks_tags),
@@ -401,40 +404,27 @@ private fun TagRow(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            (suggestedTags + tags.filterNot { selectedTag ->
-                suggestedTags.any { it.name.equals(selectedTag.name, ignoreCase = true) }
-            })
-                .distinctBy { it.name.lowercase() }
-                .forEach { tag ->
-                    val selectedTag = tags.firstOrNull { it.name.equals(tag.name, ignoreCase = true) }
-                    val selected = selectedTag != null
-                    Text(
-                        text = tag.name,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (selected) {
-                            MaterialTheme.colorScheme.onSecondaryContainer
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(50))
-                            .background(
-                                if (selected) MaterialTheme.colorScheme.secondaryContainer
-                                else MaterialTheme.colorScheme.surfaceContainerHighest,
-                            )
-                            .clickable {
-                                selectedTag?.let(onTagRemoved) ?: onTagAdded(tag)
-                            }
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                    )
-                }
+            availableTags.forEach { tag ->
+                val selected = tag in selectedTags
+                TagChip(
+                    text = tag.name,
+                    textStyle = MaterialTheme.typography.labelMedium,
+                    isSelected = selected,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .clickable {
+                            if (selected) onTagRemoved(tag)
+                            else onTagAdded(tag)
+                        }
+                )
+            }
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(50))
+                    .clip(RoundedCornerShape(6.dp))
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.outlineVariant,
-                        shape = RoundedCornerShape(50),
+                        shape = RoundedCornerShape(6.dp),
                     )
                     .clickable(onClick = onCreateTag)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -467,8 +457,9 @@ fun ModalBottomSheetContentPreview() {
             title = "title",
             saveButtonEnabled = true,
             selectedEstimate = "none",
+            availableTags = emptyList(),
+            selectedTags = emptyList(),
             addToTodayPlan = false,
-            tags = emptyList(),
             onDismissRequest = { },
             onTitleChanged = { },
             onTimeEstimateSelected = { },
@@ -491,8 +482,9 @@ fun ModalBottomSheetContentPreview_WithTags() {
             title = "title",
             saveButtonEnabled = true,
             selectedEstimate = "none",
+            availableTags = listOf(Tag(id = 1, name = "Работа"), Tag(id = 2, name = "Дом"), Tag(id = 3, name = "Спорт")),
+            selectedTags = listOf(Tag(id = 1, name = "Работа")),
             addToTodayPlan = false,
-            tags = listOf(Tag(id = 1, name = "tag1"), Tag(id = 2, name = "tag2")),
             onDismissRequest = { },
             onTitleChanged = { },
             onTimeEstimateSelected = { },

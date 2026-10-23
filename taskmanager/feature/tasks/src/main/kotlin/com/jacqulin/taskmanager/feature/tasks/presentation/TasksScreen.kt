@@ -254,7 +254,8 @@ fun TasksScreen(
     if (uiState.mainScreenState.isBottomSheetVisible) {
         CreateTaskBottomSheet(
             title = uiState.taskState.title,
-            tags = uiState.taskState.tags,
+            availableTags = uiState.availableTags,
+            selectedTags = uiState.taskState.tags,
             isPlannedForToday = uiState.taskState.isPlannedForToday,
             onDismissRequest = {
                 onEvent(TasksEvent.OnBottomSheetDismissed)
