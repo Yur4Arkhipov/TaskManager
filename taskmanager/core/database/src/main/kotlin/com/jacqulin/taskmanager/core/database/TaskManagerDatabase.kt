@@ -7,7 +7,6 @@ import com.jacqulin.taskmanager.core.database.dao.TagsDao
 import com.jacqulin.taskmanager.core.database.dao.TaskDao
 import com.jacqulin.taskmanager.core.database.entity.NoteEntity
 import com.jacqulin.taskmanager.core.database.entity.TagEntity
-import com.jacqulin.taskmanager.core.database.entity.TagEntityNew
 import com.jacqulin.taskmanager.core.database.entity.TaskTagCrossRef
 import com.jacqulin.taskmanager.core.database.entity.TaskEntity
 
@@ -16,7 +15,6 @@ import com.jacqulin.taskmanager.core.database.entity.TaskEntity
         NoteEntity::class,
         TaskEntity::class,
         TagEntity::class,
-        TagEntityNew::class,
         TaskTagCrossRef::class,
     ],
     version = 4,

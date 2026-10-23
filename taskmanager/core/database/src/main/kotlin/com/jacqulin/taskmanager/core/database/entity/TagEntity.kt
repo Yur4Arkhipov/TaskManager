@@ -6,12 +6,13 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "tagsNew",
+    tableName = "tags",
     indices = [Index(value = ["title"], unique = true)],
 )
-data class TagEntityNew(
+data class TagEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
     val title: String,
     @ColumnInfo(defaultValue = "-1720320")
     val color: Long = 0xFFE59A00.toInt().toLong(),
