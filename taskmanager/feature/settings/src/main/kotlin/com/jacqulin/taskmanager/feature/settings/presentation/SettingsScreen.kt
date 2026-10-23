@@ -1,6 +1,7 @@
 package com.jacqulin.taskmanager.feature.settings.presentation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -138,7 +141,11 @@ fun SettingsScreen(
                     item {
                         SettingsSectionCard(
                             title = "Метки",
-                            onClick = onNavigateToTags,
+                            modifier = Modifier
+                                .clip(CardDefaults.shape)
+                                .clickable(
+                                onClick = onNavigateToTags
+                            ),
                             content = {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,

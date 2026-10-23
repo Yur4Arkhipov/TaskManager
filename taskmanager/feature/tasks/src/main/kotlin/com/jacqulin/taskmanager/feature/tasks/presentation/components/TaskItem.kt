@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
+import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
@@ -117,12 +118,18 @@ fun TaskItem(
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         if (task.isPlannedForToday) {
-                            TaskTagChip(
+                            TagChip(
                                 text = stringResource(R.string.tasks_today_tag),
+                                textStyle = MaterialTheme.typography.labelSmall,
                                 isToday = true,
                             )
                         }
-                        visibleTags.forEach { tag -> TaskTagChip(text = tag.name) }
+                        visibleTags.forEach { tag ->
+                            TagChip(
+                                text = tag.name,
+                                textStyle = MaterialTheme.typography.labelSmall
+                            )
+                        }
                     }
                 }
             }
@@ -160,28 +167,6 @@ fun TaskItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TaskTagChip(
-    text: String,
-    isToday: Boolean = false,
-) {
-    Surface(
-        shape = RoundedCornerShape(6.dp),
-        color = if (isToday) MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.surfaceContainerHighest,
-        contentColor = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.onSurfaceVariant,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
-        )
     }
 }
 
