@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.core.database.di
 
 import com.jacqulin.taskmanager.core.database.TaskManagerDatabase
 import com.jacqulin.taskmanager.core.database.dao.NoteDao
+import com.jacqulin.taskmanager.core.database.dao.TagsDao
 import com.jacqulin.taskmanager.core.database.dao.TaskDao
 import dagger.Module
 import dagger.Provides
@@ -21,4 +22,9 @@ internal object DaosModule {
     fun provideTaskDao(
         database: TaskManagerDatabase,
     ): TaskDao = database.taskDao()
+
+    @Provides
+    fun provideTagsDao(
+        database: TaskManagerDatabase
+    ): TagsDao = database.tagsDao()
 }

@@ -42,6 +42,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.SearchField
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
 
 @Composable
 fun TagsScreen(
@@ -62,7 +63,7 @@ fun TagsScreen(
 private fun TagsScreenContent(
     items: List<TagManagementItem>,
     onBackClick: () -> Unit,
-    onCreate: (String, Long) -> Unit,
+    onCreate: (String) -> Unit,
     onRename: (Int, String) -> Unit,
     onDelete: (Int) -> Unit,
 ) {
@@ -114,7 +115,7 @@ private fun TagsScreenContent(
                     onValueChanged = { new ->
                         newName = new
                     },
-                    onCreate = { _, _ -> }
+                    onCreate = onCreate
                 )
                 Spacer(Modifier.height(12.dp))
             }
@@ -306,7 +307,7 @@ fun TagsScreenContentPreview() {
                 )
             ),
             onBackClick = {},
-            onCreate = { _, _ -> },
+            onCreate = { _ -> },
             onRename = { _, _ -> },
             onDelete = {}
         )

@@ -43,6 +43,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
 
 @Composable
 fun TagCard(

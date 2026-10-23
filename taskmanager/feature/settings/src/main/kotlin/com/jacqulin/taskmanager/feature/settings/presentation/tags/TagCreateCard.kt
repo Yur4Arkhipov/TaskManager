@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.settings.presentation.tags
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +27,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.OutlinedTextField
 import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagCreateCard(
     value: String,
@@ -33,7 +35,7 @@ fun TagCreateCard(
     selectedColor: Int,
     onSelectedColorChanged: (Int) -> Unit,
     onValueChanged: (String) -> Unit,
-    onCreate: (String, Long) -> Unit
+    onCreate: (String) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -65,10 +67,7 @@ fun TagCreateCard(
                 CreateTagButton(
                     enabled = value.isNotBlank(),
                     onClick = {
-//                        onCreate(
-//                            value.trim(),
-//                            tagColors[selectedColor].toArgb().toLong(),
-//                        )
+                        onCreate(value.trim())
                     },
                 )
             }
@@ -190,7 +189,7 @@ fun TagCreateCardPreview() {
             selectedColor = 0,
             onSelectedColorChanged = { _ -> },
             onValueChanged = { _ -> },
-            onCreate = { _, _ -> }
+            onCreate = { }
         )
     }
 }
