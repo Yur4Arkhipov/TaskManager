@@ -55,7 +55,6 @@ class TagsViewModel @Inject constructor(
                     TagsSortType.BY_USAGE -> {
                         tags.sortedByDescending(TagManagementItem::taskCount)
                     }
-                    else -> tags
                 }
             }
             TagsUiState(
