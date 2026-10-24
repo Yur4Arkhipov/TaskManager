@@ -2,7 +2,6 @@ package com.jacqulin.taskmanager.feature.settings.presentation.tags
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.designsystem.model.TagsSortType
 import com.jacqulin.taskmanager.core.domain.tags.CreateTagUseCase
 import com.jacqulin.taskmanager.core.domain.tags.DeleteTagUseCase
@@ -78,6 +77,7 @@ class TagsViewModel @Inject constructor(
                 tagsState.update { it.copy(createQuery = event.query) }
             }
             is TagsEvent.OnCreateTag -> {
+                tagsState.update { it.copy(createQuery = "") }
                 viewModelScope.launch { createTagUseCase(event.title) }
             }
             is TagsEvent.OnRenameTag -> {

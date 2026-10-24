@@ -18,8 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +58,9 @@ fun TagCreateCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
+            val focusManager = LocalFocusManager.current
+            val focusRequester = remember { FocusRequester() }
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
                     value = value,
@@ -61,13 +68,16 @@ fun TagCreateCard(
                     onValueChange = { newName ->
                         onValueChanged(newName)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(focusRequester)
                 )
                 Spacer(Modifier.width(6.dp))
                 CreateTagButton(
                     enabled = value.isNotBlank(),
                     onClick = {
                         onCreate(value.trim())
+                        focusManager.clearFocus()
                     },
                 )
             }

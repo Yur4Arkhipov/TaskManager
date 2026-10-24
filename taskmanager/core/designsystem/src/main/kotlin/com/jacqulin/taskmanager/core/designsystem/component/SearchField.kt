@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -33,11 +35,14 @@ fun SearchField(
     placeholderText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = FocusRequester.Default,
+    onSearch: () -> Unit,
 ) {
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
+            .focusRequester(focusRequester)
             .height(48.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant),
@@ -50,7 +55,7 @@ fun SearchField(
             imeAction = ImeAction.Search,
         ),
         keyboardActions = KeyboardActions(
-            onSearch = { },
+            onSearch = { onSearch() },
         ),
         decorationBox = { innerTextField ->
             Row(

@@ -11,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +37,9 @@ fun NotesToolbar(
 ) {
     var sortMenuExpanded by remember { mutableStateOf(false) }
 
+    val focusManager = LocalFocusManager.current
+    val searchFocusRequester = remember { FocusRequester() }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -43,7 +49,10 @@ fun NotesToolbar(
             value = searchQuery,
             placeholderText = stringResource(R.string.notes_search),
             onValueChange = onSearchQueryChanged,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(searchFocusRequester),
+            onSearch = { focusManager.clearFocus() }
         )
 
         Box {

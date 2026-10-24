@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.settings.presentation.tags
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,10 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,9 +76,15 @@ private fun TagsScreenContent(
     var deleting by remember { mutableStateOf<TagManagementItem?>(null) }
 
     var sortMenuExpanded by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val searchFocusRequester = remember { FocusRequester() }
 
     Column(
-        modifier = Modifier.padding(12.dp)
+        modifier = Modifier
+            .padding(12.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManager.clearFocus() })
+            }
     ) {
         BackRow(onBackClick)
 
@@ -154,7 +163,10 @@ private fun TagsScreenContent(
                         onValueChange = { query ->
                             onEvent(TagsEvent.OnSearchQueryChanged(query))
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(searchFocusRequester),
+                        onSearch = { focusManager.clearFocus() }
                     )
                     Box {
                         ToolbarButton(
@@ -173,31 +185,6 @@ private fun TagsScreenContent(
                         )
                     }
                 }
-//                Spacer(Modifier.height(6.dp))
-//                Surface(
-//                    shape = RoundedCornerShape(8.dp),
-//                    color = MaterialTheme.colorScheme.surfaceVariant,
-//                    modifier = Modifier.fillMaxWidth(),
-//                ) {
-//                    Row {
-//                        SortPill(
-//                            text = "По названию",
-//                            selected = state.tagsState.sortType == TagSort.BY_NAME,
-//                            onClick = {
-//                                onEvent(TagsEvent.OnSortChanged(TagSort.BY_NAME))
-//                            },
-//                            modifier = Modifier.weight(1f),
-//                        )
-//                        SortPill(
-//                            text = "По использованию",
-//                            selected = state.tagsState.sortType == TagSort.BY_USAGE,
-//                            onClick = {
-//                                onEvent(TagsEvent.OnSortChanged(TagSort.BY_USAGE))
-//                            },
-//                            modifier = Modifier.weight(1f),
-//                        )
-//                    }
-//                }
                 Spacer(Modifier.height(12.dp))
             }
             items(
@@ -300,44 +287,6 @@ private fun BackRow(
             color = MaterialTheme.colorScheme.primary
         )
 
-    }
-}
-
-@Composable
-private fun SortPill(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.height(36.dp),
-        shape = RoundedCornerShape(8.dp),
-        color = if (selected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant
-        },
-        contentColor = if (selected) {
-            MaterialTheme.colorScheme.onPrimary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
     }
 }
 
