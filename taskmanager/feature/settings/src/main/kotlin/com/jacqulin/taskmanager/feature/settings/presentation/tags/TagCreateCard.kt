@@ -32,8 +32,8 @@ import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 fun TagCreateCard(
     value: String,
 //    tagColors: List<Color>,
-    selectedColor: Int,
-    onSelectedColorChanged: (Int) -> Unit,
+//    selectedColor: Int,
+//    onSelectedColorChanged: (Int) -> Unit,
     onValueChanged: (String) -> Unit,
     onCreate: (String) -> Unit
 ) {
@@ -188,8 +188,8 @@ fun TagCreateCardPreview() {
         TagCreateCard(
             value = "Work",
 //            tagColors = tagColors,
-            selectedColor = 0,
-            onSelectedColorChanged = { _ -> },
+//            selectedColor = 0,
+//            onSelectedColorChanged = { _ -> },
             onValueChanged = { _ -> },
             onCreate = { }
         )

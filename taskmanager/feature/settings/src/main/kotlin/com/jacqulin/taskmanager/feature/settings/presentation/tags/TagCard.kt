@@ -44,6 +44,7 @@ import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
+import com.jacqulin.taskmanager.feature.settings.presentation.util.pluralize
 
 @Composable
 fun TagCard(
@@ -75,7 +76,12 @@ fun TagCard(
                 )
                 Text(
                     text = if (item.taskCount == 0) "Пока не используется"
-                        else "${item.taskCount} задач",
+                        else "${item.taskCount} ${pluralize(
+                            count = item.taskCount,
+                            one = "задача",
+                            few = "задачи",
+                            many = "задач"
+                        )}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
