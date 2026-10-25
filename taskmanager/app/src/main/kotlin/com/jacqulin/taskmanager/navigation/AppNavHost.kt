@@ -36,7 +36,9 @@ fun AppNavHost(
                 navController.popBackStack()
             }
         )
-        tasksSection()
+        tasksSection(
+            onNavigateToTags = { navController.navigateToTags() }
+        )
         settingsSection(
             onNavigateToTags = { navController.navigateToTags() },
             onBackClick = { navController.popBackStack() },

@@ -64,6 +64,7 @@ fun CreateTaskBottomSheet(
     onTagAdded: (Tag) -> Unit,
     onTagRemoved: (Tag) -> Unit,
     onSaveTaskClick: () -> Unit,
+    onNavigateToTags: () -> Unit
 ) {
     var selectedEstimate by rememberSaveable { mutableStateOf("none") }
     val colors = MaterialTheme.colorScheme
@@ -92,7 +93,7 @@ fun CreateTaskBottomSheet(
                 onTitleChanged = onTitleChanged,
                 onTimeEstimateSelected = onTimeEstimateSelected,
                 onPlanForTodayChanged = onPlanForTodayChanged,
-                onCreateTagClick = { },
+                onCreateTagClick = onNavigateToTags,
                 onTagAdded = onTagAdded,
                 onTagRemoved = onTagRemoved,
                 onSaveTaskClick = onSaveTaskClick,

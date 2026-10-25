@@ -59,7 +59,8 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
 
 @Composable
 fun TasksScreen(
-    viewModel: TasksScreenViewModel = hiltViewModel()
+    viewModel: TasksScreenViewModel = hiltViewModel(),
+    onNavigateToTags: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -98,6 +99,7 @@ fun TasksScreen(
         isCreateMenuExpanded = isCreateMenuExpanded,
         onCreateTaskMenuToggle = { isCreateMenuExpanded = !isCreateMenuExpanded },
         onCreateTaskMenuDismissed = { isCreateMenuExpanded = false },
+        onNavigateToTags = onNavigateToTags,
         onEvent = viewModel::onEvent,
     )
 }
@@ -110,6 +112,7 @@ fun TasksScreen(
     isCreateMenuExpanded: Boolean,
     onCreateTaskMenuToggle: () -> Unit,
     onCreateTaskMenuDismissed: () -> Unit,
+    onNavigateToTags: () -> Unit,
     onEvent: (TasksEvent) -> Unit,
 ) {
     Scaffold(
@@ -278,6 +281,7 @@ fun TasksScreen(
             onSaveTaskClick = {
                 onEvent(TasksEvent.OnSaveTaskClicked)
             },
+            onNavigateToTags = onNavigateToTags
         )
     }
 
@@ -398,6 +402,7 @@ fun TasksScreenContentPreview_DeleteMode() {
             isCreateMenuExpanded = false,
             onCreateTaskMenuToggle = {},
             onCreateTaskMenuDismissed = {},
+            onNavigateToTags = {},
             onEvent = { },
         )
     }
@@ -427,6 +432,7 @@ fun TasksScreenContentPreview() {
             isCreateMenuExpanded = false,
             onCreateTaskMenuToggle = {},
             onCreateTaskMenuDismissed = {},
+            onNavigateToTags = {},
             onEvent = { },
         )
     }

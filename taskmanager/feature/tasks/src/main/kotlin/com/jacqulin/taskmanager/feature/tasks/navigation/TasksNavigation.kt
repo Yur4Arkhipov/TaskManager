@@ -17,10 +17,13 @@ data object TasksRoute
 fun NavController.navigateToTasks(navOptions: NavOptions) = navigate(route = TasksRoute, navOptions)
 
 fun NavGraphBuilder.tasksSection(
+    onNavigateToTags: () -> Unit
 ) {
     navigation<TasksBaseRoute>(startDestination = TasksRoute) {
         composable<TasksRoute> {
-            TasksScreen()
+            TasksScreen(
+                onNavigateToTags = onNavigateToTags
+            )
         }
     }
 }
