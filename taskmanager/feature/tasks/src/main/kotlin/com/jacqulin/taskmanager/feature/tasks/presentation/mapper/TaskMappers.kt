@@ -7,12 +7,16 @@ fun Task.toUiModel(): TaskItemUi = TaskItemUi(
     id = id,
     title = title,
     createdAtMillis = createdAtMillis,
-    isCompleted = isCompleted
+    isCompleted = isCompleted,
+    tags = tags,
+    isPlannedForToday = isPlannedForToday,
 )
 
 fun TaskItemUi.toDomain(): Task = Task(
     id = id,
     title = title,
     createdAtMillis = createdAtMillis,
-    isCompleted = isCompleted
+    isCompleted = isCompleted,
+    tags = tags,
+    isPlannedForToday = isPlannedForToday,
 )

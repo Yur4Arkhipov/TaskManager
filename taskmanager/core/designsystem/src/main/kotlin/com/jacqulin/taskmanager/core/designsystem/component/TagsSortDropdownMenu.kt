@@ -1,0 +1,79 @@
+package com.jacqulin.taskmanager.core.designsystem.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import com.jacqulin.taskmanager.core.designsystem.model.TagsSortType
+
+@Composable
+fun TagsSortDropdownMenu(
+    expanded: Boolean,
+    sortType: TagsSortType,
+    onDismissRequest: () -> Unit,
+    onSortChanged: (TagsSortType) -> Unit,
+) {
+    val shape = RoundedCornerShape(16.dp)
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        offset = DpOffset(x = 0.dp, y = 8.dp),
+        shape = shape,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        tonalElevation = 3.dp,
+    ) {
+        SortMenuItem(
+            text = "По названию",
+            selected = sortType == TagsSortType.BY_NAME,
+            onClick = {
+                onSortChanged(TagsSortType.BY_NAME)
+                onDismissRequest()
+            }
+        )
+
+        SortMenuItem(
+            text = "По использованию",
+            selected = sortType == TagsSortType.BY_USAGE,
+            onClick = {
+                onSortChanged(TagsSortType.BY_USAGE)
+                onDismissRequest()
+            }
+        )
+    }
+}
+
+@Composable
+private fun SortMenuItem(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val background = if (selected)
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    else
+        Color.Transparent
+
+    DropdownMenuItem(
+        text = {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        onClick = onClick,
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(background),
+    )
+}

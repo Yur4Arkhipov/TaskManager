@@ -9,8 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import com.jacqulin.taskmanager.feature.home.navigation.DayPlanRoute
 import com.jacqulin.taskmanager.core.designsystem.component.BottomNavigationBar
 import com.jacqulin.taskmanager.core.designsystem.model.BottomBarItem
+import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
 import com.jacqulin.taskmanager.navigation.AppNavHost
 
 @Composable
@@ -41,9 +46,12 @@ internal fun App(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            BottomNavigationBar(
-                items = bottomBarItems
-            )
+            val hideBottomBar = appState.currentDestination.isOn<DayPlanRoute>() ||
+                    appState.currentDestination.isOn<NoteEditorRoute>()
+
+            if (!hideBottomBar) {
+                BottomNavigationBar(items = bottomBarItems)
+            }
         }
     ) { paddingValues ->
         AppNavHost(
@@ -56,3 +64,5 @@ internal fun App(
     }
 }
 
+inline fun <reified T : Any> NavDestination?.isOn(): Boolean =
+    this?.hierarchy?.any { it.hasRoute<T>() } == true

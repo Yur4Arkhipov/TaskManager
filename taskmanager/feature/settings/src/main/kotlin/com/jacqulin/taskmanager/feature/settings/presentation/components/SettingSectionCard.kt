@@ -34,12 +34,13 @@ import com.jacqulin.taskmanager.designsystem.R
 @Composable
 fun SettingsSectionCard(
     title: String,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
     isExpanded: Boolean = true,
-    onToggleExpanded: (() -> Unit)? = null,
+    onToggleExpanded: (() -> Unit)? = null
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)

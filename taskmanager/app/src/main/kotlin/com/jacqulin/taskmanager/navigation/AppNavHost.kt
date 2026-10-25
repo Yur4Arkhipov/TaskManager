@@ -3,9 +3,12 @@ package com.jacqulin.taskmanager.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
+import com.jacqulin.taskmanager.feature.home.navigation.HomeBaseRoute
+import com.jacqulin.taskmanager.feature.home.navigation.homeSection
+import com.jacqulin.taskmanager.feature.home.navigation.navigateToDayPlanRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
+import com.jacqulin.taskmanager.feature.settings.navigation.navigateToTags
 import com.jacqulin.taskmanager.feature.settings.navigation.settingsSection
 import com.jacqulin.taskmanager.feature.tasks.navigation.tasksSection
 import com.jacqulin.taskmanager.ui.AppState
@@ -19,7 +22,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = NotesBaseRoute,
+        startDestination = HomeBaseRoute,
         modifier = modifier
     ) {
         notesSection(
@@ -33,7 +36,22 @@ fun AppNavHost(
                 navController.popBackStack()
             }
         )
-        tasksSection()
-        settingsSection()
+        tasksSection(
+            onNavigateToTags = { navController.navigateToTags() }
+        )
+        settingsSection(
+            onNavigateToTags = { navController.navigateToTags() },
+            onBackClick = { navController.popBackStack() },
+        )
+        homeSection(
+            onNavigateToTasks = {
+
+            },
+            onNavigateToNoteEditor = {
+                navController.navigateToNoteEditor()
+            },
+            onNavigateToDayPlan = { navController.navigateToDayPlanRoute() },
+            onBackFromDayPlan = { navController.popBackStack() },
+        )
     }
 }

@@ -12,6 +12,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.jacqulin.taskmanager.feature.home.navigation.navigateToHome
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNotes
 import com.jacqulin.taskmanager.feature.settings.navigation.navigateToSettings
 import com.jacqulin.taskmanager.feature.tasks.navigation.navigateToTasks
@@ -74,6 +75,7 @@ class AppState(
             }
 
             when (topLevelDestination) {
+                TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
                 TopLevelDestination.NOTES -> navController.navigateToNotes(topLevelNavOptions)
                 TopLevelDestination.TASKS -> navController.navigateToTasks(topLevelNavOptions)
                 TopLevelDestination.SETTINGS -> navController.navigateToSettings(topLevelNavOptions)

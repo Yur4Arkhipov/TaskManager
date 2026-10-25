@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":feature:notes"))
     implementation(project(":feature:tasks"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:home"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

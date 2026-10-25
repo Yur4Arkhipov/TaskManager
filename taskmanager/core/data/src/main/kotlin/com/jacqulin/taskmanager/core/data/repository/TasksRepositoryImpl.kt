@@ -2,7 +2,6 @@ package com.jacqulin.taskmanager.core.data.repository
 
 import com.jacqulin.taskmanager.core.database.dao.TaskDao
 import com.jacqulin.taskmanager.core.database.entity.asExternalModel
-import com.jacqulin.taskmanager.core.database.entity.toEntity
 import com.jacqulin.taskmanager.core.model.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,17 +14,17 @@ internal class TasksRepositoryImpl @Inject constructor(
 ) : TasksRepository {
     override fun observeTasks(): Flow<List<Task>> {
         return dao.observeTasks()
-            .map { notes ->
-                notes.map { it.asExternalModel() }
+            .map { tasks ->
+                tasks.map { it.asExternalModel() }
             }
     }
 
     override suspend fun createTask(task: Task) {
-        return dao.insertTask(task.toEntity())
+        return dao.insertTask(task)
     }
 
     override suspend fun updateTask(task: Task) {
-        return dao.updateTask(task.toEntity())
+        return dao.updateTask(task)
     }
 
     override suspend fun deleteTaskById(taskId: Int) {

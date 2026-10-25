@@ -42,6 +42,12 @@
     <string name="tasks_add_to_today_plan">Добавить в план на сегодня</string>
     <string name="tasks_tags">Метки</string>
     <string name="tasks_add_tag">Добавить метку</string>
+    <string name="tasks_create_tag">Создать метку</string>
+    <string name="tasks_tag_name">Название метки</string>
+    <string name="tasks_suggested_tags">Предлагаемые метки</string>
+    <string name="tasks_today_tag">Сегодня</string>
+    <string name="tasks_tags_empty_title">Меток пока нет</string>
+    <string name="tasks_tags_empty_description">Создайте первую в разделе «Настройки → Метки», затем её можно будет выбрать здесь.</string>
     <string name="tasks_add">Добавить</string>
     <string name="tasks_add_task_submit">Добавить задачу</string>
     <string name="tasks_no_tasks_yet">Задач пока нет</string>
@@ -62,6 +68,17 @@
     <string name="tasks_no_active_tasks">Активных задач нет</string>
     <string name="tasks_no_completed_tasks">Выполненных задач нет</string>
     <string name="tasks_search_no_results">Ничего не найдено</string>
+    <string name="tasks_list_settings">Настройки списка</string>
+    <string name="tasks_list_view">Вид списка</string>
+    <string name="tasks_show_creation_date">Дата создания</string>
+    <string name="tasks_show_tags">Метки</string>
+    <string name="tasks_compact_view">Компактный вид</string>
+    <string name="tasks_select_tasks">Выбрать задачи</string>
+    <string name="tasks_selected_count">Выбрано: %d</string>
+    <string name="tasks_select_all">Выбрать все</string>
+    <string name="tasks_deselect_all">Снять выделение</string>
+    <string name="tasks_exit_selection">Выйти из режима выбора</string>
+    <string name="tasks_delete_selected">Удалить (%d)</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>
     <string name="tasks_recording">Запись…</string>
     <string name="tasks_stop_recording">Остановить запись</string>
@@ -108,5 +125,34 @@
     <string name="settings_expandable_collapse">Скрыть</string>
     <string name="settings_expandable_expand">Раскрыть</string>
 
+    // Home
+    <string name="home_title">Дом</string>
+    <string name="home_empty_plan_title">Соберите свой план</string>
+    <string name="home_empty_plan_subtitle">Выберите несколько задач на сегодня. План всегда можно изменить.</string>
+    <string name="home_add_first_task">Добавить первую задачу</string>
+    <string name="home_today_plan">План дня</string>
+    <string name="home_task_count">%d %s · %d мин</string>
+    <string name="home_task_count_word">задача|задачи|задач</string>
+    <string name="home_progress_percentage">%d%%</string>
+    <string name="home_day_plan">План на день</string>
+    <string name="home_collapse_plan">Свернуть план ↑</string>
+    <string name="home_expand_plan">Открыть план</string>
+    <string name="home_today">Сегодня</string>
+    <string name="home_day_route_title">Маршрут дня</string>
+    <string name="home_tasks_ahead">%d впереди</string>
+    <string name="home_in_progress">В работе</string>
+    <string name="home_hold_and_drag">Удерживайте и тяните</string>
+    <string name="home_completed_today">Сделано сегодня</string>
+    <string name="home_completed_count">%1$d из %2$d задач</string>
+    <string name="home_completed_empty_hint">Выполненные задачи появятся здесь — прогресс дня всегда будет перед глазами.</string>
+    <string name="home_completed_hint">Отличная работа! Выполненные задачи останутся здесь.</string>
+    <string name="home_task_position">%d</string>
+    <string name="home_next_task">Ближайшая</string>
+    <string name="home_duration_minutes">%d мин</string>
+    <string name="home_quick_capture">Быстрый захват</string>
+    <string name="home_task">Задача</string>
+    <string name="home_note">Заметка</string>
+    <string name="home_thought_breakdown_title">Разобрать мысль</string>
+    <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
     
 </resources>

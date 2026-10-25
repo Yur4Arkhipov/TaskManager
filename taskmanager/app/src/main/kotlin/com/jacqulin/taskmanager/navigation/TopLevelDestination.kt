@@ -1,8 +1,10 @@
 package com.jacqulin.taskmanager.navigation
 
 import androidx.annotation.StringRes
-import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.core.designsystem.icon.AppIcons
+import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.home.navigation.HomeBaseRoute
+import com.jacqulin.taskmanager.feature.home.navigation.HomeRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesBaseRoute
 import com.jacqulin.taskmanager.feature.notes.navigation.NotesRoute
 import com.jacqulin.taskmanager.feature.settings.navigation.SettingsBaseRoute
@@ -17,6 +19,12 @@ enum class TopLevelDestination(
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
+    HOME(
+        icon = AppIcons.Home,
+        titleTextId = R.string.home_title,
+        route = HomeRoute::class,
+        baseRoute = HomeBaseRoute::class
+    ),
     TASKS(
         icon = AppIcons.Tasks,
         titleTextId = R.string.tasks_title,

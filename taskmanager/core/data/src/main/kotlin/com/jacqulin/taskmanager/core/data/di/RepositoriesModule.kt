@@ -10,6 +10,8 @@ import com.jacqulin.taskmanager.core.data.repository.NotesRepository
 import com.jacqulin.taskmanager.core.data.repository.NotesRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.SpeechRecognitionRepository
 import com.jacqulin.taskmanager.core.data.repository.SpeechRecognitionRepositoryImpl
+import com.jacqulin.taskmanager.core.data.repository.TagsRepository
+import com.jacqulin.taskmanager.core.data.repository.TagsRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.TasksRepository
 import com.jacqulin.taskmanager.core.data.repository.TasksRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.UserDataRepository
@@ -79,4 +81,10 @@ abstract class RepositoriesModule {
     internal abstract fun bindsSystemCapabilitiesChecker(
         impl: AndroidSystemCapabilitiesCheckerImpl,
     ): SystemCapabilitiesChecker
+
+    @Binds
+    @Singleton
+    internal abstract fun bindTagRepository(
+        impl: TagsRepositoryImpl,
+    ): TagsRepository
 }

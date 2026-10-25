@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
+import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
@@ -37,6 +38,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @HiltViewModel
 class TasksScreenViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
+    observeTagsUseCase: ObserveTagsUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
@@ -54,9 +56,10 @@ class TasksScreenViewModel @Inject constructor(
     private val tasksUiState: StateFlow<TasksUiState> =
         combine(
             observeTasksUseCase(),
+            observeTagsUseCase(),
             mainScreenState,
             taskState,
-        ) { tasks, mainScreenState, taskState ->
+        ) { tasks, tags, mainScreenState, taskState ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
                 .filter { task ->
@@ -90,6 +93,7 @@ class TasksScreenViewModel @Inject constructor(
                 mainScreenState = mainScreenState,
                 taskState = taskState,
                 visibleTasks = visibleTasks,
+                availableTags = tags,
             )
         }.stateIn(
             viewModelScope,
@@ -114,13 +118,13 @@ class TasksScreenViewModel @Inject constructor(
     fun onEvent(event: TasksEvent) {
         when (event) {
             is TasksEvent.OnSearchQueryChanged -> {
-                mainScreenState.update { it.copy(searchQuery = event.query) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(searchQuery = event.query) }
             }
             is TasksEvent.OnSortChanged -> {
-                mainScreenState.update { it.copy(sortType = event.sortType) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(sortType = event.sortType) }
             }
             is TasksEvent.OnTaskFilterChanged -> {
-                mainScreenState.update { it.copy(filter = event.filter) }
+                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(filter = event.filter) }
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
@@ -133,11 +137,47 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.OnBottomSheetDismissed -> {
                 mainScreenState.update { it.copy(isBottomSheetVisible = false) }
-                taskState.update { it.copy(title = "") }
+                taskState.update { TaskState() }
             }
             TasksEvent.OnDeleteModeToggled -> {
-                mainScreenState.update { it.copy(isDeleteModeEnabled = !it.isDeleteModeEnabled) }
+                mainScreenState.update {
+                    it.copy(isDeleteModeEnabled = !it.isDeleteModeEnabled, selectedTaskIds = emptySet())
+                }
             }
+            is TasksEvent.OnTaskSelectionToggled -> mainScreenState.update { state ->
+                if (!state.isDeleteModeEnabled) state else state.copy(
+                    selectedTaskIds = state.selectedTaskIds
+                        .toMutableSet()
+                        .apply { if (!add(event.taskId)) remove(event.taskId) }
+                )
+            }
+            is TasksEvent.OnEnterDeleteMode -> mainScreenState.update {
+                it.copy(isDeleteModeEnabled = true, selectedTaskIds = setOf(event.taskId))
+            }
+            TasksEvent.OnSelectAllTasks -> mainScreenState.update { state ->
+                state.copy(
+                    selectedTaskIds = state.selectedTaskIds
+                        .toMutableSet()
+                        .let { selected ->
+                            val visibleIds = uiState.value.visibleTasks
+                                .map { it.id }
+                                .toSet()
+                            if (selected.containsAll(visibleIds))
+                                selected.removeAll(visibleIds)
+                            else
+                                selected.addAll(visibleIds)
+                            selected
+                        }
+                )
+            }
+            TasksEvent.OnDeleteSelectedTasks -> {
+                val ids = mainScreenState.value.selectedTaskIds.toList()
+                ids.forEach(::deleteTask)
+                mainScreenState.update { it.copy(isDeleteModeEnabled = false, selectedTaskIds = emptySet()) }
+            }
+            is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
+            is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
+            is TasksEvent.OnCompactViewChanged -> mainScreenState.update { it.copy(isCompactView = event.enabled) }
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {
@@ -149,11 +189,14 @@ class TasksScreenViewModel @Inject constructor(
             is TasksEvent.OnTaskTimeEstimateSelected -> {
 
             }
-            is TasksEvent.OnTaskPlanForTodayChanged -> {
-
+            is TasksEvent.OnTaskPlanForTodayChanged -> taskState.update {
+                it.copy(isPlannedForToday = event.enabled)
             }
-            TasksEvent.OnTaskAddTagClicked -> {
-
+            is TasksEvent.OnTaskTagAdded -> taskState.update { state ->
+                state.copy(tags = state.tags + event.tag)
+            }
+            is TasksEvent.OnTaskTagRemoved -> taskState.update { state ->
+                state.copy(tags = state.tags - event.tag)
             }
 
             // Voice
@@ -275,11 +318,12 @@ class TasksScreenViewModel @Inject constructor(
                     title = taskState.value.title,
                     createdAtMillis = System.currentTimeMillis(),
                     isCompleted = false,
+                    tags = taskState.value.tags,
+                    isPlannedForToday = taskState.value.isPlannedForToday,
                 )
             )
         }
 
-        taskState.update { it.copy(title = "") }
         onEvent(TasksEvent.OnBottomSheetDismissed)
     }
 

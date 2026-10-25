@@ -10,17 +10,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,28 +39,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
-import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskMenu
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskBottomSheet
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskMenu
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
+import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
 
 @Composable
 fun TasksScreen(
-    viewModel: TasksScreenViewModel = hiltViewModel()
+    viewModel: TasksScreenViewModel = hiltViewModel(),
+    onNavigateToTags: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
 
@@ -89,40 +97,10 @@ fun TasksScreen(
     TasksScreen(
         uiState = uiState,
         isCreateMenuExpanded = isCreateMenuExpanded,
-        onSearchQueryChanged = { query ->
-            viewModel.onEvent(TasksEvent.OnSearchQueryChanged(query))
-        },
-        onSortChanged = { sortType ->
-            viewModel.onEvent(TasksEvent.OnSortChanged(sortType))
-        },
-        onTaskFilterChanged = { filter ->
-            viewModel.onEvent(TasksEvent.OnTaskFilterChanged(filter))
-        },
-        onTaskDeleted = { taskId ->
-            viewModel.onEvent(TasksEvent.OnDeleteTaskClicked(taskId))
-        },
-        onTaskStatusUpdated = { task ->
-            viewModel.onEvent(TasksEvent.UpdateTaskStatus(task))
-        },
         onCreateTaskMenuToggle = { isCreateMenuExpanded = !isCreateMenuExpanded },
         onCreateTaskMenuDismissed = { isCreateMenuExpanded = false },
-        onTextTaskSheetEvent = viewModel::onEvent,
-        onTextTaskClick = {
-            viewModel.onEvent(TasksEvent.OnCreateTaskByTextClicked)
-        },
-        onVoiceTaskClick = {
-            viewModel.onEvent(TasksEvent.OnCreateTaskByVoiceClicked)
-        },
-        onVoiceInputStopClicked = {
-            viewModel.onEvent(TasksEvent.VoiceInputStopClicked)
-        },
-        onVoiceInputRetry = {
-            viewModel.onEvent(TasksEvent.VoiceInputRetry)
-        },
-        onVoiceInputCancel = {
-            viewModel.onEvent(TasksEvent.VoiceInputCancel)
-        },
-        onDeleteModeClick = { viewModel.onEvent(TasksEvent.OnDeleteModeToggled) }
+        onNavigateToTags = onNavigateToTags,
+        onEvent = viewModel::onEvent,
     )
 }
 
@@ -130,48 +108,47 @@ fun TasksScreen(
 @Composable
 fun TasksScreen(
     uiState: TasksUiState,
-    isCreateMenuExpanded: Boolean,
     modifier: Modifier = Modifier,
-    onSearchQueryChanged: (String) -> Unit,
-    onSortChanged: (SortType) -> Unit,
-    onTaskFilterChanged: (TaskFilter) -> Unit,
-    onTaskDeleted: (Int) -> Unit,
-    onTaskStatusUpdated: (TaskItemUi) -> Unit,
+    isCreateMenuExpanded: Boolean,
     onCreateTaskMenuToggle: () -> Unit,
     onCreateTaskMenuDismissed: () -> Unit,
-    onVoiceTaskClick: () -> Unit,
-    onTextTaskClick: () -> Unit,
-    onVoiceInputStopClicked: () -> Unit,
-    onVoiceInputRetry: () -> Unit,
-    onVoiceInputCancel: () -> Unit,
-    onTextTaskSheetEvent: (TasksEvent) -> Unit = {},
-    onDeleteModeClick: () -> Unit,
+    onNavigateToTags: () -> Unit,
+    onEvent: (TasksEvent) -> Unit,
 ) {
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
         floatingActionButton = {
-            val iconRotation by animateFloatAsState(
-                targetValue = if (isCreateMenuExpanded) 45f else 0f,
-                animationSpec = tween(durationMillis = 220),
-                label = "createTaskFabIconRotation",
-            )
-
-            Column(horizontalAlignment = Alignment.End) {
-                CreateTaskMenu(
-                    expanded = isCreateMenuExpanded,
-                    onDismissRequest = onCreateTaskMenuDismissed,
-                    onVoiceClick = onVoiceTaskClick,
-                    onTextClick = onTextTaskClick
+            if (!uiState.mainScreenState.isDeleteModeEnabled) {
+                val iconRotation by animateFloatAsState(
+                    targetValue = if (isCreateMenuExpanded) 45f else 0f,
+                    animationSpec = tween(durationMillis = 220),
+                    label = "createTaskFabIconRotation",
                 )
 
-                FloatingActionButton(
-                    icon = painterResource(R.drawable.ic_add),
-                    contentDescription = stringResource(
-                        if (isCreateMenuExpanded) R.string.tasks_close_add_menu
-                        else R.string.tasks_add_task
-                    ),
-                    onClick = onCreateTaskMenuToggle,
-                    iconRotationDegrees = iconRotation,
+                Column(horizontalAlignment = Alignment.End) {
+                    CreateTaskMenu(
+                        expanded = isCreateMenuExpanded,
+                        onDismissRequest = onCreateTaskMenuDismissed,
+                        onVoiceClick = { onEvent(TasksEvent.OnCreateTaskByVoiceClicked) },
+                        onTextClick = { onEvent(TasksEvent.OnCreateTaskByTextClicked) }
+                    )
+                    FloatingActionButton(
+                        icon = painterResource(R.drawable.ic_add),
+                        contentDescription = stringResource(
+                            if (isCreateMenuExpanded) R.string.tasks_close_add_menu else R.string.tasks_add_task
+                        ),
+                        onClick = onCreateTaskMenuToggle,
+                        iconRotationDegrees = iconRotation,
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            if (uiState.mainScreenState.isDeleteModeEnabled) {
+                BottomBar(
+                    onClick = { onEvent(TasksEvent.OnDeleteSelectedTasks) },
+                    enabled = uiState.mainScreenState.selectedTaskIds.isNotEmpty(),
+                    selectedSize = uiState.mainScreenState.selectedTaskIds.size
                 )
             }
         }
@@ -185,16 +162,40 @@ fun TasksScreen(
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,
                 isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
+                selectedCount = uiState.mainScreenState.selectedTaskIds.size,
+                allSelected = uiState.visibleTasks.isNotEmpty()
+                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
                 sortType = uiState.mainScreenState.sortType,
-                onSearchQueryChanged = onSearchQueryChanged,
-                onSortChanged = onSortChanged,
-                onDeleteModeClick = onDeleteModeClick
+                showCreationDate = uiState.mainScreenState.showCreationDate,
+                showTags = uiState.mainScreenState.showTags,
+                isCompactView = uiState.mainScreenState.isCompactView,
+                onSearchQueryChanged = { query ->
+                    onEvent(TasksEvent.OnSearchQueryChanged(query))
+                },
+                onSortChanged = { sortType ->
+                    onEvent(TasksEvent.OnSortChanged(sortType))
+                },
+                onDeleteModeClick = { onEvent(TasksEvent.OnDeleteModeToggled) },
+                onSelectAllClick = { onEvent(TasksEvent.OnSelectAllTasks) },
+                onShowCreationDateChanged = { isChanged ->
+                    onEvent(TasksEvent.OnShowCreationDateChanged(isChanged))
+                },
+                onShowTagsChanged = { isChanged ->
+                    onEvent(TasksEvent.OnShowTagsChanged(isChanged))
+                },
+                onCompactViewChanged = { isChanged ->
+                    onEvent(TasksEvent.OnCompactViewChanged(isChanged))
+                },
             )
 
-            TasksFilter(
-                taskFilter = uiState.mainScreenState.filter,
-                onTaskFilterChanged = onTaskFilterChanged,
-            )
+            if (!uiState.mainScreenState.isDeleteModeEnabled) {
+                TasksFilter(
+                    taskFilter = uiState.mainScreenState.filter,
+                    onTaskFilterChanged = { filter ->
+                        onEvent(TasksEvent.OnTaskFilterChanged(filter))
+                    }
+                )
+            }
 
             if (uiState.isEmpty) {
                 Box(
@@ -228,15 +229,24 @@ fun TasksScreen(
                 }
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(uiState.visibleTasks) { task ->
                         TaskItem(
                             task = task,
                             isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
-                            onDeleteClick = { onTaskDeleted(task.id) },
-                            onCompleteClick = { onTaskStatusUpdated(task) },
+                            isSelected = task.id in uiState.mainScreenState.selectedTaskIds,
+                            showCreationDate = uiState.mainScreenState.showCreationDate,
+                            showTags = uiState.mainScreenState.showTags,
+                            isCompact = uiState.mainScreenState.isCompactView,
+                            onSelectionClick = { onEvent(TasksEvent.OnTaskSelectionToggled(task.id)) },
+                            onLongPress = {
+                                if (!uiState.mainScreenState.isDeleteModeEnabled)
+                                    onEvent(TasksEvent.OnEnterDeleteMode(task.id))
+                            },
+                            onDeleteClick = { onEvent(TasksEvent.OnDeleteTaskClicked(task.id)) },
+                            onCompleteClick = { onEvent(TasksEvent.UpdateTaskStatus(task)) },
                         )
                     }
                 }
@@ -247,24 +257,31 @@ fun TasksScreen(
     if (uiState.mainScreenState.isBottomSheetVisible) {
         CreateTaskBottomSheet(
             title = uiState.taskState.title,
+            availableTags = uiState.availableTags,
+            selectedTags = uiState.taskState.tags,
+            isPlannedForToday = uiState.taskState.isPlannedForToday,
             onDismissRequest = {
-                onTextTaskSheetEvent(TasksEvent.OnBottomSheetDismissed)
+                onEvent(TasksEvent.OnBottomSheetDismissed)
             },
             onTitleChanged = { title ->
-                onTextTaskSheetEvent(TasksEvent.OnTaskTextChanged(title))
+                onEvent(TasksEvent.OnTaskTextChanged(title))
             },
             onTimeEstimateSelected = { estimate ->
-                onTextTaskSheetEvent(TasksEvent.OnTaskTimeEstimateSelected(estimate))
+                onEvent(TasksEvent.OnTaskTimeEstimateSelected(estimate))
             },
             onPlanForTodayChanged = { enabled ->
-                onTextTaskSheetEvent(TasksEvent.OnTaskPlanForTodayChanged(enabled))
+                onEvent(TasksEvent.OnTaskPlanForTodayChanged(enabled))
             },
-            onAddTagClick = {
-                onTextTaskSheetEvent(TasksEvent.OnTaskAddTagClicked)
+            onTagAdded = { tag ->
+                onEvent(TasksEvent.OnTaskTagAdded(tag))
+            },
+            onTagRemoved = { tag ->
+                onEvent(TasksEvent.OnTaskTagRemoved(tag))
             },
             onSaveTaskClick = {
-                onTextTaskSheetEvent(TasksEvent.OnSaveTaskClicked)
+                onEvent(TasksEvent.OnSaveTaskClicked)
             },
+            onNavigateToTags = onNavigateToTags
         )
     }
 
@@ -274,7 +291,7 @@ fun TasksScreen(
         is VoiceState.Recording -> {
             VoiceRecordingOverlay(
                 partialText = voiceState.partialText,
-                onStopClick = onVoiceInputStopClicked
+                onStopClick = { onEvent(TasksEvent.VoiceInputStopClicked) }
             )
         }
 
@@ -303,10 +320,91 @@ fun TasksScreen(
                     VoiceError.EmptyResult -> stringResource(R.string.voice_error_empty_result)
                     VoiceError.Unknown -> stringResource(R.string.tasks_voice_unknown_error)
                 },
-                onRetry = onVoiceInputRetry,
-                onCancel = onVoiceInputCancel
+                onRetry = { onEvent(TasksEvent.VoiceInputRetry) },
+                onCancel = { onEvent(TasksEvent.VoiceInputCancel) }
             )
         }
+    }
+}
+
+@Composable
+private fun BottomBar(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    selectedSize: Int
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextButton(
+            onClick = onClick,
+            enabled = enabled,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            ),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+            modifier = Modifier.height(36.dp),
+        ) {
+            Text(
+                text = stringResource(
+                    R.string.tasks_delete_selected,
+                    selectedSize,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun BottomBarPreview() {
+    TaskManagerTheme {
+        BottomBar(
+            onClick = {},
+            enabled = true,
+            selectedSize = 1
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TasksScreenContentPreview_DeleteMode() {
+    TaskManagerTheme {
+        TasksScreen(
+            uiState = TasksUiState(
+                mainScreenState = MainScreenState(
+                    isDeleteModeEnabled = true
+                ),
+                visibleTasks = listOf(
+                    TaskItemUi(
+                        id = 1,
+                        title = "Buy groceries",
+                        createdAtMillis = System.currentTimeMillis(),
+                        isCompleted = false
+                    ),
+                    TaskItemUi(
+                        id = 2,
+                        title = "Call John",
+                        createdAtMillis = System.currentTimeMillis() - 86400000,
+                        isCompleted = true
+                    )
+                ),
+            ),
+            isCreateMenuExpanded = false,
+            onCreateTaskMenuToggle = {},
+            onCreateTaskMenuDismissed = {},
+            onNavigateToTags = {},
+            onEvent = { },
+        )
     }
 }
 
@@ -332,19 +430,10 @@ fun TasksScreenContentPreview() {
                 ),
             ),
             isCreateMenuExpanded = false,
-            onSearchQueryChanged = {},
-            onSortChanged = {},
-            onTaskFilterChanged = {},
-            onTaskDeleted = {},
-            onTaskStatusUpdated = {},
             onCreateTaskMenuToggle = {},
             onCreateTaskMenuDismissed = {},
-            onVoiceTaskClick = {},
-            onTextTaskClick = {},
-            onVoiceInputStopClicked = {},
-            onVoiceInputRetry = {},
-            onVoiceInputCancel = {},
-            onDeleteModeClick = {}
+            onNavigateToTags = {},
+            onEvent = { },
         )
     }
 }

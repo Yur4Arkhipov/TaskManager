@@ -1,6 +1,7 @@
 *.iml
 .gradle
 .gigacode
+.kotlin
 /local.properties
 .idea
 .DS_Store
