@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
-import com.jacqulin.taskmanager.core.domain.tags.GetTagsUseCase
+import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @HiltViewModel
 class TasksScreenViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
-    private val getTagsUseCase: GetTagsUseCase,
+    observeTagsUseCase: ObserveTagsUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
@@ -56,9 +56,10 @@ class TasksScreenViewModel @Inject constructor(
     private val tasksUiState: StateFlow<TasksUiState> =
         combine(
             observeTasksUseCase(),
+            observeTagsUseCase(),
             mainScreenState,
             taskState,
-        ) { tasks, mainScreenState, taskState ->
+        ) { tasks, tags, mainScreenState, taskState ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
                 .filter { task ->
@@ -92,6 +93,7 @@ class TasksScreenViewModel @Inject constructor(
                 mainScreenState = mainScreenState,
                 taskState = taskState,
                 visibleTasks = visibleTasks,
+                availableTags = tags,
             )
         }.stateIn(
             viewModelScope,
@@ -179,7 +181,6 @@ class TasksScreenViewModel @Inject constructor(
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {
-                loadAvailableTags()
                 mainScreenState.update { it.copy(isBottomSheetVisible = true) }
             }
             is TasksEvent.OnTaskTextChanged -> {
@@ -339,13 +340,6 @@ class TasksScreenViewModel @Inject constructor(
     private fun emitEffect(effect: TasksEffect) {
         viewModelScope.launch {
             _effects.emit(effect)
-        }
-    }
-
-    private fun loadAvailableTags() {
-        viewModelScope.launch {
-            val tags = getTagsUseCase()
-            mainScreenState.update { it.copy(availableTags = tags) }
         }
     }
 

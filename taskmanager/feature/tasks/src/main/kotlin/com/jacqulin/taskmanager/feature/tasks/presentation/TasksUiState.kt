@@ -10,7 +10,7 @@ data class TasksUiState(
     val taskState: TaskState = TaskState(),
     val visibleTasks: List<TaskItemUi> = emptyList(),
     val voiceState: VoiceState = VoiceState.Idle,
+    val availableTags: List<Tag> = emptyList(),
 ) {
-    val availableTags: List<Tag> get() = mainScreenState.availableTags
     val isEmpty: Boolean get() = visibleTasks.isEmpty()
 }
