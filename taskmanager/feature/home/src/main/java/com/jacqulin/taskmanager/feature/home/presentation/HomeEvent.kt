@@ -1,8 +1,10 @@
 package com.jacqulin.taskmanager.feature.home.presentation
 
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+
 sealed interface HomeEvent {
-    data class OnTaskDeleted(val taskId: Int) : HomeEvent
-    data class OnTaskCompletionChanged(val taskId: Int, val isCompleted: Boolean) : HomeEvent
+    data class OnTaskRemovedFromDayPlan(val task: HomeTaskUi) : HomeEvent
+    data class UpdateTaskStatus(val task: HomeTaskUi) : HomeEvent
     data object OnAddTaskClicked : HomeEvent
     data object OnAddNoteClicked : HomeEvent
     data object OnStartFocusClicked : HomeEvent

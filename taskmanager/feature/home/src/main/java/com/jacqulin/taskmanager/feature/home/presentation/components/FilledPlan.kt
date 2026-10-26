@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.home.presentation.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -27,11 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
@@ -120,14 +117,14 @@ private fun PlanTaskList(
 
     Spacer(Modifier.height(12.dp))
 
-    val visibleTasks = uiState.tasks.take(3)
+    val visibleTasks = uiState.tasks.take(4)
 
     visibleTasks.forEachIndexed { index, task ->
         PlanTaskRow(
             task = task,
             position = index + 1,
-            onComplete = { },
-            onDelete = { onEvent(HomeEvent.OnTaskDeleted(task.id)) },
+            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task = task)) },
+            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
         )
         Spacer(Modifier.height(6.dp))
     }
@@ -228,68 +225,6 @@ private fun PlanHeaderPreview() {
                 )
             )
         )
-    }
-}
-
-@Composable
-private fun PlanTaskRow(
-    task: HomeTaskUi,
-    position: Int,
-    onComplete: (Boolean) -> Unit,
-    onDelete: () -> Unit
-) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp)
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_drag_indicator),
-                contentDescription = null,
-                modifier = Modifier.size(14.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            RoundedCheckbox(
-                checked = task.isCompleted,
-                onCheckedChange = { checked -> onComplete(checked) },
-                cornerRadius = 6.dp,
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = task.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (task.hasDuration) {
-                    Text(
-                        text = "${task.durationMinutes} мин",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-            Text("×", color = MaterialTheme.colorScheme.outline, fontSize = 22.sp,
-                modifier = Modifier.clickable(onClick = onDelete).padding(start = 8.dp))
-        }
     }
 }
 

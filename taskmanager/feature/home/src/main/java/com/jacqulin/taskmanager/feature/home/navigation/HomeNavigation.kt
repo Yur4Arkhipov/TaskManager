@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jacqulin.taskmanager.feature.home.presentation.DayPlanScreen
 import com.jacqulin.taskmanager.feature.home.presentation.HomeScreen
+import com.jacqulin.taskmanager.feature.home.presentation.dayplan.DayPlanScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
