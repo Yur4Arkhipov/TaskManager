@@ -13,7 +13,11 @@ data class HomeUiState(
         get() = mainState.tasks.sumOf { it.durationMinutes ?: 0 }
 
     val progress: Float
-        get() = if (mainState.tasks.isEmpty()) 0f else (mainState.tasks.size / 9f).coerceAtMost(1f)
+        get() = if (mainState.tasks.isEmpty()) {
+            0f
+        } else {
+            mainState.tasks.count { it.isCompleted }.toFloat() / mainState.tasks.size
+        }
 
     val isEmpty: Boolean
         get() = mainState.tasks.isEmpty()

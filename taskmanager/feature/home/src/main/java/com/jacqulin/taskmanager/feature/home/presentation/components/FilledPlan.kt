@@ -44,9 +44,9 @@ fun FilledPlan(
     onOpenFullPlan: () -> Unit = {},
 ) {
     Column {
-//        PlanHeader(uiState = uiState)
+        PlanHeader(uiState = uiState)
 //
-//        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
 
 //        Surface(
 //            shape = RoundedCornerShape(24.dp),
@@ -213,13 +213,22 @@ private fun PlanHeader(uiState: HomeUiState) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                val taskCountText = if (uiState.totalMinutes > 0) {
                     stringResource(
                         R.string.home_task_count,
                         uiState.mainState.tasks.size,
                         taskCountWord(uiState.mainState.tasks.size),
-                        uiState.totalMinutes
-                    ),
+                        uiState.totalMinutes,
+                    )
+                } else {
+                    stringResource(
+                        R.string.home_task_count_without_minutes,
+                        uiState.mainState.tasks.size,
+                        taskCountWord(uiState.mainState.tasks.size),
+                    )
+                }
+                Text(
+                    text = taskCountText,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),
                 )

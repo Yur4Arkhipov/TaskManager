@@ -132,6 +132,7 @@
     <string name="home_add_first_task">Добавить первую задачу</string>
     <string name="home_today_plan">План дня</string>
     <string name="home_task_count">%d %s · %d мин</string>
+    <string name="home_task_count_without_minutes">%d %s</string>
     <string name="home_task_count_word">задача|задачи|задач</string>
     <string name="home_progress_percentage">%d%%</string>
     <string name="home_day_plan">Ближайшие задачи</string>
