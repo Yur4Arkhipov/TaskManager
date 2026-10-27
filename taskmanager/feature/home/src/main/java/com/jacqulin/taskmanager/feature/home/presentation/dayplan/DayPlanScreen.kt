@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.home.presentation.dayplan
 
+import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,35 +76,35 @@ private fun DayPlanContent(
     val completedCount = state.mainState.tasks.size - activeTasks.size
     val progress = if (state.mainState.tasks.isEmpty()) 0f else completedCount.toFloat() / state.mainState.tasks.size
     val taskIdsFromState = state.mainState.tasks.map { it.id }
-    var taskOrderIds by remember { mutableStateOf(taskIdsFromState) }
-    LaunchedEffect(taskIdsFromState) {
-        val currentIds = taskIdsFromState.toSet()
-        taskOrderIds = taskOrderIds.filter { it in currentIds } +
-            taskIdsFromState.filterNot { it in taskOrderIds }
-    }
+    var taskOrderIds by remember { mutableStateOf(emptyList<Int>()) }
+    val knownTaskIds = taskIdsFromState.toSet()
+    val reconciledTaskOrderIds = taskOrderIds.filter { it in knownTaskIds } +
+        taskIdsFromState.filterNot { it in taskOrderIds }
 
     val activeTaskIdSet = activeTasks.mapTo(mutableSetOf()) { it.id }
-    val activeTaskIds = taskOrderIds.filter { it in activeTaskIdSet }
+    val activeTaskIds = reconciledTaskOrderIds.filter { it in activeTaskIdSet }
     val orderedActiveTasks = activeTaskIds.mapNotNull { id -> activeTasks.find { it.id == id } }
     val orderedTasks = orderedActiveTasks + completedTasks
     val taskListState = rememberLazyListState()
-    val reorderableState = rememberReorderableLazyListState(taskListState) { from, to ->
-        val fromIndex = from.index
-        val toIndex = to.index
-        val targetIndex = if (to.key in activeTaskIdSet) to.index else activeTaskIds.lastIndex
-        if (from.key in activeTaskIdSet &&
-            fromIndex in activeTaskIds.indices && targetIndex in activeTaskIds.indices
-        ) {
-            val reorderedActiveIds = activeTaskIds.toMutableList().apply {
-                add(targetIndex, removeAt(fromIndex))
-            }
-            val activePositions = taskOrderIds.indices.filter { taskOrderIds[it] in activeTaskIdSet }
-            taskOrderIds = taskOrderIds.toMutableList().apply {
-                activePositions.zip(reorderedActiveIds).forEach { (position, id) ->
-                    this[position] = id
+    val reorderableState = key(activeTaskIdSet) {
+        rememberReorderableLazyListState(taskListState) { from, to ->
+            val fromIndex = activeTaskIds.indexOf(from.key)
+            val toIndex = activeTaskIds.indexOf(to.key)
+            if (fromIndex in activeTaskIds.indices && toIndex in activeTaskIds.indices) {
+                val reorderedActiveIds = activeTaskIds.toMutableList().apply {
+                    add(toIndex, removeAt(fromIndex))
                 }
+                val activePositions = reconciledTaskOrderIds.indices.filter {
+                    reconciledTaskOrderIds[it] in activeTaskIdSet
+                }
+                val updatedTaskOrderIds = reconciledTaskOrderIds.toMutableList().apply {
+                    activePositions.zip(reorderedActiveIds).forEach { (position, id) ->
+                        this[position] = id
+                    }
+                }
+                taskOrderIds = updatedTaskOrderIds
+                onEvent(HomeEvent.ReorderTasks(updatedTaskOrderIds))
             }
-            onEvent(HomeEvent.ReorderTasks(taskOrderIds))
         }
     }
 
@@ -187,20 +188,41 @@ private fun DayPlanContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(orderedTasks, key = { it.id }) { task ->
-                        ReorderableItem(
-                            state = reorderableState,
-                            key = task.id,
-                            animateItemModifier = Modifier.animateItem(placementSpec = spring()),
-                        ) {
+                        val rowContent: @Composable (Modifier) -> Unit = { rowModifier ->
                             PlanTaskRow(
                                 task = task,
                                 onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
                                 onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
                                 isUpcoming = !task.isCompleted &&
                                     orderedActiveTasks.firstOrNull()?.id == task.id,
-                                modifier = if (task.isCompleted) Modifier else Modifier.draggableHandle(),
+                                modifier = rowModifier,
                                 isDragHandleEnabled = !task.isCompleted,
                             )
+                        }
+                        key(task.isCompleted) {
+                            if (task.isCompleted) {
+                                Box(
+                                    modifier = Modifier.animateItem(
+                                        placementSpec = spring(
+                                            stiffness = Spring.StiffnessMediumLow,
+                                        )
+                                    )
+                                ) {
+                                    rowContent(Modifier)
+                                }
+                            } else {
+                                ReorderableItem(
+                                    state = reorderableState,
+                                    key = task.id,
+                                    animateItemModifier = Modifier.animateItem(
+                                        placementSpec = spring(
+                                            stiffness = Spring.StiffnessMediumLow,
+                                        )
+                                    ),
+                                ) {
+                                    rowContent(Modifier.draggableHandle())
+                                }
+                            }
                         }
                     }
                 }

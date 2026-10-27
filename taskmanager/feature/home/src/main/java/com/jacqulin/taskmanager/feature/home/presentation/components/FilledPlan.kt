@@ -129,7 +129,7 @@ private fun PlanTaskList(
 
     val visibleTasks = uiState.mainState.tasks.take(4)
 
-    visibleTasks.forEachIndexed { index, task ->
+    visibleTasks.forEach { task ->
         PlanTaskRow(
             task = task,
             onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task = task)) },
