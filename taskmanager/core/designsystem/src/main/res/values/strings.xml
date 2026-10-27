@@ -134,7 +134,7 @@
     <string name="home_task_count">%d %s · %d мин</string>
     <string name="home_task_count_word">задача|задачи|задач</string>
     <string name="home_progress_percentage">%d%%</string>
-    <string name="home_day_plan">План на день</string>
+    <string name="home_day_plan">Ближайшие задачи</string>
     <string name="home_collapse_plan">Свернуть план ↑</string>
     <string name="home_expand_plan">Открыть план</string>
     <string name="home_today">Сегодня</string>

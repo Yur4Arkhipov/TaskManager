@@ -28,6 +28,7 @@ fun TaskWithTags.asExternalModel(): Task = Task(
     isCompleted = task.isCompleted,
     tags = tags.map { Tag(name = it.title, id = it.id) },
     isPlannedForToday = task.isPlannedForToday,
+    dayPlanOrder = task.dayPlanOrder,
 )
 
 fun Task.toEntity(): TaskEntity = TaskEntity(
@@ -36,4 +37,5 @@ fun Task.toEntity(): TaskEntity = TaskEntity(
     createdAtMillis = createdAtMillis,
     isCompleted = isCompleted,
     isPlannedForToday = isPlannedForToday,
+    dayPlanOrder = dayPlanOrder,
 )

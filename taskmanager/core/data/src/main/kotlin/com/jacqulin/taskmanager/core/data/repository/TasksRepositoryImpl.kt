@@ -27,6 +27,10 @@ internal class TasksRepositoryImpl @Inject constructor(
         return dao.updateTask(task)
     }
 
+    override suspend fun updateDayPlanOrder(taskIds: List<Int>) {
+        dao.updateDayPlanOrder(taskIds)
+    }
+
     override suspend fun deleteTaskById(taskId: Int) {
         return dao.deleteTaskById(taskId)
     }

@@ -34,8 +34,18 @@ interface TaskDao {
         replaceTaskTags(task.id, task.tags)
     }
 
+    @Transaction
+    suspend fun updateDayPlanOrder(taskIds: List<Int>) {
+        taskIds.forEachIndexed { position, taskId ->
+            updateTaskDayPlanOrder(taskId = taskId, position = position)
+        }
+    }
+
     @Query("DELETE FROM tasks WHERE id = :id")
     suspend fun deleteTaskById(id: Int)
+
+    @Query("UPDATE tasks SET dayPlanOrder = :position WHERE id = :taskId")
+    suspend fun updateTaskDayPlanOrder(taskId: Int, position: Int)
 
     // Help queries
     @Query("DELETE FROM task_tag_cross_ref WHERE taskId = :taskId")

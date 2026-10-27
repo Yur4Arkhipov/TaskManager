@@ -7,4 +7,5 @@ data class Task(
     val isCompleted: Boolean,
     val tags: List<Tag>,
     val isPlannedForToday: Boolean,
+    val dayPlanOrder: Int?,
 )
