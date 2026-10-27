@@ -140,7 +140,7 @@ fun TagCreateCard(
                     )
                 } else {
                     TagChip(
-                        text = "Работа",
+                        text = "работа",
                         textStyle = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                     )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jacqulin.taskmanager.core.designsystem.component.FloatingActionButton
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
+import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.notes.presentation.notebase.components.NoteItem
@@ -79,6 +81,8 @@ fun NotesScreen(
     onDeleteClick: (Int) -> Unit,
     onNoteClick: (Int) -> Unit,
 ) {
+    val notesListState = rememberLazyListState()
+
     Scaffold(
         topBar = {
             TopAppBar(titleRes = R.string.notes_title)
@@ -126,8 +130,11 @@ fun NotesScreen(
                 }
             } else {
                 LazyColumn(
+                    state = notesListState,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fadeScrollableVerticalEdges(notesListState)
                 ) {
                     items(
                         items = uiState.visibleNotes,

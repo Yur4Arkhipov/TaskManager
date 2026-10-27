@@ -2,7 +2,7 @@ package com.jacqulin.taskmanager.feature.home.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -20,23 +18,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import sh.calvin.reorderable.ReorderableColumn
 
 @Composable
 fun FilledPlan(
@@ -45,9 +44,9 @@ fun FilledPlan(
     onOpenFullPlan: () -> Unit = {},
 ) {
     Column {
-        PlanHeader(uiState = uiState)
-
-        Spacer(Modifier.height(12.dp))
+//        PlanHeader(uiState = uiState)
+//
+//        Spacer(Modifier.height(12.dp))
 
 //        Surface(
 //            shape = RoundedCornerShape(24.dp),
@@ -73,7 +72,11 @@ fun FilledPlan(
 //                        contentColor = MaterialTheme.colorScheme.primary,
 //                    ),
 //                ) {
-//                    Text(if (uiState.isFocusStarted) "Фокус начат" else "▶   Начать фокус", fontWeight = FontWeight.SemiBold)
+//                    Text(
+//                        text = if (uiState.isFocusStarted) "Фокус начат"
+//                            else "▶   Начать фокус",
+//                        fontWeight = FontWeight.SemiBold
+//                    )
 //                }
 //            }
 //        }
@@ -94,8 +97,6 @@ private fun PlanTaskList(
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -105,37 +106,7 @@ private fun PlanTaskList(
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
-        Text(
-            text = stringResource(R.string.tasks_add),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = { onEvent(HomeEvent.OnAddToPlanClicked) },
-                )
-        )
-    }
-
-    Spacer(Modifier.height(12.dp))
-
-    val visibleTasks = uiState.tasks.take(3)
-
-    visibleTasks.forEachIndexed { index, task ->
-        PlanTaskRow(
-            task = task,
-            position = index + 1,
-            onComplete = { },
-            onDelete = { onEvent(HomeEvent.OnTaskDeleted(task.id)) },
-        )
-        Spacer(Modifier.height(6.dp))
-    }
-    if (uiState.tasks.isNotEmpty()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-        ) {
+        if (!uiState.isEmpty) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -155,6 +126,65 @@ private fun PlanTaskList(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+        }
+    }
+
+    Spacer(Modifier.height(12.dp))
+
+    val visibleTasks = uiState.mainState.tasks.take(4)
+    val activeTasks = visibleTasks.filterNot { it.isCompleted }
+    val completedTasks = visibleTasks.filter { it.isCompleted }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clipToBounds(),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        if (activeTasks.isNotEmpty()) {
+            ReorderableColumn(
+                list = activeTasks,
+                onSettle = { fromIndex, toIndex ->
+                    val visibleActiveIds = activeTasks.map { it.id }
+                    if (fromIndex in visibleActiveIds.indices && toIndex in visibleActiveIds.indices) {
+                        val reorderedVisibleActiveIds = visibleActiveIds.toMutableList().apply {
+                            add(toIndex, removeAt(fromIndex))
+                        }
+                        val allTaskIds = uiState.mainState.tasks.map { it.id }
+                        val visibleActiveIdSet = visibleActiveIds.toSet()
+                        val activePositions = allTaskIds.indices.filter {
+                            allTaskIds[it] in visibleActiveIdSet
+                        }
+                        val reorderedTaskIds = allTaskIds.toMutableList().apply {
+                            activePositions.zip(reorderedVisibleActiveIds).forEach { (position, id) ->
+                                this[position] = id
+                            }
+                        }
+                        onEvent(HomeEvent.ReorderTasks(reorderedTaskIds))
+                    }
+                },
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) { _, task, _ ->
+                key(task.id) {
+                    ReorderableItem {
+                        PlanTaskRow(
+                            task = task,
+                            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
+                            modifier = Modifier.draggableHandle(),
+                        )
+                    }
+                }
+            }
+        }
+
+        completedTasks.forEach { task ->
+            PlanTaskRow(
+                task = task,
+                onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
+                isDragHandleEnabled = false,
+            )
         }
     }
 }
@@ -186,8 +216,8 @@ private fun PlanHeader(uiState: HomeUiState) {
                 Text(
                     stringResource(
                         R.string.home_task_count,
-                        uiState.tasks.size,
-                        taskCountWord(uiState.tasks.size),
+                        uiState.mainState.tasks.size,
+                        taskCountWord(uiState.mainState.tasks.size),
                         uiState.totalMinutes
                     ),
                     fontWeight = FontWeight.SemiBold,
@@ -221,75 +251,15 @@ private fun PlanHeaderPreview() {
     TaskManagerTheme {
         PlanHeader(
             uiState = HomeUiState(
-                tasks = listOf(
-                    HomeTaskUi(id = 1, title = "Задача 1", durationMinutes = 45),
-                    HomeTaskUi(id = 2, title = "Задача 2", durationMinutes = 30),
-                    HomeTaskUi(id = 3, title = "Задача 3", durationMinutes = 20),
+                mainState = MainState(
+                    tasks = listOf(
+                        HomeTaskUi(id = 1, title = "Задача 1", durationMinutes = 45),
+                        HomeTaskUi(id = 2, title = "Задача 2", durationMinutes = 30),
+                        HomeTaskUi(id = 3, title = "Задача 3", durationMinutes = 20),
+                    )
                 )
             )
         )
-    }
-}
-
-@Composable
-private fun PlanTaskRow(
-    task: HomeTaskUi,
-    position: Int,
-    onComplete: (Boolean) -> Unit,
-    onDelete: () -> Unit
-) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp)
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_drag_indicator),
-                contentDescription = null,
-                modifier = Modifier.size(14.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            RoundedCheckbox(
-                checked = task.isCompleted,
-                onCheckedChange = { checked -> onComplete(checked) },
-                cornerRadius = 6.dp,
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = task.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (task.hasDuration) {
-                    Text(
-                        text = "${task.durationMinutes} мин",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-            Text("×", color = MaterialTheme.colorScheme.outline, fontSize = 22.sp,
-                modifier = Modifier.clickable(onClick = onDelete).padding(start = 8.dp))
-        }
     }
 }
 
@@ -315,10 +285,12 @@ fun PlanFilledPreview() {
 
         FilledPlan(
             uiState = HomeUiState(
-                dateLabel = "Сегодня",
-                tasks = mockTasks,
-                isFocusStarted = false,
-                isFullPlanShown = false,
+                mainState = MainState(
+                    dateLabel = "Сегодня",
+                    tasks = mockTasks,
+//                    isFocusStarted = false,
+//                    isFullPlanShown = false,
+                ),
             ),
             onEvent = {}
         )

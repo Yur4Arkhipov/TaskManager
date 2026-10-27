@@ -10,6 +10,7 @@ data class TaskItemUi(
     val durationMinutes: Int? = null,
     val tags: List<Tag> = emptyList(),
     val isPlannedForToday: Boolean = false,
+    val dayPlanOrder: Int? = null,
 ) {
     val hasDuration: Boolean get() = durationMinutes != null
 }

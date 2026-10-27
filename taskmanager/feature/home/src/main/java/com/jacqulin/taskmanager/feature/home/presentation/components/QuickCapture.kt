@@ -53,7 +53,7 @@ internal fun QuickCapture(
                 title = stringResource(R.string.home_note),
                 modifier = Modifier.weight(1f),
             ) {
-                onEvent(HomeEvent.OnAddNoteClicked)
+                onEvent(HomeEvent.OnCreateNoteClicked)
             }
         }
     }

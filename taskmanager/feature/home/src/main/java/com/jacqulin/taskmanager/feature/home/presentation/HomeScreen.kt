@@ -8,18 +8,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCard
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
 import com.jacqulin.taskmanager.feature.home.presentation.components.AiFeatureCard
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 
 @Composable
 fun HomeScreen(
@@ -28,7 +29,9 @@ fun HomeScreen(
     onNavigateToFullPlan: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    CommitDayPlanOrderOnStop(viewModel::onEvent)
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
@@ -61,13 +64,13 @@ private fun HomeContent(
     ) {
         item {
             Text(
-                text = uiState.dateLabel,
+                text = uiState.mainState.dateLabel,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
 
-        if (uiState.tasks.isEmpty()) {
+        if (uiState.isEmpty) {
             item {
                 EmptyPlanCard(
                     onAddTask = { onEvent(HomeEvent.OnAddTaskClicked) }
@@ -103,15 +106,20 @@ fun HomeContentPreview() {
     ) {
         HomeContent(
             uiState = HomeUiState(
-                dateLabel = "вторник, 23 сентября",
-                tasks = listOf(
-                    HomeTaskUi(
-                        id =1,
-                        title = "написать реферат",
-                        durationMinutes = 25,
-                        isCompleted = false
+                mainState = MainState(
+                    dateLabel = "вторник, 23 сентября",
+                    tasks = listOf(
+                        HomeTaskUi(
+                            id = 1,
+                            title = "написать реферат",
+                            durationMinutes = 25,
+                            isCompleted = false,
+                            createdAtMillis = 0,
+                            tags = emptyList(),
+                            isPlannedForToday = true
+                        )
                     )
-                )
+                ),
             ),
             onEvent = { }
         ) { }

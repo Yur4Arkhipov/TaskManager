@@ -320,6 +320,7 @@ class TasksScreenViewModel @Inject constructor(
                     isCompleted = false,
                     tags = taskState.value.tags,
                     isPlannedForToday = taskState.value.isPlannedForToday,
+                    dayPlanOrder = null
                 )
             )
         }

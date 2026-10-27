@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.theme.AmberSchemeColor
+import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableHorizontalEdges
 import com.jacqulin.taskmanager.core.designsystem.theme.BlueSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.CyanSchemeColor
 import com.jacqulin.taskmanager.core.designsystem.theme.GreenSchemeColor
@@ -35,8 +38,14 @@ fun ColorPaletteRow(
     selectedPalette: ColorPalette,
     onPaletteSelected: (ColorPalette) -> Unit
 ) {
+    val listState = rememberLazyListState()
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        state = listState,
+        modifier = Modifier.fadeScrollableHorizontalEdges(
+            listState = listState,
+            layoutDirection = LocalLayoutDirection.current,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(ColorPalette.entries.toList()) { palette ->
             val isSelected = palette == selectedPalette

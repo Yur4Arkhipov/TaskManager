@@ -1,16 +1,20 @@
 package com.jacqulin.taskmanager.feature.home.presentation
 
-import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.state.TaskState
 
 data class HomeUiState(
-    val dateLabel: String = "",
-    val tasks: List<HomeTaskUi> = emptyList(),
-    val isFocusStarted: Boolean = false,
-    val isFullPlanShown: Boolean = false,
+    val mainState: MainState = MainState(),
+    val taskState: TaskState = TaskState(),
+//    val tasks: List<HomeTaskUi> = emptyList(),
+//    val availableTags: List<Tag> = emptyList(),
 ) {
     val totalMinutes: Int
-        get() = tasks.sumOf { it.durationMinutes ?: 0 }
+        get() = mainState.tasks.sumOf { it.durationMinutes ?: 0 }
 
     val progress: Float
-        get() = if (tasks.isEmpty()) 0f else (tasks.size / 9f).coerceAtMost(1f)
+        get() = if (mainState.tasks.isEmpty()) 0f else (mainState.tasks.size / 9f).coerceAtMost(1f)
+
+    val isEmpty: Boolean
+        get() = mainState.tasks.isEmpty()
 }

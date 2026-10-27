@@ -17,7 +17,7 @@ import com.jacqulin.taskmanager.core.database.entity.TaskEntity
         TagEntity::class,
         TaskTagCrossRef::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class TaskManagerDatabase : RoomDatabase() {

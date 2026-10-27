@@ -44,6 +44,7 @@ fun AppNavHost(
             onBackClick = { navController.popBackStack() },
         )
         homeSection(
+            navController = navController,
             onNavigateToTasks = {
 
             },

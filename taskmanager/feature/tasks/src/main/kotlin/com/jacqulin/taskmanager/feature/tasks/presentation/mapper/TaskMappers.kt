@@ -10,6 +10,7 @@ fun Task.toUiModel(): TaskItemUi = TaskItemUi(
     isCompleted = isCompleted,
     tags = tags,
     isPlannedForToday = isPlannedForToday,
+    dayPlanOrder = dayPlanOrder,
 )
 
 fun TaskItemUi.toDomain(): Task = Task(
@@ -19,4 +20,5 @@ fun TaskItemUi.toDomain(): Task = Task(
     isCompleted = isCompleted,
     tags = tags,
     isPlannedForToday = isPlannedForToday,
+    dayPlanOrder = dayPlanOrder,
 )

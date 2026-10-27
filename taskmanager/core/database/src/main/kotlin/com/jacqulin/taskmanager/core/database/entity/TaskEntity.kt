@@ -11,4 +11,5 @@ data class TaskEntity(
     val createdAtMillis: Long,
     val isCompleted: Boolean,
     val isPlannedForToday: Boolean,
+    val dayPlanOrder: Int? = null,
 )

@@ -1,12 +1,15 @@
 package com.jacqulin.taskmanager.feature.home.navigation
 
+import androidx.compose.runtime.remember
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jacqulin.taskmanager.feature.home.presentation.DayPlanScreen
 import com.jacqulin.taskmanager.feature.home.presentation.HomeScreen
+import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
+import com.jacqulin.taskmanager.feature.home.presentation.dayplan.DayPlanScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,22 +26,33 @@ fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = Home
 fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
 
 fun NavGraphBuilder.homeSection(
+    navController: NavController,
     onNavigateToTasks: () -> Unit,
     onNavigateToNoteEditor: () -> Unit,
     onNavigateToDayPlan: () -> Unit,
     onBackFromDayPlan: () -> Unit,
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
-        composable<HomeRoute> {
+        composable<HomeRoute> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(HomeBaseRoute)
+            }
+            val viewModel: HomeViewModel = hiltViewModel(parentEntry)
             HomeScreen(
                 onNavigateToTasks = onNavigateToTasks,
                 onNavigateToNotes = onNavigateToNoteEditor,
                 onNavigateToFullPlan = onNavigateToDayPlan,
+                viewModel = viewModel,
             )
         }
-        composable<DayPlanRoute> {
+        composable<DayPlanRoute> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(HomeBaseRoute)
+            }
+            val viewModel: HomeViewModel = hiltViewModel(parentEntry)
             DayPlanScreen(
                 onBackClick = onBackFromDayPlan,
+                viewModel = viewModel,
             )
         }
     }
