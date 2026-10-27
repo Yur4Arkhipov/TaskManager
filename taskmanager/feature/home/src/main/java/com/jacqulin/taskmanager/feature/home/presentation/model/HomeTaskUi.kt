@@ -11,6 +11,7 @@ data class HomeTaskUi(
     val tags: List<Tag> = emptyList(),
     val isPlannedForToday: Boolean = false,
     val durationMinutes: Int? = null,
+    val dayPlanOrder: Int? = null,
 ) {
     val hasDuration: Boolean get() = durationMinutes != null
 }
@@ -21,5 +22,6 @@ fun HomeTaskUi.toDomain(): Task = Task(
     createdAtMillis = createdAtMillis,
     isCompleted = isCompleted,
     tags = tags,
-    isPlannedForToday = isPlannedForToday
+    isPlannedForToday = isPlannedForToday,
+    dayPlanOrder = dayPlanOrder,
 )

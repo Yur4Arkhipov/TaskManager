@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.UpdateDayPlanOrderUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -28,6 +31,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
+    private val updateDayPlanOrderUseCase: UpdateDayPlanOrderUseCase,
 ) : ViewModel() {
 
     private val _effects = MutableSharedFlow<HomeEffect>()
@@ -36,6 +40,8 @@ class HomeViewModel @Inject constructor(
     private val mainState = MutableStateFlow(MainState())
     private val taskState = MutableStateFlow(TaskState())
     private val taskOrder = MutableStateFlow<List<Int>>(emptyList())
+    private val dayPlanOrderCommitMutex = Mutex()
+    private var isDayPlanOrderDirty = false
 
     val uiState: StateFlow<HomeUiState> =
         combine(
@@ -58,13 +64,19 @@ class HomeViewModel @Inject constructor(
                                 createdAtMillis = task.createdAtMillis,
                                 tags = task.tags,
                                 isPlannedForToday = task.isPlannedForToday,
+                                dayPlanOrder = task.dayPlanOrder,
                             )
                         }
                         .let { tasks ->
-                            val orderIndex = taskOrder.withIndex().associate { (index, id) -> id to index }
+                            val pendingOrderIndex = taskOrder.withIndex()
+                                .associate { (index, id) -> id to index }
                             tasks.sortedWith(
                                 compareBy<HomeTaskUi> { it.isCompleted }
-                                    .thenBy { orderIndex[it.id] ?: Int.MAX_VALUE }
+                                    .thenBy {
+                                        pendingOrderIndex[it.id]
+                                            ?: it.dayPlanOrder
+                                            ?: Int.MAX_VALUE
+                                    }
                                     .thenByDescending { it.createdAtMillis }
                             )
                         },
@@ -88,6 +100,7 @@ class HomeViewModel @Inject constructor(
                         isCompleted = event.task.isCompleted,
                         tags = event.task.tags,
                         isPlannedForToday = !event.task.isPlannedForToday,
+                        dayPlanOrder = event.task.dayPlanOrder,
                     )
                     updateTaskStatusUseCase(task)
                 }
@@ -96,14 +109,41 @@ class HomeViewModel @Inject constructor(
                 updateTaskStatus(event.task)
             }
             is HomeEvent.ReorderTasks -> {
-                taskOrder.value = event.taskIds
+                if (taskOrder.value != event.taskIds) {
+                    taskOrder.value = event.taskIds
+                    isDayPlanOrderDirty = true
+                }
             }
+            HomeEvent.CommitDayPlanOrder -> commitDayPlanOrder()
             HomeEvent.OnAddTaskClicked,
             HomeEvent.OnCreateTaskClicked -> { emitEffect(HomeEffect.NavigateToCreateTask) }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
             HomeEvent.OnStartFocusClicked -> Unit
             HomeEvent.OnShowFullPlanClicked -> Unit
             HomeEvent.OnBreakDownThoughtClicked -> Unit
+        }
+    }
+
+    private fun commitDayPlanOrder() {
+        if (!isDayPlanOrderDirty) return
+
+        viewModelScope.launch {
+            dayPlanOrderCommitMutex.withLock {
+                while (isDayPlanOrderDirty) {
+                    val orderToSave = taskOrder.value
+                    isDayPlanOrderDirty = false
+                    try {
+                        updateDayPlanOrderUseCase(orderToSave)
+                    } catch (_: Exception) {
+                        isDayPlanOrderDirty = true
+                        return@withLock
+                    }
+
+                    if (taskOrder.value != orderToSave) {
+                        isDayPlanOrderDirty = true
+                    }
+                }
+            }
         }
     }
 

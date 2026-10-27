@@ -42,6 +42,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.home.presentation.CommitDayPlanOrderOnStop
 import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
@@ -54,9 +55,11 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun DayPlanScreen(
     onBackClick: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val viewModel = hiltViewModel<HomeViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    CommitDayPlanOrderOnStop(viewModel::onEvent)
 
     DayPlanContent(
         state = state,
