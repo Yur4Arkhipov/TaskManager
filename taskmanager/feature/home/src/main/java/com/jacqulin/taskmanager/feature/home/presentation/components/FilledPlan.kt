@@ -2,8 +2,6 @@ package com.jacqulin.taskmanager.feature.home.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +31,7 @@ import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 
 @Composable
 fun FilledPlan(
@@ -91,8 +89,6 @@ private fun PlanTaskList(
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -102,37 +98,7 @@ private fun PlanTaskList(
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
-        Text(
-            text = stringResource(R.string.tasks_add),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = { onEvent(HomeEvent.OnAddToPlanClicked) },
-                )
-        )
-    }
-
-    Spacer(Modifier.height(12.dp))
-
-    val visibleTasks = uiState.tasks.take(4)
-
-    visibleTasks.forEachIndexed { index, task ->
-        PlanTaskRow(
-            task = task,
-            position = index + 1,
-            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task = task)) },
-            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
-        )
-        Spacer(Modifier.height(6.dp))
-    }
-    if (uiState.tasks.isNotEmpty()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-        ) {
+        if (!uiState.isEmpty) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -153,6 +119,20 @@ private fun PlanTaskList(
                 )
             }
         }
+    }
+
+    Spacer(Modifier.height(12.dp))
+
+    val visibleTasks = uiState.mainState.tasks.take(4)
+
+    visibleTasks.forEachIndexed { index, task ->
+        PlanTaskRow(
+            task = task,
+            position = index + 1,
+            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task = task)) },
+            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
+        )
+        Spacer(Modifier.height(6.dp))
     }
 }
 
@@ -183,8 +163,8 @@ private fun PlanHeader(uiState: HomeUiState) {
                 Text(
                     stringResource(
                         R.string.home_task_count,
-                        uiState.tasks.size,
-                        taskCountWord(uiState.tasks.size),
+                        uiState.mainState.tasks.size,
+                        taskCountWord(uiState.mainState.tasks.size),
                         uiState.totalMinutes
                     ),
                     fontWeight = FontWeight.SemiBold,
@@ -218,10 +198,12 @@ private fun PlanHeaderPreview() {
     TaskManagerTheme {
         PlanHeader(
             uiState = HomeUiState(
-                tasks = listOf(
-                    HomeTaskUi(id = 1, title = "Задача 1", durationMinutes = 45),
-                    HomeTaskUi(id = 2, title = "Задача 2", durationMinutes = 30),
-                    HomeTaskUi(id = 3, title = "Задача 3", durationMinutes = 20),
+                mainState = MainState(
+                    tasks = listOf(
+                        HomeTaskUi(id = 1, title = "Задача 1", durationMinutes = 45),
+                        HomeTaskUi(id = 2, title = "Задача 2", durationMinutes = 30),
+                        HomeTaskUi(id = 3, title = "Задача 3", durationMinutes = 20),
+                    )
                 )
             )
         )
@@ -250,10 +232,12 @@ fun PlanFilledPreview() {
 
         FilledPlan(
             uiState = HomeUiState(
-                dateLabel = "Сегодня",
-                tasks = mockTasks,
-                isFocusStarted = false,
-                isFullPlanShown = false,
+                mainState = MainState(
+                    dateLabel = "Сегодня",
+                    tasks = mockTasks,
+//                    isFocusStarted = false,
+//                    isFullPlanShown = false,
+                ),
             ),
             onEvent = {}
         )

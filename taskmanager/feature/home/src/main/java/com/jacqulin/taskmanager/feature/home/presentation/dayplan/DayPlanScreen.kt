@@ -38,6 +38,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
 import com.jacqulin.taskmanager.feature.home.presentation.components.PlanTaskRow
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 
 @Composable
 fun DayPlanScreen(
@@ -59,9 +60,9 @@ private fun DayPlanContent(
     onBackClick: () -> Unit,
     onEvent: (HomeEvent) -> Unit,
 ) {
-    val activeTasks = state.tasks.filterNot { it.isCompleted }
-    val completedCount = state.tasks.size - activeTasks.size
-    val progress = if (state.tasks.isEmpty()) 0f else completedCount.toFloat() / state.tasks.size
+    val activeTasks = state.mainState.tasks.filterNot { it.isCompleted }
+    val completedCount = state.mainState.tasks.size - activeTasks.size
+    val progress = if (state.mainState.tasks.isEmpty()) 0f else completedCount.toFloat() / state.mainState.tasks.size
 
     Column(
         modifier = Modifier.padding(12.dp)
@@ -74,7 +75,7 @@ private fun DayPlanContent(
         ) {
             item {
                 Text(
-                    text = state.dateLabel,
+                    text = state.mainState.dateLabel,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -133,7 +134,7 @@ private fun DayPlanContent(
 
                 Spacer(Modifier.height(10.dp))
 
-                state.tasks.forEachIndexed { index, task ->
+                state.mainState.tasks.forEachIndexed { index, task ->
                     PlanTaskRow(
                         task = task,
                         position = index + 1,
@@ -166,7 +167,7 @@ private fun DayPlanContent(
                             text = stringResource(
                                 R.string.home_completed_count,
                                 completedCount,
-                                state.tasks.size
+                                state.mainState.tasks.size
                             ),
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -219,19 +220,21 @@ fun DayPlanContentPreview() {
     TaskManagerTheme {
         DayPlanContent(
             state = HomeUiState(
-                dateLabel = "вторник, 23 сентября",
-                tasks = listOf(
-                    HomeTaskUi(
-                        id = 1,
-                        title = "Подготовить отчёт",
-                        durationMinutes = 25,
-                        isCompleted = false
-                    ),
-                    HomeTaskUi(
-                        id = 2,
-                        title = "Ответить на письма",
-                        durationMinutes = 15,
-                        isCompleted = false
+                mainState = MainState(
+                    dateLabel = "вторник, 23 сентября",
+                    tasks = listOf(
+                        HomeTaskUi(
+                            id = 1,
+                            title = "Подготовить отчёт",
+                            durationMinutes = 25,
+                            isCompleted = false
+                        ),
+                        HomeTaskUi(
+                            id = 2,
+                            title = "Ответить на письма",
+                            durationMinutes = 15,
+                            isCompleted = false
+                        ),
                     ),
                 ),
             ),

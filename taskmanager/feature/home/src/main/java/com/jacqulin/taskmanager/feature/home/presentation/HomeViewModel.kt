@@ -7,12 +7,15 @@ import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 import com.jacqulin.taskmanager.feature.home.presentation.model.toDomain
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.state.TaskState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -29,29 +32,38 @@ class HomeViewModel @Inject constructor(
     private val _effects = MutableSharedFlow<HomeEffect>()
     val effects = _effects.asSharedFlow()
 
-    val uiState: StateFlow<HomeUiState> = observeTasksUseCase()
-        .map { tasks ->
+    private val mainState = MutableStateFlow(MainState())
+    private val taskState = MutableStateFlow(TaskState())
+
+    val uiState: StateFlow<HomeUiState> =
+        combine(
+            observeTasksUseCase(),
+            mainState,
+            taskState
+        ) { tasks, mainState, taskState ->
             HomeUiState(
-                dateLabel = dateLabel(),
-                tasks = tasks
-                    .filter { it.isPlannedForToday }
-                    .map { task ->
-                    HomeTaskUi(
-                        id = task.id,
-                        title = task.title,
-                        durationMinutes = null,
-                        isCompleted = task.isCompleted,
-                        createdAtMillis = task.createdAtMillis,
-                        tags = task.tags,
-                        isPlannedForToday = task.isPlannedForToday,
-                    )
-                }
+                mainState = mainState.copy(
+                    dateLabel = dateLabel(),
+                    tasks = tasks
+                        .filter { it.isPlannedForToday }
+                        .map { task ->
+                            HomeTaskUi(
+                                id = task.id,
+                                title = task.title,
+                                durationMinutes = null,
+                                isCompleted = task.isCompleted,
+                                createdAtMillis = task.createdAtMillis,
+                                tags = task.tags,
+                                isPlannedForToday = task.isPlannedForToday,
+                            )
+                        },
+                ),
+                taskState = taskState
             )
-        }
-        .stateIn(
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeUiState(dateLabel = dateLabel()),
+            initialValue = HomeUiState(),
         )
 
     fun onEvent(event: HomeEvent) {
@@ -73,11 +85,11 @@ class HomeViewModel @Inject constructor(
                 updateTaskStatus(event.task)
             }
             HomeEvent.OnAddTaskClicked,
-            HomeEvent.OnAddToPlanClicked -> emitEffect(HomeEffect.NavigateToCreateTask)
-            HomeEvent.OnAddNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
+            HomeEvent.OnCreateTaskClicked -> { emitEffect(HomeEffect.NavigateToCreateTask) }
+            HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
             HomeEvent.OnStartFocusClicked -> Unit
             HomeEvent.OnShowFullPlanClicked -> Unit
-            HomeEvent.OnBreakDownThoughtClicked -> emitEffect(HomeEffect.NavigateToCreateTask)
+            HomeEvent.OnBreakDownThoughtClicked -> Unit
         }
     }
 
@@ -98,12 +110,4 @@ class HomeViewModel @Inject constructor(
             "EEEE, d MMMM",
             Locale("ru"),
         ).format(Date()).replaceFirstChar { it.uppercase(Locale("ru")) }
-
-
-//    private companion object {
-//        fun dateLabel(): String = SimpleDateFormat(
-//            "EEEE, d MMMM",
-//            Locale("ru"),
-//        ).format(Date()).replaceFirstChar { it.uppercase(Locale("ru")) }
-//    }
 }

@@ -20,6 +20,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
 import com.jacqulin.taskmanager.feature.home.presentation.components.AiFeatureCard
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 
 @Composable
 fun HomeScreen(
@@ -61,13 +62,13 @@ private fun HomeContent(
     ) {
         item {
             Text(
-                text = uiState.dateLabel,
+                text = uiState.mainState.dateLabel,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
 
-        if (uiState.tasks.isEmpty()) {
+        if (uiState.isEmpty) {
             item {
                 EmptyPlanCard(
                     onAddTask = { onEvent(HomeEvent.OnAddTaskClicked) }
@@ -103,18 +104,20 @@ fun HomeContentPreview() {
     ) {
         HomeContent(
             uiState = HomeUiState(
-                dateLabel = "вторник, 23 сентября",
-                tasks = listOf(
-                    HomeTaskUi(
-                        id = 1,
-                        title = "написать реферат",
-                        durationMinutes = 25,
-                        isCompleted = false,
-                        createdAtMillis = 0,
-                        tags = emptyList(),
-                        isPlannedForToday = true
+                mainState = MainState(
+                    dateLabel = "вторник, 23 сентября",
+                    tasks = listOf(
+                        HomeTaskUi(
+                            id = 1,
+                            title = "написать реферат",
+                            durationMinutes = 25,
+                            isCompleted = false,
+                            createdAtMillis = 0,
+                            tags = emptyList(),
+                            isPlannedForToday = true
+                        )
                     )
-                )
+                ),
             ),
             onEvent = { }
         ) { }

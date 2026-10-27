@@ -6,9 +6,9 @@ sealed interface HomeEvent {
     data class OnTaskRemovedFromDayPlan(val task: HomeTaskUi) : HomeEvent
     data class UpdateTaskStatus(val task: HomeTaskUi) : HomeEvent
     data object OnAddTaskClicked : HomeEvent
-    data object OnAddNoteClicked : HomeEvent
     data object OnStartFocusClicked : HomeEvent
     data object OnShowFullPlanClicked : HomeEvent
-    data object OnAddToPlanClicked : HomeEvent
+    data object OnCreateNoteClicked : HomeEvent
+    data object OnCreateTaskClicked : HomeEvent
     data object OnBreakDownThoughtClicked : HomeEvent
 }
