@@ -50,20 +50,23 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 @Composable
 fun PlanTaskRow(
     task: HomeTaskUi,
-    position: Int,
     onComplete: (Boolean) -> Unit,
     onDelete: () -> Unit,
-    isUpcoming: Boolean = false
+    modifier: Modifier = Modifier,
+    isUpcoming: Boolean = false,
+    isDragHandleEnabled: Boolean = true,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = if (isUpcoming) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)
-            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+//        color = if (isUpcoming) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)
+//            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
         border = BorderStroke(
             width = 1.dp,
-            if (isUpcoming) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+//            if (isUpcoming) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+            color = MaterialTheme.colorScheme.outlineVariant,
         ),
     ) {
         Row(
@@ -76,8 +79,12 @@ fun PlanTaskRow(
             Icon(
                 painter = painterResource(R.drawable.ic_drag_indicator),
                 contentDescription = null,
-                modifier = Modifier.size(14.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                modifier = Modifier
+                    .then(if (isDragHandleEnabled) modifier else Modifier)
+                    .size(14.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                    alpha = if (isDragHandleEnabled) 1f else 0.35f
+                ),
             )
 
             Spacer(Modifier.width(10.dp))
@@ -142,7 +149,7 @@ fun PlanTaskRow(
                     onDismissRequest = { expanded = false },
                 ) {
                     StyledDropdownMenuItem(
-                        text = "Удалить",
+                        text = "Убрать из плана",
                         destructive = true,
                         onClick = {
                             expanded = false
@@ -216,7 +223,6 @@ fun PlanTaskRowPreview() {
                 title = "Заправиться",
                 durationMinutes = 120
             ),
-            position = 0,
             onComplete = {},
             onDelete = {}
         )
@@ -232,7 +238,6 @@ fun PlanTaskRowPreview_Upcoming() {
                 title = "Заправиться",
                 durationMinutes = 120
             ),
-            position = 0,
             onComplete = {},
             onDelete = {},
             isUpcoming = true

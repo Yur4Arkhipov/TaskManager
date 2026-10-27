@@ -19,8 +19,10 @@ internal object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context,
     ): TaskManagerDatabase = Room.databaseBuilder(
-            context,
-            TaskManagerDatabase::class.java,
-            "task_manager.db",
-        ).build()
+        context,
+        TaskManagerDatabase::class.java,
+        "task_manager.db",
+    )
+        .fallbackToDestructiveMigration(true)
+        .build()
 }

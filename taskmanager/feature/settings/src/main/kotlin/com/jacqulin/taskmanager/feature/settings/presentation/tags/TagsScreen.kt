@@ -97,7 +97,7 @@ private fun TagsScreenContent(
                 Column {
                     Text(
                         text = "Теги",
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )

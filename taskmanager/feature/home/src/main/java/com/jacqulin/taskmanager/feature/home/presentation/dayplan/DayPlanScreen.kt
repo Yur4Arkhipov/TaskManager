@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -21,6 +25,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +47,8 @@ import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
 import com.jacqulin.taskmanager.feature.home.presentation.components.PlanTaskRow
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun DayPlanScreen(
@@ -61,8 +71,41 @@ private fun DayPlanContent(
     onEvent: (HomeEvent) -> Unit,
 ) {
     val activeTasks = state.mainState.tasks.filterNot { it.isCompleted }
+    val completedTasks = state.mainState.tasks.filter { it.isCompleted }
     val completedCount = state.mainState.tasks.size - activeTasks.size
     val progress = if (state.mainState.tasks.isEmpty()) 0f else completedCount.toFloat() / state.mainState.tasks.size
+    val taskIdsFromState = state.mainState.tasks.map { it.id }
+    var taskOrderIds by remember { mutableStateOf(taskIdsFromState) }
+    LaunchedEffect(taskIdsFromState) {
+        val currentIds = taskIdsFromState.toSet()
+        taskOrderIds = taskOrderIds.filter { it in currentIds } +
+            taskIdsFromState.filterNot { it in taskOrderIds }
+    }
+
+    val activeTaskIdSet = activeTasks.mapTo(mutableSetOf()) { it.id }
+    val activeTaskIds = taskOrderIds.filter { it in activeTaskIdSet }
+    val orderedActiveTasks = activeTaskIds.mapNotNull { id -> activeTasks.find { it.id == id } }
+    val orderedTasks = orderedActiveTasks + completedTasks
+    val taskListState = rememberLazyListState()
+    val reorderableState = rememberReorderableLazyListState(taskListState) { from, to ->
+        val fromIndex = from.index
+        val toIndex = to.index
+        val targetIndex = if (to.key in activeTaskIdSet) to.index else activeTaskIds.lastIndex
+        if (from.key in activeTaskIdSet &&
+            fromIndex in activeTaskIds.indices && targetIndex in activeTaskIds.indices
+        ) {
+            val reorderedActiveIds = activeTaskIds.toMutableList().apply {
+                add(targetIndex, removeAt(fromIndex))
+            }
+            val activePositions = taskOrderIds.indices.filter { taskOrderIds[it] in activeTaskIdSet }
+            taskOrderIds = taskOrderIds.toMutableList().apply {
+                activePositions.zip(reorderedActiveIds).forEach { (position, id) ->
+                    this[position] = id
+                }
+            }
+            onEvent(HomeEvent.ReorderTasks(taskOrderIds))
+        }
+    }
 
     Column(
         modifier = Modifier.padding(12.dp)
@@ -71,7 +114,7 @@ private fun DayPlanContent(
         Spacer(Modifier.height(10.dp))
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
                 Text(
@@ -85,11 +128,12 @@ private fun DayPlanContent(
                             text = stringResource(R.string.home_day_plan_title),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Text(
                             text = stringResource(R.string.home_tasks_ahead, activeTasks.size),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.secondary,
                         )
                     }
                     Box(
@@ -134,15 +178,31 @@ private fun DayPlanContent(
 
                 Spacer(Modifier.height(10.dp))
 
-                state.mainState.tasks.forEachIndexed { index, task ->
-                    PlanTaskRow(
-                        task = task,
-                        position = index + 1,
-                        onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
-                        onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
-                        isUpcoming = index == 0
-                    )
-                    Spacer(Modifier.height(6.dp))
+            }
+
+            item(key = "day_plan_tasks") {
+                LazyColumn(
+                    state = taskListState,
+                    modifier = Modifier.heightIn(max = 420.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(orderedTasks, key = { it.id }) { task ->
+                        ReorderableItem(
+                            state = reorderableState,
+                            key = task.id,
+                            animateItemModifier = Modifier.animateItem(placementSpec = spring()),
+                        ) {
+                            PlanTaskRow(
+                                task = task,
+                                onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                                onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
+                                isUpcoming = !task.isCompleted &&
+                                    orderedActiveTasks.firstOrNull()?.id == task.id,
+                                modifier = if (task.isCompleted) Modifier else Modifier.draggableHandle(),
+                                isDragHandleEnabled = !task.isCompleted,
+                            )
+                        }
+                    }
                 }
             }
 

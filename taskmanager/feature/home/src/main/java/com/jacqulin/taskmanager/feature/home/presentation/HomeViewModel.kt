@@ -18,8 +18,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
@@ -34,13 +35,15 @@ class HomeViewModel @Inject constructor(
 
     private val mainState = MutableStateFlow(MainState())
     private val taskState = MutableStateFlow(TaskState())
+    private val taskOrder = MutableStateFlow<List<Int>>(emptyList())
 
     val uiState: StateFlow<HomeUiState> =
         combine(
             observeTasksUseCase(),
             mainState,
-            taskState
-        ) { tasks, mainState, taskState ->
+            taskState,
+            taskOrder,
+        ) { tasks, mainState, taskState, taskOrder ->
             HomeUiState(
                 mainState = mainState.copy(
                     dateLabel = dateLabel(),
@@ -55,6 +58,14 @@ class HomeViewModel @Inject constructor(
                                 createdAtMillis = task.createdAtMillis,
                                 tags = task.tags,
                                 isPlannedForToday = task.isPlannedForToday,
+                            )
+                        }
+                        .let { tasks ->
+                            val orderIndex = taskOrder.withIndex().associate { (index, id) -> id to index }
+                            tasks.sortedWith(
+                                compareBy<HomeTaskUi> { it.isCompleted }
+                                    .thenBy { orderIndex[it.id] ?: Int.MAX_VALUE }
+                                    .thenByDescending { it.createdAtMillis }
                             )
                         },
                 ),
@@ -84,6 +95,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
             }
+            is HomeEvent.ReorderTasks -> {
+                taskOrder.value = event.taskIds
+            }
             HomeEvent.OnAddTaskClicked,
             HomeEvent.OnCreateTaskClicked -> { emitEffect(HomeEffect.NavigateToCreateTask) }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
@@ -106,8 +120,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { _effects.emit(effect) }
     }
 
-    private fun dateLabel(): String = SimpleDateFormat(
-            "EEEE, d MMMM",
-            Locale("ru"),
-        ).format(Date()).replaceFirstChar { it.uppercase(Locale("ru")) }
+    private fun dateLabel(): String {
+        val locale = Locale.forLanguageTag("ru")
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+            .withLocale(locale)
+        return LocalDate.now()
+            .format(formatter)
+            .replaceFirstChar { it.titlecase(locale) }
+    }
 }

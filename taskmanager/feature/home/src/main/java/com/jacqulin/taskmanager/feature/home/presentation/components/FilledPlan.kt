@@ -68,7 +68,11 @@ fun FilledPlan(
 //                        contentColor = MaterialTheme.colorScheme.primary,
 //                    ),
 //                ) {
-//                    Text(if (uiState.isFocusStarted) "Фокус начат" else "▶   Начать фокус", fontWeight = FontWeight.SemiBold)
+//                    Text(
+//                        text = if (uiState.isFocusStarted) "Фокус начат"
+//                            else "▶   Начать фокус",
+//                        fontWeight = FontWeight.SemiBold
+//                    )
 //                }
 //            }
 //        }
@@ -128,7 +132,6 @@ private fun PlanTaskList(
     visibleTasks.forEachIndexed { index, task ->
         PlanTaskRow(
             task = task,
-            position = index + 1,
             onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task = task)) },
             onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
         )
