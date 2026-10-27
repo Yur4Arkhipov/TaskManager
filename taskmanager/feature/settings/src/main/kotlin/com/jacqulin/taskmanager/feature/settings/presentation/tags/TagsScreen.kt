@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.component.SearchField
 import com.jacqulin.taskmanager.core.designsystem.component.TagsSortDropdownMenu
 import com.jacqulin.taskmanager.core.designsystem.component.ToolbarButton
+import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
@@ -87,106 +89,104 @@ private fun TagsScreenContent(
             }
     ) {
         BackRow(onBackClick)
-
         Spacer(Modifier.height(10.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            item {
-                Column {
-                    Text(
-                        text = "Теги",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Создайте тег один раз и используйте его во всем приложении",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.secondary,
-                        lineHeight = 14.sp
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
-            }
+        Column {
+            Text(
+                text = "Теги",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "Создайте тег один раз и используйте его во всем приложении",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                lineHeight = 14.sp
+            )
+        }
+        Spacer(Modifier.height(12.dp))
 
-            item {
-                TagCreateCard(
-                    value = state.tagsState.createQuery,
+        TagCreateCard(
+            value = state.tagsState.createQuery,
 //                        tagColors = tagColors,
 //                    selectedColor = selectedColor,
 //                    onSelectedColorChanged = {},
-                    onValueChanged = { new ->
-                        onEvent(TagsEvent.OnCreateQueryChanged(new))
-                    },
-                    onCreate = { title ->
-                        onEvent(TagsEvent.OnCreateTag(title))
-                    }
+            onValueChanged = { new ->
+                onEvent(TagsEvent.OnCreateQueryChanged(new))
+            },
+            onCreate = { title ->
+                onEvent(TagsEvent.OnCreateTag(title))
+            }
+        )
+        Spacer(Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Все метки",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Log.d("TagsScreen", "Count tasks: ${state.visibleTags.size}")
+            Text(
+                text = if (state.visibleTags.isEmpty()) "Нет меток"
+                else "${state.visibleTags.size} ${pluralize(
+                    count = state.visibleTags.size,
+                    one = "метка",
+                    few = "метки",
+                    many = "меток"
+                )}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(6.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            SearchField(
+                value = state.tagsState.searchQuery,
+                placeholderText = "Поиск по меткам",
+                onValueChange = { query ->
+                    onEvent(TagsEvent.OnSearchQueryChanged(query))
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(searchFocusRequester),
+                onSearch = { focusManager.clearFocus() }
+            )
+            Box {
+                ToolbarButton(
+                    icon = painterResource(R.drawable.ic_sort),
+                    contentDescription = stringResource(R.string.tasks_sort),
+                    onClick = { sortMenuExpanded = true },
                 )
-                Spacer(Modifier.height(12.dp))
-            }
 
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Все метки",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Log.d("TagsScreen", "Count tasks: ${state.visibleTags.size}")
-                    Text(
-                        text = if (state.visibleTags.isEmpty()) "Нет меток"
-                            else "${state.visibleTags.size} ${pluralize(
-                                count = state.visibleTags.size,
-                                one = "метка",
-                                few = "метки",
-                                many = "меток"
-                            )}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Spacer(Modifier.height(6.dp))
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    SearchField(
-                        value = state.tagsState.searchQuery,
-                        placeholderText = "Поиск по меткам",
-                        onValueChange = { query ->
-                            onEvent(TagsEvent.OnSearchQueryChanged(query))
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(searchFocusRequester),
-                        onSearch = { focusManager.clearFocus() }
-                    )
-                    Box {
-                        ToolbarButton(
-                            icon = painterResource(R.drawable.ic_sort),
-                            contentDescription = stringResource(R.string.tasks_sort),
-                            onClick = { sortMenuExpanded = true },
-                        )
-
-                        TagsSortDropdownMenu(
-                            expanded = sortMenuExpanded,
-                            sortType = state.tagsState.sortType,
-                            onDismissRequest = { sortMenuExpanded = false },
-                            onSortChanged = { sortType ->
-                                onEvent(TagsEvent.OnSortChanged(sortType))
-                            },
-                        )
-                    }
-                }
-                Spacer(Modifier.height(12.dp))
+                TagsSortDropdownMenu(
+                    expanded = sortMenuExpanded,
+                    sortType = state.tagsState.sortType,
+                    onDismissRequest = { sortMenuExpanded = false },
+                    onSortChanged = { sortType ->
+                        onEvent(TagsEvent.OnSortChanged(sortType))
+                    },
+                )
             }
+        }
+        Spacer(Modifier.height(12.dp))
+
+        val tagsListState = rememberLazyListState()
+        LazyColumn(
+            state = tagsListState,
+            modifier = Modifier
+                .fillMaxSize()
+                .fadeScrollableVerticalEdges(tagsListState),
+        ) {
             items(
                 items = state.visibleTags,
                 key = { it.tag.id }

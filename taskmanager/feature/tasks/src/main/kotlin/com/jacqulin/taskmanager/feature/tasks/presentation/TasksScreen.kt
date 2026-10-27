@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.VoiceErrorOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceProcessingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceRecordingOverlay
 import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
+import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskBottomSheet
@@ -115,6 +117,8 @@ fun TasksScreen(
     onNavigateToTags: () -> Unit,
     onEvent: (TasksEvent) -> Unit,
 ) {
+    val taskListState = rememberLazyListState()
+
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
         floatingActionButton = {
@@ -229,8 +233,11 @@ fun TasksScreen(
                 }
             } else {
                 LazyColumn(
+                    state = taskListState,
                     verticalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fadeScrollableVerticalEdges(taskListState)
                 ) {
                     items(uiState.visibleTasks) { task ->
                         TaskItem(
