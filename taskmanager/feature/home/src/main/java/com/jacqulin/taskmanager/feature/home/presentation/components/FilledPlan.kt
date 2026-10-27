@@ -42,7 +42,7 @@ fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
-    onNavigateToFocusConfig: () -> Unit
+    onNavigateToFocusConfig: (Int) -> Unit
 ) {
     Column {
         PlanHeader(uiState = uiState)

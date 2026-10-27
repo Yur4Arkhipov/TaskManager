@@ -41,6 +41,10 @@ interface TaskDao {
         }
     }
 
+    @Transaction
+    @Query("SELECT * FROM tasks WHERE id = :taskId")
+    suspend fun getTaskById(taskId: Int): TaskWithTags?
+
     @Query("DELETE FROM tasks WHERE id = :id")
     suspend fun deleteTaskById(id: Int)
 

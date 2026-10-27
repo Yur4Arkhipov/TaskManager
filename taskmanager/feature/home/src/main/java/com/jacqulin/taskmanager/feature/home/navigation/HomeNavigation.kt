@@ -23,13 +23,15 @@ data object HomeRoute
 data object DayPlanRoute
 
 @Serializable
-data object FocusConfigRoute
+data class FocusConfigRoute(
+    val taskId: Int
+)
 
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
 
 fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
 
-fun NavController.navigateToFocusConfig() = navigate(route = FocusConfigRoute)
+fun NavController.navigateToFocusConfig(taskId: Int) = navigate(route = FocusConfigRoute(taskId = taskId))
 
 fun NavGraphBuilder.homeSection(
     navController: NavController,
@@ -37,7 +39,8 @@ fun NavGraphBuilder.homeSection(
     onNavigateToNoteEditor: () -> Unit,
     onNavigateToDayPlan: () -> Unit,
     onBackFromDayPlan: () -> Unit,
-    onNavigateToFocusConfig: () -> Unit
+    onNavigateToFocusConfig: (Int) -> Unit,
+    onBackFromFocusConfig: () -> Unit
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
         composable<HomeRoute> { backStackEntry ->
@@ -64,7 +67,9 @@ fun NavGraphBuilder.homeSection(
             )
         }
         composable<FocusConfigRoute> {
-            FocusConfigScreen()
+            FocusConfigScreen(
+                onBackClick = onBackFromFocusConfig
+            )
         }
     }
 }

@@ -28,7 +28,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 @Composable
 fun NextStepCard(
     state: HomeUiState,
-    onStartFocusClicked: () -> Unit
+    onStartFocusClicked: (Int) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(24.dp),
@@ -47,8 +47,10 @@ fun NextStepCard(
 
             Spacer(Modifier.height(12.dp))
 
+            val nextTask = state.mainState.tasks.first()
+
             Text(
-                text = state.mainState.tasks.first().title,
+                text = nextTask.title,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
                 fontSize = 22.sp,
@@ -57,9 +59,9 @@ fun NextStepCard(
 
             Spacer(Modifier.height(4.dp))
 
-            if (state.mainState.tasks.first().durationMinutes != null) {
+            if (nextTask.durationMinutes != null) {
                 Text(
-                    text = "${state.mainState.tasks.first().durationMinutes} мин на задачу",
+                    text = "${nextTask.durationMinutes} мин на задачу",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .75f)
                 )
@@ -68,7 +70,7 @@ fun NextStepCard(
             Spacer(Modifier.height(16.dp))
 
             Surface(
-                onClick = onStartFocusClicked,
+                onClick = { onStartFocusClicked(nextTask.id) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(44.dp),

@@ -54,7 +54,10 @@ fun AppNavHost(
             },
             onNavigateToDayPlan = { navController.navigateToDayPlanRoute() },
             onBackFromDayPlan = { navController.popBackStack() },
-            onNavigateToFocusConfig = { navController.navigateToFocusConfig() }
+            onBackFromFocusConfig = { navController.popBackStack() },
+            onNavigateToFocusConfig = { taskId ->
+                navController.navigateToFocusConfig(taskId)
+            }
         )
     }
 }

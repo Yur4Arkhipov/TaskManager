@@ -19,6 +19,10 @@ internal class TasksRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun getTaskById(taskId: Int): Task? {
+        return dao.getTaskById(taskId)?.asExternalModel()
+    }
+
     override suspend fun createTask(task: Task) {
         return dao.insertTask(task)
     }

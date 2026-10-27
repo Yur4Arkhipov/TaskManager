@@ -27,7 +27,7 @@ fun HomeScreen(
     onNavigateToTasks: () -> Unit,
     onNavigateToNotes: () -> Unit,
     onNavigateToFullPlan: () -> Unit,
-    onNavigateToFocusConfig: () -> Unit,
+    onNavigateToFocusConfig: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,7 +56,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
-    onNavigateToFocusConfig: () -> Unit = {}
+    onNavigateToFocusConfig: (Int) -> Unit = {}
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
