@@ -44,9 +44,9 @@ fun FilledPlan(
     onOpenFullPlan: () -> Unit = {},
 ) {
     Column {
-        PlanHeader(uiState = uiState)
-
-        Spacer(Modifier.height(12.dp))
+//        PlanHeader(uiState = uiState)
+//
+//        Spacer(Modifier.height(12.dp))
 
 //        Surface(
 //            shape = RoundedCornerShape(24.dp),
