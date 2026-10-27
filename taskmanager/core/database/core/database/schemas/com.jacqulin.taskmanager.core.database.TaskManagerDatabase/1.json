@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d2c697f77cc911615a82e2944405ae6b",
+    "identityHash": "ae0e812623356ed0c6cd860937fee9e6",
     "entities": [
       {
         "tableName": "notes",
@@ -47,7 +47,7 @@
       },
       {
         "tableName": "tasks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `createdAtMillis` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `isPlannedForToday` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `createdAtMillis` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `isPlannedForToday` INTEGER NOT NULL, `dayPlanOrder` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -78,6 +78,11 @@
             "columnName": "isPlannedForToday",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "dayPlanOrder",
+            "columnName": "dayPlanOrder",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -201,7 +206,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd2c697f77cc911615a82e2944405ae6b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae0e812623356ed0c6cd860937fee9e6')"
     ]
   }
 }

@@ -42,46 +42,19 @@ fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
+    onNavigateToFocusConfig: () -> Unit
 ) {
     Column {
         PlanHeader(uiState = uiState)
-//
+
         Spacer(Modifier.height(12.dp))
 
-//        Surface(
-//            shape = RoundedCornerShape(24.dp),
-//            color = MaterialTheme.colorScheme.primary,
-//            contentColor = MaterialTheme.colorScheme.onPrimary,
-//        ) {
-//            Column(Modifier.padding(18.dp)) {
-//                Text("СЛЕДУЮЩИЙ ШАГ", style = MaterialTheme.typography.labelSmall,
-//                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .7f), fontWeight = FontWeight.Bold)
-//                Spacer(Modifier.height(12.dp))
-//                Text(uiState.tasks.first().title, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
-//                Spacer(Modifier.height(6.dp))
-//                Text("◷   ${uiState.tasks.first().durationMinutes} мин на всю задачу",
-//                    style = MaterialTheme.typography.labelMedium,
-//                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .75f))
-//                Spacer(Modifier.height(16.dp))
-//                Button(
-//                    onClick = { onEvent(HomeEvent.OnStartFocusClicked) },
-//                    modifier = Modifier.fillMaxWidth().height(44.dp),
-//                    shape = RoundedCornerShape(12.dp),
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = MaterialTheme.colorScheme.surface,
-//                        contentColor = MaterialTheme.colorScheme.primary,
-//                    ),
-//                ) {
-//                    Text(
-//                        text = if (uiState.isFocusStarted) "Фокус начат"
-//                            else "▶   Начать фокус",
-//                        fontWeight = FontWeight.SemiBold
-//                    )
-//                }
-//            }
-//        }
+        NextStepCard(
+            state = uiState,
+            onStartFocusClicked = onNavigateToFocusConfig,
+        )
 
-//        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
 
         PlanTaskList(
             uiState = uiState,
@@ -301,7 +274,8 @@ fun PlanFilledPreview() {
 //                    isFullPlanShown = false,
                 ),
             ),
-            onEvent = {}
+            onEvent = {},
+            onNavigateToFocusConfig = {}
         )
     }
 }
