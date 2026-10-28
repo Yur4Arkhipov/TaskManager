@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
-import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
 import sh.calvin.reorderable.ReorderableColumn
 
 @Composable

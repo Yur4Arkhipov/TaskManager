@@ -1,6 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation.state
-
-import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+package com.jacqulin.taskmanager.feature.home.presentation.model
 
 data class MainState(
     val dateLabel: String = "",

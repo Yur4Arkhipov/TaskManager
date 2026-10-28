@@ -1,6 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation
-
-import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+package com.jacqulin.taskmanager.feature.home.presentation.model
 
 sealed interface HomeEvent {
     data class OnTaskRemovedFromDayPlan(val task: HomeTaskUi) : HomeEvent

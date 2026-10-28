@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation.dayplan
+package com.jacqulin.taskmanager.feature.home.presentation.screens
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.foundation.BorderStroke
@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -43,13 +43,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.home.presentation.CommitDayPlanOrderOnStop
-import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
-import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
-import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
 import com.jacqulin.taskmanager.feature.home.presentation.components.PlanTaskRow
+import com.jacqulin.taskmanager.feature.home.presentation.lifecycle.CommitDayPlanOrderOnStop
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.viewmodels.HomeViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 

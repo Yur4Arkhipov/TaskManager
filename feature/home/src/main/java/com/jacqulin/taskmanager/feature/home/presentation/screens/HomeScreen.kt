@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation
+package com.jacqulin.taskmanager.feature.home.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +18,13 @@ import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCard
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
+import com.jacqulin.taskmanager.feature.home.presentation.lifecycle.CommitDayPlanOrderOnStop
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEffect
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.viewmodels.HomeViewModel
 
 @Composable
 fun HomeScreen(

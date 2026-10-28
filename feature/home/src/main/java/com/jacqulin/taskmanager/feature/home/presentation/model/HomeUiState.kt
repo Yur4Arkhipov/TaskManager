@@ -1,7 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation
-
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
-import com.jacqulin.taskmanager.feature.home.presentation.state.TaskState
+package com.jacqulin.taskmanager.feature.home.presentation.model
 
 data class HomeUiState(
     val mainState: MainState = MainState(),

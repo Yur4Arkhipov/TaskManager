@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 
 @Composable
 internal fun QuickCapture(

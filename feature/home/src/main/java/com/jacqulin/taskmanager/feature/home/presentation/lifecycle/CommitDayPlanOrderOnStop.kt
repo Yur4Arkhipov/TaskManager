@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation
+package com.jacqulin.taskmanager.feature.home.presentation.lifecycle
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -6,6 +6,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 
 @Composable
 fun CommitDayPlanOrderOnStop(onEvent: (HomeEvent) -> Unit) {

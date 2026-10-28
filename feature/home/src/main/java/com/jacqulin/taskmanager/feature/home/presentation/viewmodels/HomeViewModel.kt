@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation
+package com.jacqulin.taskmanager.feature.home.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,10 +6,13 @@ import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateDayPlanOrderUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
 import com.jacqulin.taskmanager.core.model.Task
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEffect
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
+import com.jacqulin.taskmanager.feature.home.presentation.model.TaskState
 import com.jacqulin.taskmanager.feature.home.presentation.model.toDomain
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
-import com.jacqulin.taskmanager.feature.home.presentation.state.TaskState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
