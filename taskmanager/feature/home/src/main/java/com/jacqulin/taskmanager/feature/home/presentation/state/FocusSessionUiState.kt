@@ -1,6 +1,6 @@
 package com.jacqulin.taskmanager.feature.home.presentation.state
 
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
+import com.jacqulin.taskmanager.core.model.FocusMode
 
 data class FocusSessionUiState(
     val mode: FocusMode = FocusMode.FREE,

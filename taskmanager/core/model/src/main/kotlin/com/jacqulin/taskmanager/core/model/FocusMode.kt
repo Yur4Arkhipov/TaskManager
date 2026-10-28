@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.home.presentation.model
+package com.jacqulin.taskmanager.core.model
 
 enum class FocusMode(val label: String) {
     POMODORO("Pomodoro"),

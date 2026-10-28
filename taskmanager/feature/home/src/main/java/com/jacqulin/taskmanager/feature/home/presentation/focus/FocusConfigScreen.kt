@@ -33,17 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.model.FocusMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.components.FreeFocusContent
 import com.jacqulin.taskmanager.feature.home.presentation.components.PomodoroFocusContent
 import com.jacqulin.taskmanager.feature.home.presentation.components.TimerFocusContent
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
 import com.jacqulin.taskmanager.feature.home.presentation.state.FocusConfigUiState
 
 @Composable
 fun FocusConfigScreen(
     onBackClick: () -> Unit,
-    onNavigateToFocusSession: (FocusMode) -> Unit,
+    onNavigateToFocusSession: (Long) -> Unit,
     viewModel: FocusViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,7 +60,7 @@ fun FocusConfigScreen(
 fun FocusConfigContent(
     state: FocusConfigUiState,
     onBackClick: () -> Unit,
-    onNavigateToFocusSession: (FocusMode) -> Unit = {},
+    onNavigateToFocusSession: (Long) -> Unit = {},
     onEvent: (FocusConfigEvent) -> Unit
 ) {
     Column(
@@ -130,7 +130,7 @@ fun FocusConfigContent(
         }
 
         StartFocusButton(
-            mode = state.focusMode,
+            sessionId = 1,
             onClick = onNavigateToFocusSession,
         )
     }
@@ -225,13 +225,13 @@ private fun SegmentedButton(
 
 @Composable
 private fun StartFocusButton(
-    mode: FocusMode,
-    onClick: (FocusMode) -> Unit
+    sessionId: Long,
+    onClick: (Long) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.primary,
-        onClick = { onClick(mode) },
+        onClick = { onClick(sessionId) },
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)

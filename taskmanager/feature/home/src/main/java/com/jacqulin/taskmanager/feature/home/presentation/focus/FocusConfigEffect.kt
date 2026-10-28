@@ -1,6 +1,6 @@
 package com.jacqulin.taskmanager.feature.home.presentation.focus
 
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
+import com.jacqulin.taskmanager.core.model.FocusMode
 
 sealed interface FocusConfigEffect {
     data class StartFocus(

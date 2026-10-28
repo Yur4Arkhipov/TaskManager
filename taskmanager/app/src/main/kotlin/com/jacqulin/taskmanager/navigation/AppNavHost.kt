@@ -57,7 +57,7 @@ fun AppNavHost(
             onBackFromDayPlan = { navController.popBackStack() },
             onBackFromFocusConfig = { navController.popBackStack() },
             onNavigateToFocusConfig = { taskId -> navController.navigateToFocusConfig(taskId) },
-            onNavigateToFocusSession = { mode -> navController.navigateToFocusSession(mode) },
+            onNavigateToFocusSession = { sessionId -> navController.navigateToFocusSession(sessionId) },
             onBackFromFocusSession = { navController.popBackStack() }
         )
     }

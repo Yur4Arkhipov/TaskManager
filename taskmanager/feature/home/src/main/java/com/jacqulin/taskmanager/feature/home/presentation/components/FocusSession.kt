@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.model.FocusMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.focus.FocusSessionViewModel
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
 import com.jacqulin.taskmanager.feature.home.presentation.state.FocusSessionUiState
 
 @Composable

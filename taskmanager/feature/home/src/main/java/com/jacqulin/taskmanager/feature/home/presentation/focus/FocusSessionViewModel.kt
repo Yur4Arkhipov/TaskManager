@@ -2,7 +2,7 @@ package com.jacqulin.taskmanager.feature.home.presentation.focus
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
+import com.jacqulin.taskmanager.core.model.FocusMode
 import com.jacqulin.taskmanager.feature.home.presentation.state.FocusSessionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

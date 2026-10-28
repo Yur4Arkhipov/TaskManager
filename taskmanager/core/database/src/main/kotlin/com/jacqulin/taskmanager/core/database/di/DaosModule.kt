@@ -1,6 +1,7 @@
 package com.jacqulin.taskmanager.core.database.di
 
 import com.jacqulin.taskmanager.core.database.TaskManagerDatabase
+import com.jacqulin.taskmanager.core.database.dao.FocusSessionDao
 import com.jacqulin.taskmanager.core.database.dao.NoteDao
 import com.jacqulin.taskmanager.core.database.dao.TagsDao
 import com.jacqulin.taskmanager.core.database.dao.TaskDao
@@ -27,4 +28,9 @@ internal object DaosModule {
     fun provideTagsDao(
         database: TaskManagerDatabase
     ): TagsDao = database.tagsDao()
+
+    @Provides
+    fun provideFocusSessionDao(
+        database: TaskManagerDatabase
+    ): FocusSessionDao = database.focusSessionDao()
 }

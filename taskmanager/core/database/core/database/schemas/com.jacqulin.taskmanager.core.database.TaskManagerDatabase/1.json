@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ae0e812623356ed0c6cd860937fee9e6",
+    "identityHash": "8b7a1cb2d7864e8b1af725861d3f05ad",
     "entities": [
       {
         "tableName": "notes",
@@ -202,11 +202,94 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "focus_sessions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER, `taskTitle` TEXT NOT NULL, `mode` TEXT NOT NULL, `workDurationMinutes` INTEGER, `breakDurationMinutes` INTEGER, `longBreakDurationMinutes` INTEGER, `cyclesCount` INTEGER, `status` TEXT NOT NULL, `currentCycle` INTEGER NOT NULL, `isBreak` INTEGER NOT NULL, `startedAtMillis` INTEGER, `pausedAtMillis` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "taskId",
+            "columnName": "taskId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "taskTitle",
+            "columnName": "taskTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "workDurationMinutes",
+            "columnName": "workDurationMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "breakDurationMinutes",
+            "columnName": "breakDurationMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "longBreakDurationMinutes",
+            "columnName": "longBreakDurationMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "cyclesCount",
+            "columnName": "cyclesCount",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentCycle",
+            "columnName": "currentCycle",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBreak",
+            "columnName": "isBreak",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtMillis",
+            "columnName": "startedAtMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "pausedAtMillis",
+            "columnName": "pausedAtMillis",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae0e812623356ed0c6cd860937fee9e6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8b7a1cb2d7864e8b1af725861d3f05ad')"
     ]
   }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.tasks.GetTaskByIdUseCase
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
+import com.jacqulin.taskmanager.core.model.FocusMode
 import com.jacqulin.taskmanager.feature.home.presentation.state.FocusConfigUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

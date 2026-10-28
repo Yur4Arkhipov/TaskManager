@@ -12,7 +12,6 @@ import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
 import com.jacqulin.taskmanager.feature.home.presentation.components.FocusSession
 import com.jacqulin.taskmanager.feature.home.presentation.dayplan.DayPlanScreen
 import com.jacqulin.taskmanager.feature.home.presentation.focus.FocusConfigScreen
-import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,7 +30,7 @@ data class FocusConfigRoute(
 
 @Serializable
 data class FocusSessionRoute(
-    val mode: FocusMode
+    val sessionId: Long
 )
 
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
@@ -40,7 +39,7 @@ fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
 
 fun NavController.navigateToFocusConfig(taskId: Int) = navigate(route = FocusConfigRoute(taskId = taskId))
 
-fun NavController.navigateToFocusSession(mode: FocusMode) = navigate(route = FocusSessionRoute(mode = mode))
+fun NavController.navigateToFocusSession(sessionId: Long) = navigate(route = FocusSessionRoute(sessionId = sessionId))
 
 fun NavGraphBuilder.homeSection(
     navController: NavController,
@@ -50,7 +49,7 @@ fun NavGraphBuilder.homeSection(
     onBackFromDayPlan: () -> Unit,
     onNavigateToFocusConfig: (Int) -> Unit,
     onBackFromFocusConfig: () -> Unit,
-    onNavigateToFocusSession: (FocusMode) -> Unit,
+    onNavigateToFocusSession: (Long) -> Unit,
     onBackFromFocusSession: () -> Unit
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
