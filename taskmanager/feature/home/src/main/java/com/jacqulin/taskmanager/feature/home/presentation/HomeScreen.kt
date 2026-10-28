@@ -27,6 +27,7 @@ fun HomeScreen(
     onNavigateToTasks: () -> Unit,
     onNavigateToNotes: () -> Unit,
     onNavigateToFullPlan: () -> Unit,
+    onNavigateToFocusConfig: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -46,6 +47,7 @@ fun HomeScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         onOpenFullPlan = onNavigateToFullPlan,
+        onNavigateToFocusConfig = onNavigateToFocusConfig
     )
 }
 
@@ -54,6 +56,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
+    onNavigateToFocusConfig: (Int) -> Unit = {}
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -82,6 +85,7 @@ private fun HomeContent(
                     uiState = uiState,
                     onEvent = onEvent,
                     onOpenFullPlan = onOpenFullPlan,
+                    onNavigateToFocusConfig = onNavigateToFocusConfig
                 )
             }
         }
@@ -99,7 +103,7 @@ private fun HomeContent(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+@Preview
 fun HomeContentPreview() {
     TaskManagerTheme(
         darkTheme = false

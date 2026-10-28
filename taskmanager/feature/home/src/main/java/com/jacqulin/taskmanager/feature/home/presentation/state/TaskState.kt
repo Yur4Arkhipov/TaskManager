@@ -6,4 +6,5 @@ data class TaskState(
     val title: String = "",
     val tags: List<Tag> = emptyList(),
     val isPlannedForToday: Boolean = false,
+    val isFocusedTask: Boolean = false
 )

@@ -42,46 +42,19 @@ fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
+    onNavigateToFocusConfig: (Int) -> Unit
 ) {
     Column {
-//        PlanHeader(uiState = uiState)
-//
-//        Spacer(Modifier.height(12.dp))
+        PlanHeader(uiState = uiState)
 
-//        Surface(
-//            shape = RoundedCornerShape(24.dp),
-//            color = MaterialTheme.colorScheme.primary,
-//            contentColor = MaterialTheme.colorScheme.onPrimary,
-//        ) {
-//            Column(Modifier.padding(18.dp)) {
-//                Text("СЛЕДУЮЩИЙ ШАГ", style = MaterialTheme.typography.labelSmall,
-//                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .7f), fontWeight = FontWeight.Bold)
-//                Spacer(Modifier.height(12.dp))
-//                Text(uiState.tasks.first().title, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
-//                Spacer(Modifier.height(6.dp))
-//                Text("◷   ${uiState.tasks.first().durationMinutes} мин на всю задачу",
-//                    style = MaterialTheme.typography.labelMedium,
-//                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .75f))
-//                Spacer(Modifier.height(16.dp))
-//                Button(
-//                    onClick = { onEvent(HomeEvent.OnStartFocusClicked) },
-//                    modifier = Modifier.fillMaxWidth().height(44.dp),
-//                    shape = RoundedCornerShape(12.dp),
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = MaterialTheme.colorScheme.surface,
-//                        contentColor = MaterialTheme.colorScheme.primary,
-//                    ),
-//                ) {
-//                    Text(
-//                        text = if (uiState.isFocusStarted) "Фокус начат"
-//                            else "▶   Начать фокус",
-//                        fontWeight = FontWeight.SemiBold
-//                    )
-//                }
-//            }
-//        }
+        Spacer(Modifier.height(12.dp))
 
-//        Spacer(Modifier.height(12.dp))
+        NextStepCard(
+            state = uiState,
+            onStartFocusClicked = onNavigateToFocusConfig,
+        )
+
+        Spacer(Modifier.height(12.dp))
 
         PlanTaskList(
             uiState = uiState,
@@ -213,13 +186,22 @@ private fun PlanHeader(uiState: HomeUiState) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                val taskCountText = if (uiState.totalMinutes > 0) {
                     stringResource(
                         R.string.home_task_count,
                         uiState.mainState.tasks.size,
                         taskCountWord(uiState.mainState.tasks.size),
-                        uiState.totalMinutes
-                    ),
+                        uiState.totalMinutes,
+                    )
+                } else {
+                    stringResource(
+                        R.string.home_task_count_without_minutes,
+                        uiState.mainState.tasks.size,
+                        taskCountWord(uiState.mainState.tasks.size),
+                    )
+                }
+                Text(
+                    text = taskCountText,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),
                 )
@@ -292,7 +274,8 @@ fun PlanFilledPreview() {
 //                    isFullPlanShown = false,
                 ),
             ),
-            onEvent = {}
+            onEvent = {},
+            onNavigateToFocusConfig = {}
         )
     }
 }

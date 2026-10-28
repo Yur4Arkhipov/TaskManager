@@ -9,7 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.jacqulin.taskmanager.feature.home.presentation.HomeScreen
 import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
+import com.jacqulin.taskmanager.feature.home.presentation.components.FocusSession
 import com.jacqulin.taskmanager.feature.home.presentation.dayplan.DayPlanScreen
+import com.jacqulin.taskmanager.feature.home.presentation.focus.FocusConfigScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,9 +23,23 @@ data object HomeRoute
 @Serializable
 data object DayPlanRoute
 
+@Serializable
+data class FocusConfigRoute(
+    val taskId: Int
+)
+
+@Serializable
+data class FocusSessionRoute(
+    val sessionId: Long
+)
+
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
 
 fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
+
+fun NavController.navigateToFocusConfig(taskId: Int) = navigate(route = FocusConfigRoute(taskId = taskId))
+
+fun NavController.navigateToFocusSession(sessionId: Long) = navigate(route = FocusSessionRoute(sessionId = sessionId))
 
 fun NavGraphBuilder.homeSection(
     navController: NavController,
@@ -31,6 +47,10 @@ fun NavGraphBuilder.homeSection(
     onNavigateToNoteEditor: () -> Unit,
     onNavigateToDayPlan: () -> Unit,
     onBackFromDayPlan: () -> Unit,
+    onNavigateToFocusConfig: (Int) -> Unit,
+    onBackFromFocusConfig: () -> Unit,
+    onNavigateToFocusSession: (Long) -> Unit,
+    onBackFromFocusSession: () -> Unit
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
         composable<HomeRoute> { backStackEntry ->
@@ -42,6 +62,7 @@ fun NavGraphBuilder.homeSection(
                 onNavigateToTasks = onNavigateToTasks,
                 onNavigateToNotes = onNavigateToNoteEditor,
                 onNavigateToFullPlan = onNavigateToDayPlan,
+                onNavigateToFocusConfig = onNavigateToFocusConfig,
                 viewModel = viewModel,
             )
         }
@@ -53,6 +74,17 @@ fun NavGraphBuilder.homeSection(
             DayPlanScreen(
                 onBackClick = onBackFromDayPlan,
                 viewModel = viewModel,
+            )
+        }
+        composable<FocusConfigRoute> {
+            FocusConfigScreen(
+                onBackClick = onBackFromFocusConfig,
+                onNavigateToFocusSession = onNavigateToFocusSession
+            )
+        }
+        composable<FocusSessionRoute> {
+            FocusSession(
+                onBackClick = onBackFromFocusSession,
             )
         }
     }
