@@ -46,13 +46,6 @@ fun CreateTaskMenu(
             modifier = Modifier.padding(bottom = 12.dp),
         ) {
             CreateTaskMenuItem(
-                iconRes = R.drawable.ic_note_edit,
-                text = stringResource(R.string.tasks_add_task_thought),
-                emphasized = true,
-                onClick = {},
-            )
-
-            CreateTaskMenuItem(
                 iconRes = R.drawable.ic_microphone,
                 text = stringResource(R.string.tasks_add_task_voice),
                 onClick = {

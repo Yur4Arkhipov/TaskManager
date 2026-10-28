@@ -18,7 +18,6 @@ import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCard
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
-import com.jacqulin.taskmanager.feature.home.presentation.components.AiFeatureCard
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
 
@@ -88,12 +87,6 @@ private fun HomeContent(
 
         item {
             QuickCapture(onEvent = onEvent)
-        }
-
-        item {
-            AiFeatureCard(
-                onClick = { onEvent(HomeEvent.OnBreakDownThoughtClicked) }
-            )
         }
     }
 }
