@@ -118,7 +118,6 @@ class HomeViewModel @Inject constructor(
             HomeEvent.OnAddTaskClicked,
             HomeEvent.OnCreateTaskClicked -> { emitEffect(HomeEffect.NavigateToCreateTask) }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
-            HomeEvent.OnStartFocusClicked -> Unit
             HomeEvent.OnShowFullPlanClicked -> Unit
             HomeEvent.OnBreakDownThoughtClicked -> Unit
         }
