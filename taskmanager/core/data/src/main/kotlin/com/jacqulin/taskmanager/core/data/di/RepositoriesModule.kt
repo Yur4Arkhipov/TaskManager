@@ -2,8 +2,6 @@ package com.jacqulin.taskmanager.core.data.di
 
 import com.jacqulin.taskmanager.core.data.repository.AudioRecorderRepository
 import com.jacqulin.taskmanager.core.data.repository.AudioRecorderRepositoryImpl
-import com.jacqulin.taskmanager.core.data.repository.FocusSessionRepository
-import com.jacqulin.taskmanager.core.data.repository.FocusSessionRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.LiveSpeechRecognitionRepository
 import com.jacqulin.taskmanager.core.data.repository.LiveSpeechRecognitionRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.NoteImageRepository
@@ -90,9 +88,4 @@ abstract class RepositoriesModule {
         impl: TagsRepositoryImpl,
     ): TagsRepository
 
-    @Binds
-    @Singleton
-    internal abstract fun bindFocusSessionRepository(
-        impl: FocusSessionRepositoryImpl
-    ): FocusSessionRepository
 }
