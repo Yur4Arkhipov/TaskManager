@@ -25,8 +25,7 @@ class FocusViewModel @Inject constructor(
     private val taskId: Int = checkNotNull(savedStateHandle.get<Int>("taskId"))
 
     private val _uiState = MutableStateFlow(FocusConfigUiState())
-    val uiState: StateFlow<FocusConfigUiState> =
-        _uiState.asStateFlow()
+    val uiState: StateFlow<FocusConfigUiState> = _uiState.asStateFlow()
 
     private val _effects = Channel<FocusConfigEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
@@ -37,8 +36,8 @@ class FocusViewModel @Inject constructor(
 
     fun onEvent(event: FocusConfigEvent) {
         when (event) {
-            is FocusConfigEvent.DurationChanged -> {
-                updateDuration(event.minutes)
+            is FocusConfigEvent.PomodoroDurationChanged -> {
+                updatePomodoroDuration(event.minutes)
             }
 
             is FocusConfigEvent.ModeChanged -> {
@@ -47,6 +46,10 @@ class FocusViewModel @Inject constructor(
 
             FocusConfigEvent.StartFocusClicked -> {
                 startFocus()
+            }
+
+            is FocusConfigEvent.TimerDurationChanged -> {
+                updateTimerDuration(event.minutes)
             }
         }
     }
@@ -87,11 +90,19 @@ class FocusViewModel @Inject constructor(
         }
     }
 
-    private fun updateDuration(minutes: Int) {
+    private fun updatePomodoroDuration(minutes: Int) {
         if (minutes <= 0) return
 
         _uiState.update {
-            it.copy(durationMinutes = minutes)
+            it.copy(pomodoroDurationMinutes = minutes)
+        }
+    }
+
+    private fun updateTimerDuration(minutes: Int) {
+        if (minutes <= 0) return
+
+        _uiState.update {
+            it.copy(timerDurationMinutes = minutes)
         }
     }
 
@@ -102,19 +113,19 @@ class FocusViewModel @Inject constructor(
     }
 
     private fun startFocus() {
-        val state = _uiState.value
-
-        if (state.isLoading || state.isStarting) return
-        if (state.errorMessage != null || state.taskTitle.isBlank()) return
-
-        viewModelScope.launch {
-            _effects.send(
-                FocusConfigEffect.StartFocus(
-                    taskId = taskId,
-                    durationMinutes = state.durationMinutes,
-                    mode = state.focusMode,
-                )
-            )
-        }
+//        val state = _uiState.value
+//
+//        if (state.isLoading || state.isStarting) return
+//        if (state.errorMessage != null || state.taskTitle.isBlank()) return
+//
+//        viewModelScope.launch {
+//            _effects.send(
+//                FocusConfigEffect.StartFocus(
+//                    taskId = taskId,
+//                    durationMinutes = state.durationMinutes,
+//                    mode = state.focusMode,
+//                )
+//            )
+//        }
     }
 }
