@@ -43,6 +43,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.state.FocusConfigUiSta
 @Composable
 fun FocusConfigScreen(
     onBackClick: () -> Unit,
+    onNavigateToFocusSession: (FocusMode) -> Unit,
     viewModel: FocusViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,6 +51,7 @@ fun FocusConfigScreen(
     FocusConfigContent(
         state = state,
         onBackClick = onBackClick,
+        onNavigateToFocusSession = onNavigateToFocusSession,
         onEvent = viewModel::onEvent
     )
 }
@@ -58,6 +60,7 @@ fun FocusConfigScreen(
 fun FocusConfigContent(
     state: FocusConfigUiState,
     onBackClick: () -> Unit,
+    onNavigateToFocusSession: (FocusMode) -> Unit = {},
     onEvent: (FocusConfigEvent) -> Unit
 ) {
     Column(
@@ -126,7 +129,10 @@ fun FocusConfigContent(
             )
         }
 
-        StartFocusButton(onClick = {})
+        StartFocusButton(
+            mode = state.focusMode,
+            onClick = onNavigateToFocusSession,
+        )
     }
 }
 
@@ -219,12 +225,13 @@ private fun SegmentedButton(
 
 @Composable
 private fun StartFocusButton(
-    onClick: () -> Unit
+    mode: FocusMode,
+    onClick: (FocusMode) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.primary,
-        onClick = onClick,
+        onClick = { onClick(mode) },
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)

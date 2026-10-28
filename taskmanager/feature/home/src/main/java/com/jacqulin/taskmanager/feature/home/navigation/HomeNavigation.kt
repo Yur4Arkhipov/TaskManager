@@ -9,8 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.jacqulin.taskmanager.feature.home.presentation.HomeScreen
 import com.jacqulin.taskmanager.feature.home.presentation.HomeViewModel
+import com.jacqulin.taskmanager.feature.home.presentation.components.FocusSession
 import com.jacqulin.taskmanager.feature.home.presentation.dayplan.DayPlanScreen
 import com.jacqulin.taskmanager.feature.home.presentation.focus.FocusConfigScreen
+import com.jacqulin.taskmanager.feature.home.presentation.model.FocusMode
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,11 +29,18 @@ data class FocusConfigRoute(
     val taskId: Int
 )
 
+@Serializable
+data class FocusSessionRoute(
+    val mode: FocusMode
+)
+
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
 
 fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
 
 fun NavController.navigateToFocusConfig(taskId: Int) = navigate(route = FocusConfigRoute(taskId = taskId))
+
+fun NavController.navigateToFocusSession(mode: FocusMode) = navigate(route = FocusSessionRoute(mode = mode))
 
 fun NavGraphBuilder.homeSection(
     navController: NavController,
@@ -40,7 +49,9 @@ fun NavGraphBuilder.homeSection(
     onNavigateToDayPlan: () -> Unit,
     onBackFromDayPlan: () -> Unit,
     onNavigateToFocusConfig: (Int) -> Unit,
-    onBackFromFocusConfig: () -> Unit
+    onBackFromFocusConfig: () -> Unit,
+    onNavigateToFocusSession: (FocusMode) -> Unit,
+    onBackFromFocusSession: () -> Unit
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
         composable<HomeRoute> { backStackEntry ->
@@ -68,7 +79,13 @@ fun NavGraphBuilder.homeSection(
         }
         composable<FocusConfigRoute> {
             FocusConfigScreen(
-                onBackClick = onBackFromFocusConfig
+                onBackClick = onBackFromFocusConfig,
+                onNavigateToFocusSession = onNavigateToFocusSession
+            )
+        }
+        composable<FocusSessionRoute> {
+            FocusSession(
+                onBackClick = onBackFromFocusSession,
             )
         }
     }
