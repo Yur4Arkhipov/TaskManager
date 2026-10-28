@@ -6,8 +6,6 @@ import androidx.navigation.compose.NavHost
 import com.jacqulin.taskmanager.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.taskmanager.feature.home.navigation.homeSection
 import com.jacqulin.taskmanager.feature.home.navigation.navigateToDayPlanRoute
-import com.jacqulin.taskmanager.feature.home.navigation.navigateToFocusConfig
-import com.jacqulin.taskmanager.feature.home.navigation.navigateToFocusSession
 import com.jacqulin.taskmanager.feature.notes.navigation.navigateToNoteEditor
 import com.jacqulin.taskmanager.feature.notes.navigation.notesSection
 import com.jacqulin.taskmanager.feature.settings.navigation.navigateToTags
@@ -55,10 +53,6 @@ fun AppNavHost(
             },
             onNavigateToDayPlan = { navController.navigateToDayPlanRoute() },
             onBackFromDayPlan = { navController.popBackStack() },
-            onBackFromFocusConfig = { navController.popBackStack() },
-            onNavigateToFocusConfig = { taskId -> navController.navigateToFocusConfig(taskId) },
-            onNavigateToFocusSession = { sessionId -> navController.navigateToFocusSession(sessionId) },
-            onBackFromFocusSession = { navController.popBackStack() }
         )
     }
 }
