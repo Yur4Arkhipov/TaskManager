@@ -7,7 +7,6 @@ data class HomeUiState(
     val mainState: MainState = MainState(),
     val taskState: TaskState = TaskState(),
 //    val availableTags: List<Tag> = emptyList(),
-//    val focusSession: FocusSession? = null,
 ) {
     val totalMinutes: Int
         get() = mainState.tasks.sumOf { it.durationMinutes ?: 0 }

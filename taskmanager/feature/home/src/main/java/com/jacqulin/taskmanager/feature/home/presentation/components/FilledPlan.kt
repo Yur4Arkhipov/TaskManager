@@ -42,17 +42,9 @@ fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
     onOpenFullPlan: () -> Unit = {},
-    onNavigateToFocusConfig: (Int) -> Unit
 ) {
     Column {
         PlanHeader(uiState = uiState)
-
-        Spacer(Modifier.height(12.dp))
-
-        NextStepCard(
-            state = uiState,
-            onStartFocusClicked = onNavigateToFocusConfig,
-        )
 
         Spacer(Modifier.height(12.dp))
 
@@ -270,12 +262,9 @@ fun PlanFilledPreview() {
                 mainState = MainState(
                     dateLabel = "Сегодня",
                     tasks = mockTasks,
-//                    isFocusStarted = false,
-//                    isFullPlanShown = false,
                 ),
             ),
             onEvent = {},
-            onNavigateToFocusConfig = {}
         )
     }
 }
