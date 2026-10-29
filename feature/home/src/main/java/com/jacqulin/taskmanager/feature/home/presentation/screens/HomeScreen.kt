@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.feature.home.presentation.components.AddTasksForPlanBottomSheet
 import com.jacqulin.taskmanager.feature.home.presentation.components.CreateTaskBottomSheet
 import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCard
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
@@ -82,7 +83,7 @@ private fun HomeContent(
         if (uiState.isEmpty) {
             item {
                 EmptyPlanCard(
-                    onAddTask = { onEvent(HomeEvent.OnAddTaskClicked) }
+                    onAddTask = { onEvent(HomeEvent.OnAddTasksForPlanClicked) }
                 )
             }
         } else {
@@ -100,31 +101,28 @@ private fun HomeContent(
         }
     }
 
-    if (uiState.mainState.isBottomSheetVisible) {
+    if (uiState.mainState.isCreateTaskBottomSheetVisible) {
         CreateTaskBottomSheet(
             title = uiState.taskState.title,
             availableTags = uiState.mainState.availableTags,
             selectedTags = uiState.taskState.tags,
             isPlannedForToday = uiState.taskState.isPlannedForToday,
-            onDismissRequest = {
-                onEvent(HomeEvent.OnBottomSheetDismissed)
-            },
-            onTitleChanged = { title ->
-                onEvent(HomeEvent.OnTaskTextChanged(title))
-            },
-            onPlanForTodayChanged = { enabled ->
-                onEvent(HomeEvent.OnTaskPlanForTodayChanged(enabled))
-            },
-            onTagAdded = { tag ->
-                onEvent(HomeEvent.OnTaskTagAdded(tag))
-            },
-            onTagRemoved = { tag ->
-                onEvent(HomeEvent.OnTaskTagRemoved(tag))
-            },
-            onSaveTaskClick = {
-                onEvent(HomeEvent.OnSaveTaskClicked)
-            },
+            onDismissRequest = { onEvent(HomeEvent.OnBottomSheetDismissed) },
+            onTitleChanged = { title -> onEvent(HomeEvent.OnTaskTextChanged(title)) },
+            onPlanForTodayChanged = { enabled -> onEvent(HomeEvent.OnTaskPlanForTodayChanged(enabled)) },
+            onTagAdded = { tag -> onEvent(HomeEvent.OnTaskTagAdded(tag)) },
+            onTagRemoved = { tag -> onEvent(HomeEvent.OnTaskTagRemoved(tag)) },
+            onSaveTaskClick = { onEvent(HomeEvent.OnSaveTaskClicked) },
             onNavigateToTags = onNavigateToTags
+        )
+    }
+
+    if (uiState.mainState.isAddTaskForPlanBottomSheetVisible) {
+        AddTasksForPlanBottomSheet(
+            state = uiState.mainState,
+            onTaskSelectionChange = { taskId -> onEvent(HomeEvent.ToggleTaskSelectionForPlan(taskId)) },
+            onDismissRequest = { onEvent(HomeEvent.OnBottomSheetDismissed) },
+            onSaveClick = { tasksIds -> onEvent(HomeEvent.OnAddTasksForPlanSaved(tasksIds)) },
         )
     }
 }

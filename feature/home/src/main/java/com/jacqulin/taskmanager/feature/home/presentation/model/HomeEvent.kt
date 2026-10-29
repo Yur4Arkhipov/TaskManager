@@ -11,7 +11,9 @@ sealed interface HomeEvent {
     data class OnTaskTagAdded(val tag: Tag) : HomeEvent
     data class OnTaskTagRemoved(val tag: Tag) : HomeEvent
     data object CommitDayPlanOrder : HomeEvent
-    data object OnAddTaskClicked : HomeEvent
+    data object OnAddTasksForPlanClicked : HomeEvent
+    data class OnAddTasksForPlanSaved(val taskIds: Set<Int>) : HomeEvent
+    data class ToggleTaskSelectionForPlan(val taskId: Int) : HomeEvent
     data object OnCreateNoteClicked : HomeEvent
     data object OnCreateTaskClicked : HomeEvent
     data object OnBottomSheetDismissed : HomeEvent

@@ -26,6 +26,7 @@
     <string name="tasks_add_task_voice">Голосом</string>
     <string name="tasks_add_task_text">Текстом</string>
     <string name="tasks_close_add_menu">Закрыть меню создания</string>
+    <string name="tasks_close_menu">Закрыть меню</string>
     <string name="tasks_new_task">Новая задача</string>
     <string name="tasks_new_task_question">Что нужно сделать?</string>
     <string name="tasks_task_name">Что делаем?</string>
@@ -155,5 +156,10 @@
     <string name="home_note">Заметка</string>
     <string name="home_thought_breakdown_title">Разобрать мысль</string>
     <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
+
+    // Add tasks for plan bottom sheet
+    <string name="home_select_tasks_title">Добавить задачи</string>
+    <string name="home_select_tasks_empty">Нет доступных задач</string>
+    <string name="home_select_tasks_add">Добавить (%d)</string>
     
 </resources>

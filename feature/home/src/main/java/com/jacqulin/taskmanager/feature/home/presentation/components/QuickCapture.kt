@@ -46,7 +46,7 @@ internal fun QuickCapture(
                 title = stringResource(R.string.home_task),
                 modifier = Modifier.weight(1f),
             ) {
-                onEvent(HomeEvent.OnAddTaskClicked)
+                onEvent(HomeEvent.OnCreateTaskClicked)
             }
             QuickCaptureButton(
                 icon = painterResource(R.drawable.ic_note_fast),

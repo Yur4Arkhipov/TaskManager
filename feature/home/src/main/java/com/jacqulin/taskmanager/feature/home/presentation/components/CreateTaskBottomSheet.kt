@@ -71,6 +71,7 @@ fun CreateTaskBottomSheet(
             dragHandle = {
                 BottomSheetDefaults.DragHandle(color = MaterialTheme.colorScheme.outlineVariant)
             },
+            sheetGesturesEnabled = false,
         ) {
             ModalBottomSheetContent(
                 title = title,
@@ -89,6 +90,7 @@ fun CreateTaskBottomSheet(
         }
     }
 }
+
 @Composable
 fun ModalBottomSheetContent(
     title: String,

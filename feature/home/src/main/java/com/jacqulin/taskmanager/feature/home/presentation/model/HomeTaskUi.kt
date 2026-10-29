@@ -25,3 +25,13 @@ fun HomeTaskUi.toDomain(): Task = Task(
     isPlannedForToday = isPlannedForToday,
     dayPlanOrder = dayPlanOrder,
 )
+
+fun Task.toHomeTaskUi(): HomeTaskUi = HomeTaskUi(
+    id = id,
+    title = title,
+    createdAtMillis = createdAtMillis,
+    isCompleted = isCompleted,
+    tags = tags,
+    isPlannedForToday = isPlannedForToday,
+    dayPlanOrder = dayPlanOrder,
+)

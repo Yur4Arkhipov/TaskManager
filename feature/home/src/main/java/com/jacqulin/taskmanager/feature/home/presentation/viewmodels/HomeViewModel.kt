@@ -3,6 +3,8 @@ package com.jacqulin.taskmanager.feature.home.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.GetAllTasksUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.GetTaskByIdUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateDayPlanOrderUseCase
@@ -15,6 +17,7 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
 import com.jacqulin.taskmanager.feature.home.presentation.model.TaskState
 import com.jacqulin.taskmanager.feature.home.presentation.model.toDomain
+import com.jacqulin.taskmanager.feature.home.presentation.model.toHomeTaskUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +43,8 @@ class HomeViewModel @Inject constructor(
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private val updateDayPlanOrderUseCase: UpdateDayPlanOrderUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val getAllTasksUseCase: GetAllTasksUseCase
 ) : ViewModel() {
 
     private val _effects = MutableSharedFlow<HomeEffect>()
@@ -125,9 +130,39 @@ class HomeViewModel @Inject constructor(
                 }
             }
             HomeEvent.CommitDayPlanOrder -> commitDayPlanOrder()
-            HomeEvent.OnAddTaskClicked,
+            HomeEvent.OnAddTasksForPlanClicked -> {
+                mainState.update {
+                    it.copy(
+                        isAddTaskForPlanBottomSheetVisible = true,
+                        selectedTaskIdsForPlan = emptySet()
+                    )
+                }
+                viewModelScope.launch {
+                    val availableTasksForPlan = getAllTasksUseCase()
+                        .filterNot {
+                            it.isPlannedForToday
+                            it.isCompleted
+                        }
+                        .map { it.toHomeTaskUi() }
+
+                    mainState.update { it.copy(availableTasksForPlan = availableTasksForPlan) }
+                }
+            }
+            is HomeEvent.ToggleTaskSelectionForPlan -> {
+                mainState.update { state ->
+                    val selectedIds = mainState.value.selectedTaskIdsForPlan
+                    state.copy(
+                        selectedTaskIdsForPlan = if (event.taskId in selectedIds) {
+                            selectedIds - event.taskId
+                        } else {
+                            selectedIds + event.taskId
+                        }
+                    )
+                }
+            }
+            is HomeEvent.OnAddTasksForPlanSaved -> addTasksForPlan(event.taskIds)
             HomeEvent.OnCreateTaskClicked -> {
-                mainState.update { it.copy(isBottomSheetVisible = true) }
+                mainState.update { it.copy(isCreateTaskBottomSheetVisible = true) }
             }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
             HomeEvent.OnCreateTagClicked -> emitEffect(HomeEffect.NavigateToTags)
@@ -144,8 +179,13 @@ class HomeViewModel @Inject constructor(
                 state.copy(tags = state.tags - event.tag)
             }
             HomeEvent.OnBottomSheetDismissed -> {
-                mainState.update { it.copy(isBottomSheetVisible = false) }
-                taskState.update { TaskState() }
+                if (mainState.value.isCreateTaskBottomSheetVisible) {
+                    mainState.update { it.copy(isCreateTaskBottomSheetVisible = false) }
+                    taskState.update { TaskState() }
+                }
+                if (mainState.value.isAddTaskForPlanBottomSheetVisible) {
+                    mainState.update { it.copy(isAddTaskForPlanBottomSheetVisible = false) }
+                }
             }
             HomeEvent.OnSaveTaskClicked -> {
                 saveTask()
@@ -183,6 +223,19 @@ class HomeViewModel @Inject constructor(
             )
             updateTaskStatusUseCase(updatedTask.toDomain())
         }
+    }
+
+    private fun addTasksForPlan(taskIds: Set<Int>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                val task = getTaskByIdUseCase(taskId)
+                task?.let {
+                    val updatedTask = it.copy(isPlannedForToday = true)
+                    updateTaskStatusUseCase(updatedTask)
+                }
+            }
+        }
+        mainState.update { it.copy(isAddTaskForPlanBottomSheetVisible = false) }
     }
 
     private fun saveTask() {
