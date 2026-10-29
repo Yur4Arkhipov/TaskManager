@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -125,153 +127,147 @@ private fun DayPlanContent(
 
         Spacer(Modifier.height(10.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.home_day_plan_title),
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = stringResource(R.string.home_tasks_ahead, activeTasks.size),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(64.dp)
-                    ) {
-                        CircularProgressIndicator(
-                            progress = { progress },
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.primary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                            strokeWidth = 6.dp,
-                        )
-                        Text(
-                            text = stringResource(
-                                R.string.home_progress_percentage,
-                                (progress * 100).toInt()
-                            ),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
-            }
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = stringResource(R.string.home_in_progress),
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = stringResource(R.string.home_day_plan_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(R.string.home_tasks_ahead, activeTasks.size),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    CircularProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        strokeWidth = 6.dp,
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.home_progress_percentage,
+                            (progress * 100).toInt()
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = stringResource(R.string.home_hold_and_drag),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-
-                Spacer(Modifier.height(10.dp))
-
             }
 
-            item(key = "day_plan_tasks") {
-                LazyColumn(
-                    state = taskListState,
-                    modifier = Modifier
-                        .heightIn(max = 420.dp)
-                        .fadeScrollableVerticalEdges(taskListState, 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(orderedTasks, key = { it.id }) { task ->
-                        val rowContent: @Composable (Modifier) -> Unit = { rowModifier ->
-                            PlanTaskRow(
-                                task = task,
-                                onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
-                                onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
-                                modifier = rowModifier,
-                                isDragHandleEnabled = !task.isCompleted,
-                            )
-                        }
-                        key(task.isCompleted) {
-                            if (task.isCompleted) {
-                                Box(
-                                    modifier = Modifier.animateItem(
-                                        placementSpec = spring(
-                                            stiffness = Spring.StiffnessMediumLow,
-                                        )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.home_in_progress),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(R.string.home_hold_and_drag),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            LazyColumn(
+                state = taskListState,
+                modifier = Modifier
+                    .heightIn(max = 420.dp)
+                    .fadeScrollableVerticalEdges(taskListState, 24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(orderedTasks, key = { it.id }) { task ->
+                    val rowContent: @Composable (Modifier) -> Unit = { rowModifier ->
+                        PlanTaskRow(
+                            task = task,
+                            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
+                            modifier = rowModifier,
+                            isDragHandleEnabled = !task.isCompleted,
+                        )
+                    }
+                    key(task.isCompleted) {
+                        if (task.isCompleted) {
+                            Box(
+                                modifier = Modifier.animateItem(
+                                    placementSpec = spring(
+                                        stiffness = Spring.StiffnessMediumLow,
                                     )
-                                ) {
-                                    rowContent(Modifier)
-                                }
-                            } else {
-                                ReorderableItem(
-                                    state = reorderableState,
-                                    key = task.id,
-                                    animateItemModifier = Modifier.animateItem(
-                                        placementSpec = spring(
-                                            stiffness = Spring.StiffnessMediumLow,
-                                        )
-                                    ),
-                                ) {
-                                    rowContent(Modifier.draggableHandle())
-                                }
+                                )
+                            ) {
+                                rowContent(Modifier)
+                            }
+                        } else {
+                            ReorderableItem(
+                                state = reorderableState,
+                                key = task.id,
+                                animateItemModifier = Modifier.animateItem(
+                                    placementSpec = spring(
+                                        stiffness = Spring.StiffnessMediumLow,
+                                    )
+                                ),
+                            ) {
+                                rowContent(Modifier.draggableHandle())
                             }
                         }
                     }
                 }
             }
 
-            item {
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column(Modifier.padding(16.dp)) {
-                        Text(
-                            text = stringResource(R.string.home_completed_today).uppercase(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            text = stringResource(
-                                R.string.home_completed_count,
-                                completedCount,
-                                state.mainState.tasks.size
-                            ),
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = if (completedCount == 0) {
-                                stringResource(R.string.home_completed_empty_hint)
-                            } else {
-                                stringResource(R.string.home_completed_hint)
-                            },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.home_completed_today).uppercase(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(
+                            R.string.home_completed_count,
+                            completedCount,
+                            state.mainState.tasks.size
+                        ),
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = if (completedCount == 0) {
+                            stringResource(R.string.home_completed_empty_hint)
+                        } else {
+                            stringResource(R.string.home_completed_hint)
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
+
         }
     }
 }

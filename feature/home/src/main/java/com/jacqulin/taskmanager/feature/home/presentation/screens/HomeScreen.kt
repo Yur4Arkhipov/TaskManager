@@ -1,9 +1,11 @@
 package com.jacqulin.taskmanager.feature.home.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,40 +67,33 @@ private fun HomeContent(
     onOpenFullPlan: () -> Unit,
     onNavigateToTags: () -> Unit
 ) {
-    LazyColumn(
+    Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.dp)
             .padding(top = 12.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-        item {
-            Text(
-                text = uiState.mainState.dateLabel,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
+        Text(
+            text = uiState.mainState.dateLabel,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        if (uiState.isEmpty) {
+            EmptyPlanCard(
+                onAddTask = { onEvent(HomeEvent.OnAddTasksForPlanClicked) }
+            )
+        } else {
+            FilledPlan(
+                uiState = uiState,
+                onEvent = onEvent,
+                onOpenFullPlan = onOpenFullPlan,
             )
         }
 
-        if (uiState.isEmpty) {
-            item {
-                EmptyPlanCard(
-                    onAddTask = { onEvent(HomeEvent.OnAddTasksForPlanClicked) }
-                )
-            }
-        } else {
-            item {
-                FilledPlan(
-                    uiState = uiState,
-                    onEvent = onEvent,
-                    onOpenFullPlan = onOpenFullPlan,
-                )
-            }
-        }
-
-        item {
-            QuickCapture(onEvent = onEvent)
-        }
+        QuickCapture(onEvent = onEvent)
     }
 
     if (uiState.mainState.isCreateTaskBottomSheetVisible) {
