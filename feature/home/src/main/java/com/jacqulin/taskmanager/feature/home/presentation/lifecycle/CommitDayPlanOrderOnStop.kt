@@ -6,20 +6,25 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 
 @Composable
-fun CommitDayPlanOrderOnStop(onEvent: (HomeEvent) -> Unit) {
+fun CommitDayPlanOrderOnStop(
+    onStop: () -> Unit,
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val currentOnEvent = rememberUpdatedState(onEvent)
+    val currentOnStop = rememberUpdatedState(onStop)
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
-                currentOnEvent.value(HomeEvent.CommitDayPlanOrder)
+                currentOnStop.value()
             }
         }
+
         lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 }

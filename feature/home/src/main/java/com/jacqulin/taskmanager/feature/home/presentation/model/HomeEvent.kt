@@ -6,8 +6,6 @@ sealed interface HomeEvent {
     data class ReorderTasks(val taskIds: List<Int>) : HomeEvent
     data object CommitDayPlanOrder : HomeEvent
     data object OnAddTaskClicked : HomeEvent
-    data object OnShowFullPlanClicked : HomeEvent
     data object OnCreateNoteClicked : HomeEvent
     data object OnCreateTaskClicked : HomeEvent
-    data object OnBreakDownThoughtClicked : HomeEvent
 }

@@ -35,7 +35,9 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    CommitDayPlanOrderOnStop(viewModel::onEvent)
+    CommitDayPlanOrderOnStop {
+        viewModel.onEvent(HomeEvent.CommitDayPlanOrder)
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
