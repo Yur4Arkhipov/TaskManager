@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.home.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
@@ -139,11 +140,11 @@ class HomeViewModel @Inject constructor(
                 }
                 viewModelScope.launch {
                     val availableTasksForPlan = getAllTasksUseCase()
-                        .filterNot {
-                            it.isPlannedForToday
-                            it.isCompleted
-                        }
+                        .filterNot { it.isPlannedForToday }
+                        .filterNot { it.isCompleted }
                         .map { it.toHomeTaskUi() }
+
+                    Log.d("HomeVM", "availableTasks: $availableTasksForPlan")
 
                     mainState.update { it.copy(availableTasksForPlan = availableTasksForPlan) }
                 }
