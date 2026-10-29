@@ -3,7 +3,6 @@ package com.jacqulin.taskmanager.feature.home.presentation.model
 data class HomeUiState(
     val mainState: MainState = MainState(),
     val taskState: TaskState = TaskState(),
-//    val availableTags: List<Tag> = emptyList(),
 ) {
     val totalMinutes: Int
         get() = mainState.tasks.sumOf { it.durationMinutes ?: 0 }

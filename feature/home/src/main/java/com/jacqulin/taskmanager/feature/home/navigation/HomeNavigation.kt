@@ -27,7 +27,7 @@ fun NavController.navigateToDayPlanRoute() = navigate(route = DayPlanRoute)
 
 fun NavGraphBuilder.homeSection(
     navController: NavController,
-    onNavigateToTasks: () -> Unit,
+    onNavigateToTags: () -> Unit,
     onNavigateToNoteEditor: () -> Unit,
     onNavigateToDayPlan: () -> Unit,
     onBackFromDayPlan: () -> Unit,
@@ -39,9 +39,9 @@ fun NavGraphBuilder.homeSection(
             }
             val viewModel: HomeViewModel = hiltViewModel(parentEntry)
             HomeScreen(
-                onNavigateToTasks = onNavigateToTasks,
                 onNavigateToNotes = onNavigateToNoteEditor,
                 onNavigateToFullPlan = onNavigateToDayPlan,
+                onNavigateToTags = onNavigateToTags,
                 viewModel = viewModel,
             )
         }

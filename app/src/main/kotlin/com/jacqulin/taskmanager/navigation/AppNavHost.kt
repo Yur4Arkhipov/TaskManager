@@ -45,9 +45,7 @@ fun AppNavHost(
         )
         homeSection(
             navController = navController,
-            onNavigateToTasks = {
-
-            },
+            onNavigateToTags = { navController.navigateToTags() },
             onNavigateToNoteEditor = {
                 navController.navigateToNoteEditor()
             },

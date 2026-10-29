@@ -2,7 +2,9 @@ package com.jacqulin.taskmanager.feature.home.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateDayPlanOrderUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
 import com.jacqulin.taskmanager.core.model.Task
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -33,8 +36,10 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     observeTasksUseCase: ObserveTasksUseCase,
+    observeTagsUseCase: ObserveTagsUseCase,
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private val updateDayPlanOrderUseCase: UpdateDayPlanOrderUseCase,
+    private val saveTaskUseCase: SaveTaskUseCase,
 ) : ViewModel() {
 
     private val _effects = MutableSharedFlow<HomeEffect>()
@@ -49,13 +54,15 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> =
         combine(
             observeTasksUseCase(),
+            observeTagsUseCase(),
             mainState,
             taskState,
             taskOrder,
-        ) { tasks, mainState, taskState, taskOrder ->
+        ) { tasks, tags, mainState, taskState, taskOrder ->
             HomeUiState(
                 mainState = mainState.copy(
                     dateLabel = dateLabel(),
+                    availableTags = tags,
                     tasks = tasks
                         .filter { it.isPlannedForToday }
                         .map { task ->
@@ -119,8 +126,30 @@ class HomeViewModel @Inject constructor(
             }
             HomeEvent.CommitDayPlanOrder -> commitDayPlanOrder()
             HomeEvent.OnAddTaskClicked,
-            HomeEvent.OnCreateTaskClicked -> { emitEffect(HomeEffect.NavigateToCreateTask) }
+            HomeEvent.OnCreateTaskClicked -> {
+                mainState.update { it.copy(isBottomSheetVisible = true) }
+            }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
+            HomeEvent.OnCreateTagClicked -> emitEffect(HomeEffect.NavigateToTags)
+            is HomeEvent.OnTaskTextChanged -> {
+                taskState.update { it.copy(title = event.title) }
+            }
+            is HomeEvent.OnTaskPlanForTodayChanged -> taskState.update {
+                it.copy(isPlannedForToday = event.enabled)
+            }
+            is HomeEvent.OnTaskTagAdded -> taskState.update { state ->
+                state.copy(tags = state.tags + event.tag)
+            }
+            is HomeEvent.OnTaskTagRemoved -> taskState.update { state ->
+                state.copy(tags = state.tags - event.tag)
+            }
+            HomeEvent.OnBottomSheetDismissed -> {
+                mainState.update { it.copy(isBottomSheetVisible = false) }
+                taskState.update { TaskState() }
+            }
+            HomeEvent.OnSaveTaskClicked -> {
+                saveTask()
+            }
         }
     }
 
@@ -154,6 +183,24 @@ class HomeViewModel @Inject constructor(
             )
             updateTaskStatusUseCase(updatedTask.toDomain())
         }
+    }
+
+    private fun saveTask() {
+        viewModelScope.launch {
+            saveTaskUseCase(
+                Task(
+                    id = 0,
+                    title = taskState.value.title,
+                    createdAtMillis = System.currentTimeMillis(),
+                    isCompleted = false,
+                    tags = taskState.value.tags,
+                    isPlannedForToday = taskState.value.isPlannedForToday,
+                    dayPlanOrder = null
+                )
+            )
+        }
+
+        onEvent(HomeEvent.OnBottomSheetDismissed)
     }
 
     private fun emitEffect(effect: HomeEffect) {

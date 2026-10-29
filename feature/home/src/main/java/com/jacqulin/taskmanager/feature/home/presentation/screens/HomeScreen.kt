@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.feature.home.presentation.components.CreateTaskBottomSheet
 import com.jacqulin.taskmanager.feature.home.presentation.components.EmptyPlanCard
 import com.jacqulin.taskmanager.feature.home.presentation.components.FilledPlan
 import com.jacqulin.taskmanager.feature.home.presentation.components.QuickCapture
@@ -28,9 +29,9 @@ import com.jacqulin.taskmanager.feature.home.presentation.viewmodels.HomeViewMod
 
 @Composable
 fun HomeScreen(
-    onNavigateToTasks: () -> Unit,
     onNavigateToNotes: () -> Unit,
     onNavigateToFullPlan: () -> Unit,
+    onNavigateToTags: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -42,7 +43,7 @@ fun HomeScreen(
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                HomeEffect.NavigateToCreateTask -> onNavigateToTasks()
+                HomeEffect.NavigateToTags -> onNavigateToTags()
                 HomeEffect.NavigateToCreateNote -> onNavigateToNotes()
             }
         }
@@ -52,6 +53,7 @@ fun HomeScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         onOpenFullPlan = onNavigateToFullPlan,
+        onNavigateToTags = onNavigateToTags
     )
 }
 
@@ -59,7 +61,8 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
-    onOpenFullPlan: () -> Unit = {},
+    onOpenFullPlan: () -> Unit,
+    onNavigateToTags: () -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -96,6 +99,34 @@ private fun HomeContent(
             QuickCapture(onEvent = onEvent)
         }
     }
+
+    if (uiState.mainState.isBottomSheetVisible) {
+        CreateTaskBottomSheet(
+            title = uiState.taskState.title,
+            availableTags = uiState.mainState.availableTags,
+            selectedTags = uiState.taskState.tags,
+            isPlannedForToday = uiState.taskState.isPlannedForToday,
+            onDismissRequest = {
+                onEvent(HomeEvent.OnBottomSheetDismissed)
+            },
+            onTitleChanged = { title ->
+                onEvent(HomeEvent.OnTaskTextChanged(title))
+            },
+            onPlanForTodayChanged = { enabled ->
+                onEvent(HomeEvent.OnTaskPlanForTodayChanged(enabled))
+            },
+            onTagAdded = { tag ->
+                onEvent(HomeEvent.OnTaskTagAdded(tag))
+            },
+            onTagRemoved = { tag ->
+                onEvent(HomeEvent.OnTaskTagRemoved(tag))
+            },
+            onSaveTaskClick = {
+                onEvent(HomeEvent.OnSaveTaskClicked)
+            },
+            onNavigateToTags = onNavigateToTags
+        )
+    }
 }
 
 @Composable
@@ -121,7 +152,9 @@ fun HomeContentPreview() {
                     )
                 ),
             ),
-            onEvent = { }
-        ) { }
+            onEvent = { },
+            onOpenFullPlan = {},
+            onNavigateToTags = {}
+        )
     }
 }
