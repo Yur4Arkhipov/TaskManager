@@ -2,6 +2,7 @@ package com.jacqulin.taskmanager.feature.home.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,14 +18,22 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
 fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
-    onOpenFullPlan: () -> Unit = {},
+    onOpenFullPlan: () -> Unit,
+    onAddTasksForPlanDay: () -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         PlanHeader(uiState = uiState)
         Spacer(Modifier.height(12.dp))
         PlanTaskList(
             uiState = uiState,
             onEvent = onEvent,
+            onAddTasksForPlanDay = onAddTasksForPlanDay,
+        )
+        Spacer(Modifier.height(6.dp))
+        PlanFooter(
+            isTaskListEmpty = uiState.isEmpty,
             onOpenFullPlan = onOpenFullPlan,
         )
     }
@@ -68,6 +77,8 @@ fun PlanFilledPreview() {
                 ),
             ),
             onEvent = {},
+            onAddTasksForPlanDay = {},
+            onOpenFullPlan = {}
         )
     }
 }

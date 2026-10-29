@@ -89,7 +89,8 @@ private fun HomeContent(
             FilledPlan(
                 uiState = uiState,
                 onEvent = onEvent,
-                onOpenFullPlan = onOpenFullPlan,
+                onAddTasksForPlanDay = { onEvent(HomeEvent.OnAddTasksForPlanClicked) },
+                onOpenFullPlan = onOpenFullPlan
             )
         }
 

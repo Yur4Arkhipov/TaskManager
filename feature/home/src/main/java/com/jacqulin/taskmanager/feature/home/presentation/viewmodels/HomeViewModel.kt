@@ -262,7 +262,7 @@ class HomeViewModel @Inject constructor(
 
     private fun dateLabel(): String {
         val locale = Locale.forLanguageTag("ru")
-        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
             .withLocale(locale)
         return LocalDate.now()
             .format(formatter)

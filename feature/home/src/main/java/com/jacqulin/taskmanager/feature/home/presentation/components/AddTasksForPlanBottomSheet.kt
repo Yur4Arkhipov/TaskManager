@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -138,8 +137,6 @@ private fun AddTasksForPlanContent(
             }
         }
 
-        Spacer(Modifier.height(6.dp))
-
         Button(
             onClick = { onSaveTasksClick(selectedTaskIds) } ,
             enabled = selectedTaskIds.isNotEmpty(),
@@ -148,7 +145,7 @@ private fun AddTasksForPlanContent(
                 .height(48.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary.copy(.85f),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 disabledContainerColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
                 disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
