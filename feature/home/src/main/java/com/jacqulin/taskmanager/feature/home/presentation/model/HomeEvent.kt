@@ -16,7 +16,8 @@ sealed interface HomeEvent {
     data class ToggleTaskSelectionForPlan(val taskId: Int) : HomeEvent
     data object OnCreateNoteClicked : HomeEvent
     data object OnCreateTaskClicked : HomeEvent
+    data object OnOpenFullPlanClicked: HomeEvent
+    data object OnCreateTagClicked: HomeEvent
     data object OnBottomSheetDismissed : HomeEvent
     data object OnSaveTaskClicked : HomeEvent
-    data object OnCreateTagClicked: HomeEvent
 }

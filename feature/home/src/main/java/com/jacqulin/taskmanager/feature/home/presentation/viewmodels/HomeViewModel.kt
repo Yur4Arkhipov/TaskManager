@@ -166,6 +166,7 @@ class HomeViewModel @Inject constructor(
             }
             HomeEvent.OnCreateNoteClicked -> emitEffect(HomeEffect.NavigateToCreateNote)
             HomeEvent.OnCreateTagClicked -> emitEffect(HomeEffect.NavigateToTags)
+            HomeEvent.OnOpenFullPlanClicked -> emitEffect(HomeEffect.NavigateToFullPlan)
             is HomeEvent.OnTaskTextChanged -> {
                 taskState.update { it.copy(title = event.title) }
             }

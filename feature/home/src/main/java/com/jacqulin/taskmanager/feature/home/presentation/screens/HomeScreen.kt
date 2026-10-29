@@ -48,6 +48,7 @@ fun HomeScreen(
             when (effect) {
                 HomeEffect.NavigateToTags -> onNavigateToTags()
                 HomeEffect.NavigateToCreateNote -> onNavigateToNotes()
+                HomeEffect.NavigateToFullPlan -> onNavigateToFullPlan()
             }
         }
     }
@@ -55,8 +56,6 @@ fun HomeScreen(
     HomeContent(
         uiState = uiState,
         onEvent = viewModel::onEvent,
-        onOpenFullPlan = onNavigateToFullPlan,
-        onNavigateToTags = onNavigateToTags
     )
 }
 
@@ -64,8 +63,6 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
-    onOpenFullPlan: () -> Unit,
-    onNavigateToTags: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -90,7 +87,7 @@ private fun HomeContent(
                 uiState = uiState,
                 onEvent = onEvent,
                 onAddTasksForPlanDay = { onEvent(HomeEvent.OnAddTasksForPlanClicked) },
-                onOpenFullPlan = onOpenFullPlan
+                onOpenFullPlan = { onEvent(HomeEvent.OnOpenFullPlanClicked) }
             )
         }
 
@@ -109,7 +106,7 @@ private fun HomeContent(
             onTagAdded = { tag -> onEvent(HomeEvent.OnTaskTagAdded(tag)) },
             onTagRemoved = { tag -> onEvent(HomeEvent.OnTaskTagRemoved(tag)) },
             onSaveTaskClick = { onEvent(HomeEvent.OnSaveTaskClicked) },
-            onNavigateToTags = onNavigateToTags
+            onNavigateToTags = { onEvent(HomeEvent.OnCreateTagClicked) }
         )
     }
 
@@ -147,8 +144,6 @@ fun HomeContentPreview() {
                 ),
             ),
             onEvent = { },
-            onOpenFullPlan = {},
-            onNavigateToTags = {}
         )
     }
 }
