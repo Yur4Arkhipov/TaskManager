@@ -130,17 +130,12 @@ private fun DayPlanContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
-                Text(
-                    text = state.mainState.dateLabel,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = stringResource(R.string.home_day_plan_title),
                             style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
@@ -179,8 +174,10 @@ private fun DayPlanContent(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        stringResource(R.string.home_in_progress),
-                        fontWeight = FontWeight.SemiBold
+                        text = stringResource(R.string.home_in_progress),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = stringResource(R.string.home_hold_and_drag),
@@ -244,10 +241,7 @@ private fun DayPlanContent(
                 Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column(Modifier.padding(16.dp)) {
@@ -301,7 +295,7 @@ fun DayPlanContentPreview() {
                             id = 2,
                             title = "Ответить на письма",
                             durationMinutes = 15,
-                            isCompleted = false
+                            isCompleted = true
                         ),
                     ),
                 ),

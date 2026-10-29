@@ -145,8 +145,8 @@
     <string name="home_hold_and_drag">Удерживайте и тяните</string>
     <string name="home_completed_today">Сделано сегодня</string>
     <string name="home_completed_count">%1$d из %2$d задач</string>
-    <string name="home_completed_empty_hint">Выполненные задачи появятся здесь — прогресс дня всегда будет перед глазами.</string>
-    <string name="home_completed_hint">Отличная работа! Выполненные задачи останутся здесь.</string>
+    <string name="home_completed_empty_hint">Прогресс дня всегда перед глазами</string>
+    <string name="home_completed_hint">Отличная работа! Выполненные задачи очистятся автоматически к следующему дню</string>
     <string name="home_task_position">%d</string>
     <string name="home_next_task">Ближайшая</string>
     <string name="home_duration_minutes">%d мин</string>
