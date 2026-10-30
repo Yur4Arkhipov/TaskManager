@@ -164,7 +164,7 @@ fun TasksScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
         ) {
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,

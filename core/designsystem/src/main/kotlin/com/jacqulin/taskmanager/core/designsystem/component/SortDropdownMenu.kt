@@ -59,7 +59,7 @@ private fun SortMenuItem(
     onClick: () -> Unit,
 ) {
     val background = if (selected)
-        MaterialTheme.colorScheme.surfaceContainerHigh
+        MaterialTheme.colorScheme.primary.copy(alpha = .1f)
     else
         Color.Transparent
 
