@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation.state
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 import com.jacqulin.taskmanager.core.model.Tag
 

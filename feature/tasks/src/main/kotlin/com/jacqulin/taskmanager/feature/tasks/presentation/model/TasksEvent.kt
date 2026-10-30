@@ -1,8 +1,6 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import com.jacqulin.taskmanager.core.model.Tag
 
 sealed interface TasksEvent {

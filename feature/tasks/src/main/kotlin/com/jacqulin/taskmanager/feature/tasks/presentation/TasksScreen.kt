@@ -55,9 +55,12 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTask
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.MainScreenState
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEffect
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEvent
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksUiState
 
 @Composable
 fun TasksScreen(
