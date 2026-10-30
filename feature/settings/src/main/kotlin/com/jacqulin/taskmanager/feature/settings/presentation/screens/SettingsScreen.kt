@@ -36,11 +36,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.model.AppLanguage
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ColorPaletteRow
+import com.jacqulin.taskmanager.feature.settings.presentation.components.LanguageSelector
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ProviderConfigFields
 import com.jacqulin.taskmanager.feature.settings.presentation.components.SettingsSectionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSchemeRow
@@ -122,6 +124,20 @@ fun SettingsScreen(
                                 ThemeSchemeRow(
                                     selectedThemeConfig = settingsUiState.settings.darkThemeConfig,
                                     onThemeConfigChanged = onChangeDarkThemeConfig
+                                )
+                            }
+                        )
+                    }
+
+                    item {
+                        SettingsSectionCard(
+                            title = "Язык интерфейса",
+                            content = {
+                                LanguageSelector(
+                                    selectedLanguage = AppLanguage.SYSTEM,
+                                    onLanguageSelected = { language ->
+//                                            onEvent(SettingsEvent.SelectLanguage(language))
+                                    }
                                 )
                             }
                         )
