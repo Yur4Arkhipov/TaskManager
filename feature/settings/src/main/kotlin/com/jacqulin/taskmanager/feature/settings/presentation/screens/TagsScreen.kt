@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -185,23 +186,23 @@ private fun TagsScreenContent(
         }
         Spacer(Modifier.height(12.dp))
 
-        val tagsListState = rememberLazyListState()
-        LazyColumn(
-            state = tagsListState,
+        val gridState = rememberLazyGridState()
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            state = gridState,
             modifier = Modifier
                 .fillMaxSize()
-                .fadeScrollableVerticalEdges(tagsListState),
+                .fadeScrollableVerticalEdges(gridState),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(
-                items = state.visibleTags,
-                key = { it.tag.id }
-            ) { item ->
+            items(state.visibleTags, key = { it.tag.id }) { item ->
                 TagCard(
                     item = item,
                     onRename = { editing = item.tag },
                     onDelete = { deleting = item }
                 )
-                Spacer(Modifier.height(4.dp))
             }
         }
     }
