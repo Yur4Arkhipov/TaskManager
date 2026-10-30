@@ -169,9 +169,6 @@ fun TasksScreen(
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,
                 isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
-                selectedCount = uiState.mainScreenState.selectedTaskIds.size,
-                allSelected = uiState.visibleTasks.isNotEmpty()
-                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
                 sortType = uiState.mainScreenState.sortType,
                 showCreationDate = uiState.mainScreenState.showCreationDate,
                 showTags = uiState.mainScreenState.showTags,
@@ -182,7 +179,6 @@ fun TasksScreen(
                     onEvent(TasksEvent.OnSortChanged(sortType))
                 },
                 onDeleteModeClick = { onEvent(TasksEvent.OnDeleteModeToggled) },
-                onSelectAllClick = { onEvent(TasksEvent.OnSelectAllTasks) },
                 onShowCreationDateChanged = { isChanged ->
                     onEvent(TasksEvent.OnShowCreationDateChanged(isChanged))
                 },
@@ -191,14 +187,16 @@ fun TasksScreen(
                 },
             )
 
-            if (!uiState.mainScreenState.isDeleteModeEnabled) {
-                TasksFilter(
-                    taskFilter = uiState.mainScreenState.filter,
-                    onTaskFilterChanged = { filter ->
-                        onEvent(TasksEvent.OnTaskFilterChanged(filter))
-                    }
-                )
-            }
+            TasksFilter(
+                isDeleteMode = uiState.mainScreenState.isDeleteModeEnabled,
+                allSelected = uiState.visibleTasks.isNotEmpty()
+                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
+                taskFilter = uiState.mainScreenState.filter,
+                onSelectAllClicked = { onEvent(TasksEvent.OnSelectAllTasks) },
+                onTaskFilterChanged = { filter ->
+                    onEvent(TasksEvent.OnTaskFilterChanged(filter))
+                }
+            )
 
             if (uiState.isEmpty) {
                 Box(

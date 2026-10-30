@@ -121,13 +121,13 @@ class TasksScreenViewModel @Inject constructor(
     fun onEvent(event: TasksEvent) {
         when (event) {
             is TasksEvent.OnSearchQueryChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(searchQuery = event.query) }
+                mainScreenState.update { it.copy(searchQuery = event.query) }
             }
             is TasksEvent.OnSortChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(sortType = event.sortType) }
+                mainScreenState.update { it.copy(sortType = event.sortType) }
             }
             is TasksEvent.OnTaskFilterChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(filter = event.filter) }
+                mainScreenState.update { it.copy(filter = event.filter) }
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
