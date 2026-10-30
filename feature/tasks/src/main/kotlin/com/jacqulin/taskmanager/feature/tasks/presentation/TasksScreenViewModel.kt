@@ -180,7 +180,6 @@ class TasksScreenViewModel @Inject constructor(
             }
             is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
             is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
-            is TasksEvent.OnCompactViewChanged -> mainScreenState.update { it.copy(isCompactView = event.enabled) }
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {

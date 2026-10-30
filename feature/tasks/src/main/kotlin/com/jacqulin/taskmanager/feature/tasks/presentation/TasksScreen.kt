@@ -175,7 +175,6 @@ fun TasksScreen(
                 sortType = uiState.mainScreenState.sortType,
                 showCreationDate = uiState.mainScreenState.showCreationDate,
                 showTags = uiState.mainScreenState.showTags,
-                isCompactView = uiState.mainScreenState.isCompactView,
                 onSearchQueryChanged = { query ->
                     onEvent(TasksEvent.OnSearchQueryChanged(query))
                 },
@@ -189,9 +188,6 @@ fun TasksScreen(
                 },
                 onShowTagsChanged = { isChanged ->
                     onEvent(TasksEvent.OnShowTagsChanged(isChanged))
-                },
-                onCompactViewChanged = { isChanged ->
-                    onEvent(TasksEvent.OnCompactViewChanged(isChanged))
                 },
             )
 
@@ -249,7 +245,6 @@ fun TasksScreen(
                             isSelected = task.id in uiState.mainScreenState.selectedTaskIds,
                             showCreationDate = uiState.mainScreenState.showCreationDate,
                             showTags = uiState.mainScreenState.showTags,
-                            isCompact = uiState.mainScreenState.isCompactView,
                             onSelectionClick = { onEvent(TasksEvent.OnTaskSelectionToggled(task.id)) },
                             onLongPress = {
                                 if (!uiState.mainScreenState.isDeleteModeEnabled)

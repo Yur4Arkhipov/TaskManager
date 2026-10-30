@@ -11,5 +11,4 @@ data class MainScreenState(
     val selectedTaskIds: Set<Int> = emptySet(),
     val showCreationDate: Boolean = true,
     val showTags: Boolean = true,
-    val isCompactView: Boolean = false,
 )

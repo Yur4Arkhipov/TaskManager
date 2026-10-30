@@ -46,14 +46,12 @@ fun TasksToolbar(
     sortType: SortType,
     showCreationDate: Boolean,
     showTags: Boolean,
-    isCompactView: Boolean,
     onSearchQueryChanged: (String) -> Unit,
     onSortChanged: (SortType) -> Unit,
     onDeleteModeClick: () -> Unit,
     onSelectAllClick: () -> Unit,
     onShowCreationDateChanged: (Boolean) -> Unit,
     onShowTagsChanged: (Boolean) -> Unit,
-    onCompactViewChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var sortMenuExpanded by remember { mutableStateOf(false) }
@@ -151,18 +149,6 @@ fun TasksToolbar(
                     },
                     onClick = { onShowTagsChanged(!showTags) },
                 )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.tasks_compact_view)) },
-                    trailingIcon = {
-                        CustomSwitch(
-//                            checked = isCompactView,
-//                            onCheckedChange = onCompactViewChanged,
-                            checked = false,
-                            onCheckedChange = { _ -> } ,
-                        )
-                    },
-                    onClick = { /*onCompactViewChanged(!isCompactView)*/ },
-                )
                 HorizontalDivider()
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.tasks_select_tasks)) },
@@ -207,13 +193,11 @@ fun TasksToolbarPreview() {
         sortType = SortType.NEW_TO_OLD,
         showCreationDate = true,
         showTags = true,
-        isCompactView = false,
         onSearchQueryChanged = {},
         onSortChanged = {},
         onDeleteModeClick = {},
         onSelectAllClick = {},
         onShowCreationDateChanged = {},
         onShowTagsChanged = {},
-        onCompactViewChanged = {},
     )
 }

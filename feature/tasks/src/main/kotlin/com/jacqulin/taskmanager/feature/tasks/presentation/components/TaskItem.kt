@@ -55,7 +55,6 @@ fun TaskItem(
     isSelected: Boolean = false,
     showCreationDate: Boolean = true,
     showTags: Boolean = true,
-    isCompact: Boolean = false,
     onSelectionClick: () -> Unit = {},
     onLongPress: () -> Unit = {},
 ) {

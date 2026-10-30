@@ -16,7 +16,6 @@ sealed interface TasksEvent {
     data object OnDeleteSelectedTasks : TasksEvent
     data class OnShowCreationDateChanged(val enabled: Boolean) : TasksEvent
     data class OnShowTagsChanged(val enabled: Boolean) : TasksEvent
-    data class OnCompactViewChanged(val enabled: Boolean) : TasksEvent
     data object OnCreateTaskByTextClicked : TasksEvent
     data object OnBottomSheetDismissed : TasksEvent
     data class OnTaskTextChanged(val title: String) : TasksEvent
