@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +53,7 @@ fun TagCreateCard(
                 .padding(10.dp)
         ) {
             Text(
-                text = "Новая метка".uppercase(),
+                text = "Новый тег".uppercase(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

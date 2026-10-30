@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.screens
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -50,8 +51,13 @@ import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerti
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TagCard
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TagCreateCard
 import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsEvent
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsUiState
 import com.jacqulin.taskmanager.feature.settings.presentation.util.pluralize
+import com.jacqulin.taskmanager.feature.settings.presentation.viewmodels.TagsViewModel
 
 @Composable
 fun TagsScreen(
@@ -95,12 +101,12 @@ private fun TagsScreenContent(
             Text(
                 text = "Теги",
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Создайте тег один раз и используйте его во всем приложении",
-                style = MaterialTheme.typography.bodyMedium,
+                text = "Создайте один раз и используйте во всем приложении",
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary,
                 lineHeight = 14.sp
             )
@@ -127,18 +133,18 @@ private fun TagsScreenContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Все метки",
+                text = "Все теги",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             Log.d("TagsScreen", "Count tasks: ${state.visibleTags.size}")
             Text(
-                text = if (state.visibleTags.isEmpty()) "Нет меток"
+                text = if (state.visibleTags.isEmpty()) "Нет тегов"
                 else "${state.visibleTags.size} ${pluralize(
                     count = state.visibleTags.size,
-                    one = "метка",
-                    few = "метки",
-                    many = "меток"
+                    one = "тег",
+                    few = "тегов",
+                    many = "тегов"
                 )}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -152,7 +158,7 @@ private fun TagsScreenContent(
         ) {
             SearchField(
                 value = state.tagsState.searchQuery,
-                placeholderText = "Поиск по меткам",
+                placeholderText = "Поиск тегов...",
                 onValueChange = { query ->
                     onEvent(TagsEvent.OnSearchQueryChanged(query))
                 },
@@ -180,23 +186,23 @@ private fun TagsScreenContent(
         }
         Spacer(Modifier.height(12.dp))
 
-        val tagsListState = rememberLazyListState()
-        LazyColumn(
-            state = tagsListState,
+        val gridState = rememberLazyGridState()
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            state = gridState,
             modifier = Modifier
                 .fillMaxSize()
-                .fadeScrollableVerticalEdges(tagsListState),
+                .fadeScrollableVerticalEdges(gridState),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(
-                items = state.visibleTags,
-                key = { it.tag.id }
-            ) { item ->
+            items(state.visibleTags, key = { it.tag.id }) { item ->
                 TagCard(
                     item = item,
                     onRename = { editing = item.tag },
                     onDelete = { deleting = item }
                 )
-                Spacer(Modifier.height(4.dp))
             }
         }
     }
@@ -205,7 +211,7 @@ private fun TagsScreenContent(
         var name by remember(tag.id) { mutableStateOf(tag.name) }
         AlertDialog(
             onDismissRequest = { editing = null },
-            title = { Text("Переименовать метку") },
+            title = { Text("Новое название:") },
             text = {
                 OutlinedTextField(
                     value = name,
@@ -223,6 +229,7 @@ private fun TagsScreenContent(
                     Text("Сохранить")
                 }
             },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dismissButton = { TextButton(onClick = { editing = null }) { Text("Отмена") } },
         )
     }
@@ -236,7 +243,7 @@ private fun TagsScreenContent(
             },
             text = {
                 Text(
-                    text = "Задачи и заметки сохранятся. Метка будет удалена из связанных задач."
+                    text = "Задачи и заметки сохранятся",
                 )
             },
             confirmButton = {
@@ -252,6 +259,7 @@ private fun TagsScreenContent(
                     )
                 }
             },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dismissButton = {
                 TextButton(
                     onClick = { deleting = null }

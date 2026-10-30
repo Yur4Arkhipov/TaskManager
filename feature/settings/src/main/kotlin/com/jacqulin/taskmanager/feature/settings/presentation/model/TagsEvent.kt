@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.model
 
 import com.jacqulin.taskmanager.core.designsystem.model.TagsSortType
 

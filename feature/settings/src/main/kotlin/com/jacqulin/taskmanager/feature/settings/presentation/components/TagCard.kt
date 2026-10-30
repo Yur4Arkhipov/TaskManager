@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,7 +61,7 @@ fun TagCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 10.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(

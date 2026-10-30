@@ -1,6 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation
-
-import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
+package com.jacqulin.taskmanager.feature.settings.presentation.model
 
 sealed interface SettingsUiState {
     data object Loading : SettingsUiState

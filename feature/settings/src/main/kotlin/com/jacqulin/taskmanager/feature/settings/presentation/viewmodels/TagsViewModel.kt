@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +9,9 @@ import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tags.RenameTagUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsEvent
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsState
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,36 +35,37 @@ class TagsViewModel @Inject constructor(
 
     val uiState: StateFlow<TagsUiState> =
         combine(
-        observeTags(),
-        observeTasks(),
-        tagsState
-    ) { allTags, tasks, tagsState ->
-        val visibleTags = allTags
-            .map { tag ->
-                TagManagementItem(
-                    tag = tag,
-                    taskCount = tasks.count { task -> task.tags.any { it.id == tag.id } }
-                )
-            }
-            .filter { item ->
-                val query = tagsState.searchQuery.trim()
-                query.isBlank() || item.tag.name.contains(query, ignoreCase = true)
-            }
-            .let { tags ->
-                when (tagsState.sortType) {
-                    TagsSortType.BY_NAME -> {
-                        tags.sortedBy { item -> item.tag.name.lowercase() }
-                    }
-                    TagsSortType.BY_USAGE -> {
-                        tags.sortedByDescending(TagManagementItem::taskCount)
+            observeTags(),
+            observeTasks(),
+            tagsState
+        ) { allTags, tasks, tagsState ->
+            val visibleTags = allTags
+                .map { tag ->
+                    TagManagementItem(
+                        tag = tag,
+                        taskCount = tasks.count { task -> task.tags.any { it.id == tag.id } }
+                    )
+                }
+                .filter { item ->
+                    val query = tagsState.searchQuery.trim()
+                    query.isBlank() || item.tag.name.contains(query, ignoreCase = true)
+                }
+                .let { tags ->
+                    when (tagsState.sortType) {
+                        TagsSortType.BY_NAME -> {
+                            tags.sortedBy { item -> item.tag.name.lowercase() }
+                        }
+
+                        TagsSortType.BY_USAGE -> {
+                            tags.sortedByDescending(TagManagementItem::taskCount)
+                        }
                     }
                 }
-            }
             TagsUiState(
                 tagsState = tagsState,
                 visibleTags = visibleTags
             )
-    }.stateIn(
+        }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = TagsUiState()

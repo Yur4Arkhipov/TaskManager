@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.core.designsystem.extensions
 
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -23,6 +24,39 @@ fun Modifier.fadeScrollableVerticalEdges(
             val fadePx = fadeLength.toPx().coerceAtMost(size.height * 0.45f)
             val fadeTop = listState.canScrollBackward
             val fadeBottom = listState.canScrollForward
+            if (size.height > 0f && fadePx > 0f && (fadeTop || fadeBottom)) {
+                val fadeFraction = fadePx / size.height
+                val colorStops = buildList {
+                    add(0f to if (fadeTop) Color.Transparent else Color.Black)
+                    if (fadeTop) add(fadeFraction to Color.Black)
+                    if (fadeBottom) add((1f - fadeFraction) to Color.Black)
+                    add(1f to if (fadeBottom) Color.Transparent else Color.Black)
+                }.toTypedArray()
+
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colorStops = colorStops,
+                        startY = 0f,
+                        endY = size.height,
+                    ),
+                    blendMode = BlendMode.DstIn,
+                )
+            }
+        }
+
+fun Modifier.fadeScrollableVerticalEdges(
+    scrollState: ScrollableState,
+    fadeLength: Dp = 24.dp,
+): Modifier =
+    graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+        .drawWithContent {
+            drawContent()
+
+            val fadePx = fadeLength.toPx().coerceAtMost(size.height * 0.45f)
+
+            val fadeTop = scrollState.canScrollBackward
+            val fadeBottom = scrollState.canScrollForward
+
             if (size.height > 0f && fadePx > 0f && (fadeTop || fadeBottom)) {
                 val fadeFraction = fadePx / size.height
                 val colorStops = buildList {

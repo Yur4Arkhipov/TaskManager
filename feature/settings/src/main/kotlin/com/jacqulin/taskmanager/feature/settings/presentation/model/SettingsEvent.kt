@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation
+package com.jacqulin.taskmanager.feature.settings.presentation.model
 
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
