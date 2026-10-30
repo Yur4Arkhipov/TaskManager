@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation
+package com.jacqulin.taskmanager.feature.settings.presentation.screens
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -47,7 +47,10 @@ import com.jacqulin.taskmanager.feature.settings.presentation.components.ThemeSc
 import com.jacqulin.taskmanager.feature.settings.presentation.components.TokenTextField
 import com.jacqulin.taskmanager.feature.settings.presentation.components.VoiceProviderOptionCard
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEvent
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsUiState
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
+import com.jacqulin.taskmanager.feature.settings.presentation.viewmodels.SettingsViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

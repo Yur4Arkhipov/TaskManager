@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
-import com.jacqulin.taskmanager.feature.settings.presentation.SettingsScreen
-import com.jacqulin.taskmanager.feature.settings.presentation.tags.TagsScreen
+import com.jacqulin.taskmanager.feature.settings.presentation.screens.SettingsScreen
+import com.jacqulin.taskmanager.feature.settings.presentation.screens.TagsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,6 +31,8 @@ fun NavGraphBuilder.settingsSection(
         composable<SettingsRoute> {
             SettingsScreen(onNavigateToTags = onNavigateToTags)
         }
-        composable<TagsRoute> { TagsScreen(onBackClick = onBackClick) }
+        composable<TagsRoute> {
+            TagsScreen(onBackClick = onBackClick)
+        }
     }
 }

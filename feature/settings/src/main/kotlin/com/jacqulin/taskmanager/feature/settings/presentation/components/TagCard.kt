@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

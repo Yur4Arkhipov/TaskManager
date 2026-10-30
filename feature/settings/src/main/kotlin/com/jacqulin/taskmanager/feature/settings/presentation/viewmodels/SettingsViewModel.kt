@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation
+package com.jacqulin.taskmanager.feature.settings.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,13 +13,15 @@ import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEvent
+import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsUiState
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
@@ -75,7 +77,7 @@ class SettingsViewModel @Inject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = WhileSubscribed(5.seconds.inWholeMilliseconds),
+            started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
             initialValue = SettingsUiState.Loading
         )
 

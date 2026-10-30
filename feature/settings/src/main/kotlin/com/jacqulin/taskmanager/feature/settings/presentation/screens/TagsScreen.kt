@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.settings.presentation.tags
+package com.jacqulin.taskmanager.feature.settings.presentation.screens
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -50,8 +50,13 @@ import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerti
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TagCard
+import com.jacqulin.taskmanager.feature.settings.presentation.components.TagCreateCard
 import com.jacqulin.taskmanager.feature.settings.presentation.model.TagManagementItem
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsEvent
+import com.jacqulin.taskmanager.feature.settings.presentation.model.TagsUiState
 import com.jacqulin.taskmanager.feature.settings.presentation.util.pluralize
+import com.jacqulin.taskmanager.feature.settings.presentation.viewmodels.TagsViewModel
 
 @Composable
 fun TagsScreen(
