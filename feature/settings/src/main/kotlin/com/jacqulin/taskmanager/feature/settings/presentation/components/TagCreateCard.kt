@@ -53,7 +53,7 @@ fun TagCreateCard(
                 .padding(10.dp)
         ) {
             Text(
-                text = "Новая метка".uppercase(),
+                text = "Новый тег".uppercase(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

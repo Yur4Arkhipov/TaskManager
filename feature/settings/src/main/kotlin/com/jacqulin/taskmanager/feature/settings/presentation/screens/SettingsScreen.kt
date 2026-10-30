@@ -51,8 +51,6 @@ import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEven
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsUiState
 import com.jacqulin.taskmanager.feature.settings.presentation.model.UserEditableSettings
 import com.jacqulin.taskmanager.feature.settings.presentation.viewmodels.SettingsViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SettingsScreen(
@@ -61,10 +59,21 @@ fun SettingsScreen(
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 
+    val snackbar = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is SettingsEffect.ShowSuccess -> snackbar.showSnackbar(effect.message)
+                is SettingsEffect.ShowError -> snackbar.showSnackbar(effect.message)
+            }
+        }
+    }
+
     SettingsScreen(
         titleRes = R.string.settings_title,
         settingsUiState = settingsUiState,
-        effects = viewModel.effects,
+        snackbar = snackbar,
         onChangeDarkThemeConfig = { darkThemeConfig ->
             viewModel.onEvent(SettingsEvent.OnDarkThemeConfigChanged(darkThemeConfig))
         },
@@ -85,24 +94,13 @@ fun SettingsScreen(
 fun SettingsScreen(
     @StringRes titleRes: Int,
     settingsUiState: SettingsUiState,
-    effects: Flow<SettingsEffect>,
+    snackbar: SnackbarHostState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
     onYandexTokensChanged: (String, String) -> Unit,
     onNavigateToTags: () -> Unit = {},
 ) {
-    val snackbar = remember { SnackbarHostState() }
-
-    LaunchedEffect(effects) {
-        effects.collect { effect ->
-            when (effect) {
-                is SettingsEffect.ShowSuccess -> snackbar.showSnackbar(effect.message)
-                is SettingsEffect.ShowError -> snackbar.showSnackbar(effect.message)
-            }
-        }
-    }
-
     Scaffold(
         topBar = { TopAppBar(titleRes = titleRes) },
         snackbarHost = { SnackbarHost(snackbar) }
@@ -115,7 +113,7 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 12.dp)
                 ) {
                     item {
                         SettingsSectionCard(
@@ -143,7 +141,7 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Метки",
+                            title = "Теги",
                             modifier = Modifier
                                 .clip(CardDefaults.shape)
                                 .clickable(
@@ -156,7 +154,7 @@ fun SettingsScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        text = "Управление метками задач",
+                                        text = "Управление тегами задач",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -267,7 +265,7 @@ private fun SettingsScreenPreview() {
                 ),
                 speechRecognizerAvailable = true,
             ),
-            effects = emptyFlow(),
+            snackbar = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
@@ -290,7 +288,7 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
                 ),
                 speechRecognizerAvailable = false,
             ),
-            effects = emptyFlow(),
+            snackbar = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},

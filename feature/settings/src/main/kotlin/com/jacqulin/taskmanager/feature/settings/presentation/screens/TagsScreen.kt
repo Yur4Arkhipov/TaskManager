@@ -100,12 +100,12 @@ private fun TagsScreenContent(
             Text(
                 text = "Теги",
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Создайте тег один раз и используйте его во всем приложении",
-                style = MaterialTheme.typography.bodyMedium,
+                text = "Создайте один раз и используйте во всем приложении",
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary,
                 lineHeight = 14.sp
             )
@@ -132,18 +132,18 @@ private fun TagsScreenContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Все метки",
+                text = "Все теги",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             Log.d("TagsScreen", "Count tasks: ${state.visibleTags.size}")
             Text(
-                text = if (state.visibleTags.isEmpty()) "Нет меток"
+                text = if (state.visibleTags.isEmpty()) "Нет тегов"
                 else "${state.visibleTags.size} ${pluralize(
                     count = state.visibleTags.size,
-                    one = "метка",
-                    few = "метки",
-                    many = "меток"
+                    one = "тег",
+                    few = "тегов",
+                    many = "тегов"
                 )}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -157,7 +157,7 @@ private fun TagsScreenContent(
         ) {
             SearchField(
                 value = state.tagsState.searchQuery,
-                placeholderText = "Поиск по меткам",
+                placeholderText = "Поиск тегов...",
                 onValueChange = { query ->
                     onEvent(TagsEvent.OnSearchQueryChanged(query))
                 },
@@ -210,7 +210,7 @@ private fun TagsScreenContent(
         var name by remember(tag.id) { mutableStateOf(tag.name) }
         AlertDialog(
             onDismissRequest = { editing = null },
-            title = { Text("Переименовать метку") },
+            title = { Text("Новое название:") },
             text = {
                 OutlinedTextField(
                     value = name,
@@ -228,6 +228,7 @@ private fun TagsScreenContent(
                     Text("Сохранить")
                 }
             },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dismissButton = { TextButton(onClick = { editing = null }) { Text("Отмена") } },
         )
     }
@@ -241,7 +242,7 @@ private fun TagsScreenContent(
             },
             text = {
                 Text(
-                    text = "Задачи и заметки сохранятся. Метка будет удалена из связанных задач."
+                    text = "Задачи и заметки сохранятся",
                 )
             },
             confirmButton = {
@@ -257,6 +258,7 @@ private fun TagsScreenContent(
                     )
                 }
             },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dismissButton = {
                 TextButton(
                     onClick = { deleting = null }

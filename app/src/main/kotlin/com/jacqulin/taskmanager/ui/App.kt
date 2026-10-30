@@ -16,6 +16,7 @@ import com.jacqulin.taskmanager.feature.home.navigation.DayPlanRoute
 import com.jacqulin.taskmanager.core.designsystem.component.BottomNavigationBar
 import com.jacqulin.taskmanager.core.designsystem.model.BottomBarItem
 import com.jacqulin.taskmanager.feature.notes.navigation.NoteEditorRoute
+import com.jacqulin.taskmanager.feature.settings.navigation.TagsRoute
 import com.jacqulin.taskmanager.navigation.AppNavHost
 
 @Composable
@@ -47,7 +48,8 @@ internal fun App(
         modifier = modifier,
         bottomBar = {
             val hideBottomBar = appState.currentDestination.isOn<DayPlanRoute>() ||
-                    appState.currentDestination.isOn<NoteEditorRoute>()
+                    appState.currentDestination.isOn<NoteEditorRoute>() ||
+                    appState.currentDestination.isOn<TagsRoute>()
 
             if (!hideBottomBar) {
                 BottomNavigationBar(items = bottomBarItems)
