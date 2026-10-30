@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
@@ -14,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,19 +39,14 @@ import com.jacqulin.taskmanager.designsystem.R
 fun TasksToolbar(
     searchQuery: String,
     isDeleteModeEnabled: Boolean,
-    selectedCount: Int,
-    allSelected: Boolean,
     sortType: SortType,
     showCreationDate: Boolean,
     showTags: Boolean,
-    isCompactView: Boolean,
     onSearchQueryChanged: (String) -> Unit,
     onSortChanged: (SortType) -> Unit,
     onDeleteModeClick: () -> Unit,
-    onSelectAllClick: () -> Unit,
     onShowCreationDateChanged: (Boolean) -> Unit,
     onShowTagsChanged: (Boolean) -> Unit,
-    onCompactViewChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var sortMenuExpanded by remember { mutableStateOf(false) }
@@ -61,32 +54,6 @@ fun TasksToolbar(
 
     val focusManager = LocalFocusManager.current
     val searchFocusRequester = remember { FocusRequester() }
-
-    if (isDeleteModeEnabled) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(text = stringResource(R.string.tasks_selected_count, selectedCount))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                TextButton(onClick = onSelectAllClick) {
-                    Text(stringResource(if (allSelected) R.string.tasks_deselect_all else R.string.tasks_select_all))
-                }
-                ToolbarButton(
-                    icon = painterResource(R.drawable.ic_close),
-                    contentDescription = stringResource(R.string.tasks_exit_selection),
-                    onClick = onDeleteModeClick,
-                )
-            }
-        }
-        return
-    }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -117,68 +84,65 @@ fun TasksToolbar(
                 onSortChanged = onSortChanged,
             )
         }
-        Box {
+
+        if (isDeleteModeEnabled) {
             ToolbarButton(
-                icon = painterResource(R.drawable.ic_more_horiz),
-                contentDescription = stringResource(R.string.tasks_list_settings),
-                onClick = { settingsMenuExpanded = true },
+                icon = painterResource(R.drawable.ic_close),
+                contentDescription = stringResource(R.string.tasks_exit_selection),
+                onClick = onDeleteModeClick,
             )
-            DropdownMenu(
-                expanded = settingsMenuExpanded,
-                onDismissRequest = { settingsMenuExpanded = false },
-                offset = DpOffset(x = 0.dp, y = 8.dp),
-                shape = RoundedCornerShape(16.dp),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                tonalElevation = 3.dp,
-            ) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.tasks_show_creation_date)) },
-                    trailingIcon = {
-                        CustomSwitch(
-                            checked = showCreationDate,
-                            onCheckedChange = onShowCreationDateChanged,
-                        )
-                    },
-                    onClick = { onShowCreationDateChanged(!showCreationDate) },
+        } else {
+            Box {
+                ToolbarButton(
+                    icon = painterResource(R.drawable.ic_more_horiz),
+                    contentDescription = stringResource(R.string.tasks_list_settings),
+                    onClick = { settingsMenuExpanded = true },
                 )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.tasks_show_tags)) },
-                    trailingIcon = {
-                        CustomSwitch(
-                            checked = showTags,
-                            onCheckedChange = onShowTagsChanged,
-                        )
-                    },
-                    onClick = { onShowTagsChanged(!showTags) },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.tasks_compact_view)) },
-                    trailingIcon = {
-                        CustomSwitch(
-//                            checked = isCompactView,
-//                            onCheckedChange = onCompactViewChanged,
-                            checked = false,
-                            onCheckedChange = { _ -> } ,
-                        )
-                    },
-                    onClick = { /*onCompactViewChanged(!isCompactView)*/ },
-                )
-                HorizontalDivider()
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.tasks_select_tasks)) },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_select_window),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    },
-                    onClick = {
-                        settingsMenuExpanded = false
-                        onDeleteModeClick()
-                    },
-                )
+                DropdownMenu(
+                    expanded = settingsMenuExpanded,
+                    onDismissRequest = { settingsMenuExpanded = false },
+                    offset = DpOffset(x = 0.dp, y = 8.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    tonalElevation = 3.dp,
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.tasks_show_creation_date)) },
+                        trailingIcon = {
+                            CustomSwitch(
+                                checked = showCreationDate,
+                                onCheckedChange = onShowCreationDateChanged,
+                            )
+                        },
+                        onClick = { onShowCreationDateChanged(!showCreationDate) },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.tasks_show_tags)) },
+                        trailingIcon = {
+                            CustomSwitch(
+                                checked = showTags,
+                                onCheckedChange = onShowTagsChanged,
+                            )
+                        },
+                        onClick = { onShowTagsChanged(!showTags) },
+                    )
+                    HorizontalDivider()
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.tasks_select_tasks)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_select_window),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        },
+                        onClick = {
+                            settingsMenuExpanded = false
+                            onDeleteModeClick()
+                        },
+                    )
+                }
             }
         }
     }
@@ -202,18 +166,13 @@ fun TasksToolbarPreview() {
     TasksToolbar(
         searchQuery = "",
         isDeleteModeEnabled = false,
-        selectedCount = 0,
-        allSelected = false,
         sortType = SortType.NEW_TO_OLD,
         showCreationDate = true,
         showTags = true,
-        isCompactView = false,
         onSearchQueryChanged = {},
         onSortChanged = {},
         onDeleteModeClick = {},
-        onSelectAllClick = {},
         onShowCreationDateChanged = {},
         onShowTagsChanged = {},
-        onCompactViewChanged = {},
     )
 }

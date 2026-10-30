@@ -187,8 +187,6 @@ private fun DayPlanContent(
                 )
             }
 
-            Spacer(Modifier.height(10.dp))
-
             LazyColumn(
                 state = taskListState,
                 modifier = Modifier

@@ -1,7 +1,6 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation.state
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 
 data class MainScreenState(
     val searchQuery: String = "",
@@ -12,5 +11,4 @@ data class MainScreenState(
     val selectedTaskIds: Set<Int> = emptySet(),
     val showCreationDate: Boolean = true,
     val showTags: Boolean = true,
-    val isCompactView: Boolean = false,
 )

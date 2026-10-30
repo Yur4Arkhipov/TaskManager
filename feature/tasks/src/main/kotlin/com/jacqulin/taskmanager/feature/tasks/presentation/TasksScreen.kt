@@ -55,9 +55,12 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTask
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TasksToolbar
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.MainScreenState
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEffect
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEvent
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksUiState
 
 @Composable
 fun TasksScreen(
@@ -161,18 +164,14 @@ fun TasksScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
         ) {
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,
                 isDeleteModeEnabled = uiState.mainScreenState.isDeleteModeEnabled,
-                selectedCount = uiState.mainScreenState.selectedTaskIds.size,
-                allSelected = uiState.visibleTasks.isNotEmpty()
-                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
                 sortType = uiState.mainScreenState.sortType,
                 showCreationDate = uiState.mainScreenState.showCreationDate,
                 showTags = uiState.mainScreenState.showTags,
-                isCompactView = uiState.mainScreenState.isCompactView,
                 onSearchQueryChanged = { query ->
                     onEvent(TasksEvent.OnSearchQueryChanged(query))
                 },
@@ -180,26 +179,24 @@ fun TasksScreen(
                     onEvent(TasksEvent.OnSortChanged(sortType))
                 },
                 onDeleteModeClick = { onEvent(TasksEvent.OnDeleteModeToggled) },
-                onSelectAllClick = { onEvent(TasksEvent.OnSelectAllTasks) },
                 onShowCreationDateChanged = { isChanged ->
                     onEvent(TasksEvent.OnShowCreationDateChanged(isChanged))
                 },
                 onShowTagsChanged = { isChanged ->
                     onEvent(TasksEvent.OnShowTagsChanged(isChanged))
                 },
-                onCompactViewChanged = { isChanged ->
-                    onEvent(TasksEvent.OnCompactViewChanged(isChanged))
-                },
             )
 
-            if (!uiState.mainScreenState.isDeleteModeEnabled) {
-                TasksFilter(
-                    taskFilter = uiState.mainScreenState.filter,
-                    onTaskFilterChanged = { filter ->
-                        onEvent(TasksEvent.OnTaskFilterChanged(filter))
-                    }
-                )
-            }
+            TasksFilter(
+                isDeleteMode = uiState.mainScreenState.isDeleteModeEnabled,
+                allSelected = uiState.visibleTasks.isNotEmpty()
+                        && uiState.mainScreenState.selectedTaskIds.containsAll(uiState.visibleTasks.map { it.id }),
+                taskFilter = uiState.mainScreenState.filter,
+                onSelectAllClicked = { onEvent(TasksEvent.OnSelectAllTasks) },
+                onTaskFilterChanged = { filter ->
+                    onEvent(TasksEvent.OnTaskFilterChanged(filter))
+                }
+            )
 
             if (uiState.isEmpty) {
                 Box(
@@ -246,7 +243,6 @@ fun TasksScreen(
                             isSelected = task.id in uiState.mainScreenState.selectedTaskIds,
                             showCreationDate = uiState.mainScreenState.showCreationDate,
                             showTags = uiState.mainScreenState.showTags,
-                            isCompact = uiState.mainScreenState.isCompactView,
                             onSelectionClick = { onEvent(TasksEvent.OnTaskSelectionToggled(task.id)) },
                             onLongPress = {
                                 if (!uiState.mainScreenState.isDeleteModeEnabled)

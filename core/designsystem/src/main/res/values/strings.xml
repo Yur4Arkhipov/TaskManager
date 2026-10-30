@@ -77,7 +77,7 @@
     <string name="tasks_select_tasks">Выбрать задачи</string>
     <string name="tasks_selected_count">Выбрано: %d</string>
     <string name="tasks_select_all">Выбрать все</string>
-    <string name="tasks_deselect_all">Снять выделение</string>
+    <string name="tasks_deselect_all">Сбросить</string>
     <string name="tasks_exit_selection">Выйти из режима выбора</string>
     <string name="tasks_delete_selected">Удалить (%d)</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>

@@ -14,12 +14,15 @@ import com.jacqulin.taskmanager.core.domain.voice.VoiceInputUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
-import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toDomain
-import com.jacqulin.taskmanager.feature.tasks.presentation.mapper.toUiModel
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.MainScreenState
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.TaskState
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskState
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEffect
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksEvent
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.TasksUiState
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.toDomain
+import com.jacqulin.taskmanager.feature.tasks.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -118,13 +121,13 @@ class TasksScreenViewModel @Inject constructor(
     fun onEvent(event: TasksEvent) {
         when (event) {
             is TasksEvent.OnSearchQueryChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(searchQuery = event.query) }
+                mainScreenState.update { it.copy(searchQuery = event.query) }
             }
             is TasksEvent.OnSortChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(sortType = event.sortType) }
+                mainScreenState.update { it.copy(sortType = event.sortType) }
             }
             is TasksEvent.OnTaskFilterChanged -> {
-                mainScreenState.update { if (it.isDeleteModeEnabled) it else it.copy(filter = event.filter) }
+                mainScreenState.update { it.copy(filter = event.filter) }
             }
             is TasksEvent.UpdateTaskStatus -> {
                 updateTaskStatus(event.task)
@@ -177,7 +180,6 @@ class TasksScreenViewModel @Inject constructor(
             }
             is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
             is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
-            is TasksEvent.OnCompactViewChanged -> mainScreenState.update { it.copy(isCompactView = event.enabled) }
 
             // Text
             TasksEvent.OnCreateTaskByTextClicked -> {

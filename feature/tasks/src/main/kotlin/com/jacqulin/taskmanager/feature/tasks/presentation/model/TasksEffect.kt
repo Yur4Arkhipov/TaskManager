@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 sealed interface TasksEffect {
     data object RequestVoicePermission : TasksEffect

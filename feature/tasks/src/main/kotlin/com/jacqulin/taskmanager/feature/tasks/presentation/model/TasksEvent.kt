@@ -1,8 +1,6 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import com.jacqulin.taskmanager.core.model.Tag
 
 sealed interface TasksEvent {
@@ -18,7 +16,6 @@ sealed interface TasksEvent {
     data object OnDeleteSelectedTasks : TasksEvent
     data class OnShowCreationDateChanged(val enabled: Boolean) : TasksEvent
     data class OnShowTagsChanged(val enabled: Boolean) : TasksEvent
-    data class OnCompactViewChanged(val enabled: Boolean) : TasksEvent
     data object OnCreateTaskByTextClicked : TasksEvent
     data object OnBottomSheetDismissed : TasksEvent
     data class OnTaskTextChanged(val title: String) : TasksEvent

@@ -1,9 +1,7 @@
-package com.jacqulin.taskmanager.feature.tasks.presentation
+package com.jacqulin.taskmanager.feature.tasks.presentation.model
 
 import com.jacqulin.taskmanager.core.model.Tag
-import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.MainScreenState
-import com.jacqulin.taskmanager.feature.tasks.presentation.state.TaskState
+import com.jacqulin.taskmanager.feature.tasks.presentation.VoiceState
 
 data class TasksUiState(
     val mainScreenState: MainScreenState = MainScreenState(),
