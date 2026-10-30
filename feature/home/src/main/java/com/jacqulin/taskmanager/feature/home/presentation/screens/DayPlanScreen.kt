@@ -200,7 +200,7 @@ private fun DayPlanContent(
                     val rowContent: @Composable (Modifier) -> Unit = { rowModifier ->
                         PlanTaskRow(
                             task = task,
-                            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                            onComplete = { onEvent(HomeEvent.UpdateTaskCompletedStatus(task)) },
                             onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
                             modifier = rowModifier,
                             isDragHandleEnabled = !task.isCompleted,

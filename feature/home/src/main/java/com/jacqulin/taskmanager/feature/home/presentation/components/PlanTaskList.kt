@@ -98,7 +98,7 @@ fun PlanTaskList(
                     ReorderableItem {
                         PlanTaskRow(
                             task = task,
-                            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                            onComplete = { onEvent(HomeEvent.UpdateTaskCompletedStatus(task)) },
                             onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
                             modifier = Modifier.draggableHandle(),
                         )
@@ -110,7 +110,7 @@ fun PlanTaskList(
         completedTasks.forEach { task ->
             PlanTaskRow(
                 task = task,
-                onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
+                onComplete = { onEvent(HomeEvent.UpdateTaskCompletedStatus(task)) },
                 onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
                 isDragHandleEnabled = false,
             )
