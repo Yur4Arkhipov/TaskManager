@@ -189,16 +189,7 @@ class HomeViewModel
 
         private fun removeTaskFromDayPlan(homeUiTask: HomeTaskUi) {
             viewModelScope.launch {
-                val task =
-                    Task(
-                        id = homeUiTask.id,
-                        title = homeUiTask.title,
-                        createdAtMillis = homeUiTask.createdAtMillis,
-                        isCompleted = homeUiTask.isCompleted,
-                        tags = homeUiTask.tags,
-                        isPlannedForToday = !homeUiTask.isPlannedForToday,
-                        dayPlanOrder = homeUiTask.dayPlanOrder,
-                    )
+                val task = homeUiTask.toDomain().copy(isPlannedForToday = false)
                 updateTaskStatusUseCase(task)
             }
         }
