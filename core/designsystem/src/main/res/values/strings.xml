@@ -26,6 +26,7 @@
     <string name="tasks_add_task_voice">Голосом</string>
     <string name="tasks_add_task_text">Текстом</string>
     <string name="tasks_close_add_menu">Закрыть меню создания</string>
+    <string name="tasks_close_menu">Закрыть меню</string>
     <string name="tasks_new_task">Новая задача</string>
     <string name="tasks_new_task_question">Что нужно сделать?</string>
     <string name="tasks_task_name">Что делаем?</string>
@@ -138,6 +139,7 @@
     <string name="home_day_plan">Ближайшие задачи</string>
     <string name="home_collapse_plan">Свернуть план ↑</string>
     <string name="home_expand_plan">Открыть план</string>
+    <string name="home_add_tasks_to_plan">Добавить задачи</string>
     <string name="home_today">Сегодня</string>
     <string name="home_day_plan_title">Задачи дня</string>
     <string name="home_tasks_ahead">%d впереди</string>
@@ -145,8 +147,8 @@
     <string name="home_hold_and_drag">Удерживайте и тяните</string>
     <string name="home_completed_today">Сделано сегодня</string>
     <string name="home_completed_count">%1$d из %2$d задач</string>
-    <string name="home_completed_empty_hint">Выполненные задачи появятся здесь — прогресс дня всегда будет перед глазами.</string>
-    <string name="home_completed_hint">Отличная работа! Выполненные задачи останутся здесь.</string>
+    <string name="home_completed_empty_hint">Прогресс дня всегда перед глазами</string>
+    <string name="home_completed_hint">Отличная работа! Выполненные задачи очистятся автоматически к следующему дню</string>
     <string name="home_task_position">%d</string>
     <string name="home_next_task">Ближайшая</string>
     <string name="home_duration_minutes">%d мин</string>
@@ -155,5 +157,10 @@
     <string name="home_note">Заметка</string>
     <string name="home_thought_breakdown_title">Разобрать мысль</string>
     <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
+
+    // Add tasks for plan bottom sheet
+    <string name="home_select_tasks_title">Добавить задачи</string>
+    <string name="home_select_tasks_empty">Нет доступных задач</string>
+    <string name="home_select_tasks_add">Добавить (%d)</string>
     
 </resources>

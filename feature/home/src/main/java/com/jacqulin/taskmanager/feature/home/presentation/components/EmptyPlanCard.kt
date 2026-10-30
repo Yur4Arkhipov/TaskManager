@@ -24,7 +24,7 @@ import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun EmptyPlanCard(
-    onAddTask: () -> Unit
+    onAddTask: () -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(20.dp),

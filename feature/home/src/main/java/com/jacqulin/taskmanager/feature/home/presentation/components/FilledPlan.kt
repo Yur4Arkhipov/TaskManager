@@ -1,221 +1,41 @@
 package com.jacqulin.taskmanager.feature.home.presentation.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
-import com.jacqulin.taskmanager.designsystem.R
-import com.jacqulin.taskmanager.feature.home.presentation.HomeEvent
-import com.jacqulin.taskmanager.feature.home.presentation.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeEvent
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
-import com.jacqulin.taskmanager.feature.home.presentation.state.MainState
-import sh.calvin.reorderable.ReorderableColumn
+import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
+import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
 
 @Composable
 fun FilledPlan(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
-    onOpenFullPlan: () -> Unit = {},
+    onOpenFullPlan: () -> Unit,
+    onAddTasksForPlanDay: () -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         PlanHeader(uiState = uiState)
-
         Spacer(Modifier.height(12.dp))
-
         PlanTaskList(
             uiState = uiState,
             onEvent = onEvent,
+            onAddTasksForPlanDay = onAddTasksForPlanDay,
+        )
+        Spacer(Modifier.height(6.dp))
+        PlanFooter(
+            isTaskListEmpty = uiState.isEmpty,
             onOpenFullPlan = onOpenFullPlan,
         )
-    }
-}
-
-@Composable
-private fun PlanTaskList(
-    uiState: HomeUiState,
-    onEvent: (HomeEvent) -> Unit,
-    onOpenFullPlan: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(R.string.home_day_plan),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            modifier = Modifier.weight(1f)
-        )
-        if (!uiState.isEmpty) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable(onClick = onOpenFullPlan)
-                    .padding(vertical = 2.dp, horizontal = 6.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.home_expand_plan),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelMedium,
-                )
-                Icon(
-                    painter = painterResource(R.drawable.keyboard_arrow_right),
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
-
-    Spacer(Modifier.height(12.dp))
-
-    val visibleTasks = uiState.mainState.tasks.take(4)
-    val activeTasks = visibleTasks.filterNot { it.isCompleted }
-    val completedTasks = visibleTasks.filter { it.isCompleted }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clipToBounds(),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        if (activeTasks.isNotEmpty()) {
-            ReorderableColumn(
-                list = activeTasks,
-                onSettle = { fromIndex, toIndex ->
-                    val visibleActiveIds = activeTasks.map { it.id }
-                    if (fromIndex in visibleActiveIds.indices && toIndex in visibleActiveIds.indices) {
-                        val reorderedVisibleActiveIds = visibleActiveIds.toMutableList().apply {
-                            add(toIndex, removeAt(fromIndex))
-                        }
-                        val allTaskIds = uiState.mainState.tasks.map { it.id }
-                        val visibleActiveIdSet = visibleActiveIds.toSet()
-                        val activePositions = allTaskIds.indices.filter {
-                            allTaskIds[it] in visibleActiveIdSet
-                        }
-                        val reorderedTaskIds = allTaskIds.toMutableList().apply {
-                            activePositions.zip(reorderedVisibleActiveIds).forEach { (position, id) ->
-                                this[position] = id
-                            }
-                        }
-                        onEvent(HomeEvent.ReorderTasks(reorderedTaskIds))
-                    }
-                },
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) { _, task, _ ->
-                key(task.id) {
-                    ReorderableItem {
-                        PlanTaskRow(
-                            task = task,
-                            onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
-                            onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
-                            modifier = Modifier.draggableHandle(),
-                        )
-                    }
-                }
-            }
-        }
-
-        completedTasks.forEach { task ->
-            PlanTaskRow(
-                task = task,
-                onComplete = { onEvent(HomeEvent.UpdateTaskStatus(task)) },
-                onDelete = { onEvent(HomeEvent.OnTaskRemovedFromDayPlan(task)) },
-                isDragHandleEnabled = false,
-            )
-        }
-    }
-}
-
-@Composable
-private fun PlanHeader(uiState: HomeUiState) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        ),
-    ) {
-        Column(
-            modifier = Modifier.padding(
-                vertical = 16.dp,
-                horizontal = 12.dp
-            ),
-        ) {
-            Text(
-                text = stringResource(R.string.home_today_plan),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val taskCountText = if (uiState.totalMinutes > 0) {
-                    stringResource(
-                        R.string.home_task_count,
-                        uiState.mainState.tasks.size,
-                        taskCountWord(uiState.mainState.tasks.size),
-                        uiState.totalMinutes,
-                    )
-                } else {
-                    stringResource(
-                        R.string.home_task_count_without_minutes,
-                        uiState.mainState.tasks.size,
-                        taskCountWord(uiState.mainState.tasks.size),
-                    )
-                }
-                Text(
-                    text = taskCountText,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    text = stringResource(
-                        R.string.home_progress_percentage,
-                        (uiState.progress * 100).toInt()
-                    ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.labelMedium)
-            }
-            Spacer(Modifier.height(12.dp))
-            LinearProgressIndicator(
-                progress = { uiState.progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(CircleShape),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onSecondary,
-            )
-        }
     }
 }
 
@@ -237,16 +57,8 @@ private fun PlanHeaderPreview() {
     }
 }
 
-private fun taskCountWord(count: Int): String = when {
-    count % 10 == 1 && count % 100 != 11 -> "задача"
-    count % 10 in 2..4 && count % 100 !in 12..14 -> "задачи"
-    else -> "задач"
-}
-
 @Composable
-@Preview(
-    showSystemUi = true
-)
+@Preview(showSystemUi = true)
 fun PlanFilledPreview() {
     TaskManagerTheme {
         val mockTasks = listOf(
@@ -265,6 +77,8 @@ fun PlanFilledPreview() {
                 ),
             ),
             onEvent = {},
+            onAddTasksForPlanDay = {},
+            onOpenFullPlan = {}
         )
     }
 }

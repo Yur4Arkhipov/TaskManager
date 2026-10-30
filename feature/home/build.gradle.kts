@@ -59,6 +59,9 @@ dependencies {
     // Reordable
     implementation(libs.reorderable)
 
+    // Testing
+    testImplementation(libs.junit)
+
     // For preview
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
