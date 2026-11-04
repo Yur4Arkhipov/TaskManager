@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.settings.AreYandexTokensConfiguredUseCase
 import com.jacqulin.taskmanager.core.domain.settings.CheckSpeechRecognizerAvailabilityUseCase
+import com.jacqulin.taskmanager.core.domain.settings.GetLanguageUseCase
 import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetDarkThemeConfigUseCase
+import com.jacqulin.taskmanager.core.domain.settings.SetLanguageUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetVoiceInputModeUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetYandexTokensUseCase
+import com.jacqulin.taskmanager.core.model.AppLanguage
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
@@ -39,6 +42,8 @@ class SettingsViewModel @Inject constructor(
     private val setYandexTokensUseCase: SetYandexTokensUseCase,
     private val areYandexTokensConfiguredUseCase: AreYandexTokensConfiguredUseCase,
     checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
+    getLanguageUseCase: GetLanguageUseCase,
+    private val setLanguageUseCase: SetLanguageUseCase
 ) : ViewModel() {
 
     private val _effects = MutableSharedFlow<SettingsEffect>(
@@ -49,6 +54,8 @@ class SettingsViewModel @Inject constructor(
     val effects: SharedFlow<SettingsEffect> = _effects.asSharedFlow()
 
     private val yandexTokensConfigured = MutableStateFlow<Boolean?>(null)
+
+    private val selectedLanguage = MutableStateFlow(getLanguageUseCase())
 
     init {
         viewModelScope.launch {
@@ -63,7 +70,8 @@ class SettingsViewModel @Inject constructor(
             observeUserDataUseCase(),
             checkSpeechRecognizerAvailabilityUseCase.isAvailable,
             yandexTokensConfigured,
-        ) { userData, speechRecognizerAvailable, areTokensConfigured ->
+            selectedLanguage
+        ) { userData, speechRecognizerAvailable, areTokensConfigured, lang ->
             if (areTokensConfigured == null) return@combine SettingsUiState.Loading
             SettingsUiState.Success(
                 settings = UserEditableSettings(
@@ -73,6 +81,7 @@ class SettingsViewModel @Inject constructor(
                 ),
                 speechRecognizerAvailable = speechRecognizerAvailable,
                 areYandexTokensConfigured = areTokensConfigured,
+                lang = lang
             )
         }
         .stateIn(
@@ -87,7 +96,13 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.OnDarkThemeConfigChanged -> onDarkThemeConfigChanged(event.config)
             is SettingsEvent.OnVoiceInputModeChanged -> onVoiceInputModeChanged(event.mode)
             is SettingsEvent.OnYandexTokensChanged -> onYandexTokensChanged(event.iamToken, event.folderId)
+            is SettingsEvent.OnLanguageSelected -> onLanguageSelected(event.language)
         }
+    }
+
+    private fun onLanguageSelected(language: AppLanguage) {
+        setLanguageUseCase(language)
+        selectedLanguage.value = language
     }
 
     private fun onColorPaletteChanged(palette: ColorPalette) {

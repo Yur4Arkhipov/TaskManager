@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.settings.presentation.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.model.AppLanguage
+import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun LanguageSelector(
@@ -52,7 +55,7 @@ fun LanguageSelector(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = lang.label,
+                        text = stringResource(lang.toStringRes()),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = if (selectedLanguage == lang) FontWeight.SemiBold else FontWeight.Normal,
                         color = if (selectedLanguage == lang) MaterialTheme.colorScheme.primary
@@ -63,3 +66,13 @@ fun LanguageSelector(
         }
     }
 }
+
+@StringRes
+private fun AppLanguage.toStringRes(): Int {
+    return when (this) {
+        AppLanguage.SYSTEM -> R.string.language_system
+        AppLanguage.RUSSIAN -> R.string.language_russian
+        AppLanguage.ENGLISH -> R.string.language_english
+    }
+}
+

@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.settings.presentation.model
 
+import com.jacqulin.taskmanager.core.model.AppLanguage
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
@@ -12,4 +13,5 @@ sealed interface SettingsEvent {
         val iamToken: String,
         val folderId: String
     ) : SettingsEvent
+    data class OnLanguageSelected(val language: AppLanguage) : SettingsEvent
 }

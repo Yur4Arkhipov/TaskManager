@@ -89,6 +89,9 @@ fun SettingsScreen(
             viewModel.onEvent(SettingsEvent.OnYandexTokensChanged(iamToken, folderId))
         },
         onNavigateToTags = onNavigateToTags,
+        onLangChanged =  { language ->
+            viewModel.onEvent(SettingsEvent.OnLanguageSelected(language))
+        }
     )
 }
 
@@ -102,6 +105,7 @@ fun SettingsScreen(
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
     onYandexTokensChanged: (String, String) -> Unit,
     onNavigateToTags: () -> Unit = {},
+    onLangChanged: (AppLanguage) -> Unit = {}
 ) {
     Scaffold(
         topBar = { TopAppBar(titleRes = titleRes) },
@@ -134,10 +138,8 @@ fun SettingsScreen(
                             title = "Язык интерфейса",
                             content = {
                                 LanguageSelector(
-                                    selectedLanguage = AppLanguage.SYSTEM,
-                                    onLanguageSelected = { language ->
-//                                            onEvent(SettingsEvent.SelectLanguage(language))
-                                    }
+                                    selectedLanguage = settingsUiState.lang,
+                                    onLanguageSelected = onLangChanged
                                 )
                             }
                         )
