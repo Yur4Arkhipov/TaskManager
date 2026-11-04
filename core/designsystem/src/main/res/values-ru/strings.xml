@@ -116,6 +116,11 @@
     <string name="future_api_key_label">API Token</string>
     <string name="coming_soon_label">Скоро</string>
 
+    // Language
+    <string name="language_system">Системный</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_english">Английский</string>
+
     // Voice
     <string name="voice_error_recording_failed">Не удалось получить звук с микрофона. Проверьте разрешение на запись аудио</string>
     <string name="voice_error_recognition_failed">Служба распознавания речи недоступна или не поддерживает выбранный язык</string>
