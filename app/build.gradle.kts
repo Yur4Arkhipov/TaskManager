@@ -78,4 +78,7 @@ dependencies {
 
     // Splash screen
     implementation(libs.androidx.core.splashscreen)
+
+    // For App Compat
+    implementation(libs.androidx.appcompat)
 }
