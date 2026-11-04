@@ -1,7 +1,6 @@
 package com.jacqulin.taskmanager.ui
 
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -10,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -56,7 +54,6 @@ internal fun App(
             if (!hideBottomBar) {
                 BottomNavigationBar(
                     items = bottomBarItems,
-                    modifier = modifier.height(64.dp),
                 )
             }
         }
