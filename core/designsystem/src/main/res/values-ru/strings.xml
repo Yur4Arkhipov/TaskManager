@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task Manager</string>
+
+    // Notes
+    <string name="notes_title">Заметки</string>
+    <string name="notes_add_note">Новая заметка</string>
+    <string name="notes_edit_note">Редактирование</string>
+    <string name="notes_view_note">Просмотр заметки</string>
+    <string name="notes_create_note">Новая заметка</string>
+    <string name="notes_title_placeholder">Заголовок…</string>
+    <string name="notes_content_placeholder">Текст заметки…</string>
+    <string name="notes_add_from_files">Файлы</string>
+    <string name="notes_add_from_camera">Камера</string>
+    <string name="notes_search">Поиск заметок…</string>
+    <string name="notes_sort">Сортировка</string>
+    <string name="notes_empty">Заметок пока нет</string>
+    <string name="notes_count">%d заметок</string>
+    <string name="notes_back">Назад</string>
+    <string name="notes_save">Сохранить</string>
+    <string name="notes_remove">Удалить</string>
+
+    // Tasks
+    <string name="tasks_title">Задачи</string>
+    <string name="tasks_add_task">Новая задача</string>
+    <string name="tasks_add_task_thought">Разобрать мысль</string>
+    <string name="tasks_add_task_voice">Голосом</string>
+    <string name="tasks_add_task_text">Текстом</string>
+    <string name="tasks_close_add_menu">Закрыть меню создания</string>
+    <string name="tasks_close_menu">Закрыть меню</string>
+    <string name="tasks_new_task">Новая задача</string>
+    <string name="tasks_new_task_question">Что нужно сделать?</string>
+    <string name="tasks_task_name">Что делаем?</string>
+    <string name="tasks_task_title_placeholder">Например, подготовить презентацию</string>
+    <string name="tasks_time_estimate">Оценка времени</string>
+    <string name="tasks_optional">Необязательно</string>
+    <string name="tasks_no_estimate">Без оценки</string>
+    <string name="tasks_15_minutes">15 мин</string>
+    <string name="tasks_25_minutes">25 мин</string>
+    <string name="tasks_45_minutes">45 мин</string>
+    <string name="tasks_1_hour">1 ч</string>
+    <string name="tasks_other_duration">Другое</string>
+    <string name="tasks_time_estimate_hint">Это оценка всей задачи. Длительность фокус-сессии выбирается отдельно.</string>
+    <string name="tasks_add_to_today_plan">Добавить в план на сегодня</string>
+    <string name="tasks_tags">Метки</string>
+    <string name="tasks_add_tag">Добавить метку</string>
+    <string name="tasks_create_tag">Создать метку</string>
+    <string name="tasks_tag_name">Название метки</string>
+    <string name="tasks_suggested_tags">Предлагаемые метки</string>
+    <string name="tasks_today_tag">Сегодня</string>
+    <string name="tasks_tags_empty_title">Меток пока нет</string>
+    <string name="tasks_tags_empty_description">Создайте первую в разделе «Настройки → Метки», затем её можно будет выбрать здесь.</string>
+    <string name="tasks_add">Добавить</string>
+    <string name="tasks_add_task_submit">Добавить задачу</string>
+    <string name="tasks_no_tasks_yet">Задач пока нет</string>
+    <string name="tasks_status_summary">%1$d активных • %2$d выполнено</string>
+    <string name="tasks_voice_processing">Отправляем ИИ и обрабатываем…</string>
+    <string name="tasks_voice_unknown_error">Произошла неизвестная ошибка</string>
+    <string name="voice_recognized_text">Распознано: «%1$s»</string>
+    <string name="tasks_naming_label">Название задачи…</string>
+    <string name="tasks_error">Ошибка</string>
+    <string name="tasks_error_advice">Проверьте подключение к интернету или попробуйте сказать громче</string>
+    <string name="tasks_cancel">Отмена</string>
+    <string name="tasks_retry">Повторить</string>
+    <string name="tasks_search">Поиск задач…</string>
+    <string name="tasks_sort">Сортировка</string>
+    <string name="tasks_filter_all">Все</string>
+    <string name="tasks_filter_active">Активные</string>
+    <string name="tasks_filter_completed">Выполненные</string>
+    <string name="tasks_no_active_tasks">Активных задач нет</string>
+    <string name="tasks_no_completed_tasks">Выполненных задач нет</string>
+    <string name="tasks_search_no_results">Ничего не найдено</string>
+    <string name="tasks_list_settings">Настройки списка</string>
+    <string name="tasks_list_view">Вид списка</string>
+    <string name="tasks_show_creation_date">Дата создания</string>
+    <string name="tasks_show_tags">Метки</string>
+    <string name="tasks_compact_view">Компактный вид</string>
+    <string name="tasks_select_tasks">Выбрать задачи</string>
+    <string name="tasks_selected_count">Выбрано: %d</string>
+    <string name="tasks_select_all">Выбрать все</string>
+    <string name="tasks_deselect_all">Сбросить</string>
+    <string name="tasks_exit_selection">Выйти из режима выбора</string>
+    <string name="tasks_delete_selected">Удалить (%d)</string>
+    <string name="tasks_processing_wait">Это может занять несколько секунд</string>
+    <string name="tasks_recording">Запись…</string>
+    <string name="tasks_stop_recording">Остановить запись</string>
+    <string name="tasks_record_voice">Запись голоса</string>
+    <string name="tasks_complete">Нажмите, чтобы завершить</string>
+    <string name="tasks_successful">Успешно</string>
+    <string name="tasks_voice_successfully_return">Голосовой ввод успешно обработан</string>
+    <string name="tasks_ok">Ок</string>
+
+    // Settings
+    <string name="settings_title">Настройки</string>
+    <string name="settings_reset">Сбросить настройки</string>
+    <string name="settings_color_scheme">"Цветовая схема"</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_tokens">Баланс токенов</string>
+    <string name="settings_show_secret">Показать введённое значение</string>
+    <string name="settings_hide_secret">Скрыть введённое значение</string>
+    <string name="settings_yandex_tokens_saved">Данные сохранены. Для изменения, введите новые значения</string>
+    <string name="settings_color_selected">Выбрано</string>
+    <string name="settings_dark_theme">Темная</string>
+    <string name="settings_light_theme">Светлая</string>
+    <string name="settings_system_theme">Системная</string>
+    <string name="settings_voice_input">Голосовой ввод</string>
+    <string name="voice_mode_live">Системный сервис Android</string>
+    <string name="voice_mode_live_subtitle">Не требует настройки. Качество зависит от устройства</string>
+    <string name="voice_mode_yandex_speech">Yandex SpeechKit</string>
+    <string name="voice_mode_yandex_subtitle">Облачное распознавание</string>
+    <string name="voice_mode_future_title">Скоро</string>
+    <string name="voice_mode_future_subtitle">Скоро</string>
+    <string name="voice_recognizer_unavailable_warning">Системный сервис недоступен на текущем устройстве</string>
+    <string name="yandex_iam_token_label">IAM Token</string>
+    <string name="yandex_folder_id_label">Folder ID</string>
+    <string name="future_api_key_label">API Token</string>
+    <string name="coming_soon_label">Скоро</string>
+
+    // Language
+    <string name="language_system">Системный</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_english">Английский</string>
+
+    // Voice
+    <string name="voice_error_recording_failed">Не удалось получить звук с микрофона. Проверьте разрешение на запись аудио</string>
+    <string name="voice_error_recognition_failed">Служба распознавания речи недоступна или не поддерживает выбранный язык</string>
+    <string name="voice_error_network">Не удалось подключиться к службе распознавания</string>
+    <string name="voice_error_unauthorized">Нет доступа к службе распознавания</string>
+    <string name="voice_error_empty_result">Не удалось распознать речь. Попробуйте ещё раз</string>
+
+    // Icons description
+    <string name="settings_expandable_collapse">Скрыть</string>
+    <string name="settings_expandable_expand">Раскрыть</string>
+
+    // Home
+    <string name="home_title">Дом</string>
+    <string name="home_empty_plan_title">Соберите свой план</string>
+    <string name="home_empty_plan_subtitle">Выберите несколько задач на сегодня. План всегда можно изменить.</string>
+    <string name="home_add_first_task">Добавить первую задачу</string>
+    <string name="home_today_plan">План дня</string>
+    <string name="home_task_count">%d %s · %d мин</string>
+    <string name="home_task_count_without_minutes">%d %s</string>
+    <string name="home_task_count_word">задача|задачи|задач</string>
+    <string name="home_progress_percentage">%d%%</string>
+    <string name="home_day_plan">Ближайшие задачи</string>
+    <string name="home_collapse_plan">Свернуть план ↑</string>
+    <string name="home_expand_plan">Открыть план</string>
+    <string name="home_add_tasks_to_plan">Добавить задачи</string>
+    <string name="home_today">Сегодня</string>
+    <string name="home_day_plan_title">Задачи дня</string>
+    <string name="home_tasks_ahead">%d впереди</string>
+    <string name="home_in_progress">В работе</string>
+    <string name="home_hold_and_drag">Удерживайте и тяните</string>
+    <string name="home_completed_today">Сделано сегодня</string>
+    <string name="home_completed_count">%1$d из %2$d задач</string>
+    <string name="home_completed_empty_hint">Прогресс дня всегда перед глазами</string>
+    <string name="home_completed_hint">Отличная работа! Выполненные задачи очистятся автоматически к следующему дню</string>
+    <string name="home_task_position">%d</string>
+    <string name="home_next_task">Ближайшая</string>
+    <string name="home_duration_minutes">%d мин</string>
+    <string name="home_quick_capture">Быстрый захват</string>
+    <string name="home_task">Задача</string>
+    <string name="home_note">Заметка</string>
+    <string name="home_thought_breakdown_title">Разобрать мысль</string>
+    <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
+
+    // Add tasks for plan bottom sheet
+    <string name="home_select_tasks_title">Добавить задачи</string>
+    <string name="home_select_tasks_empty">Нет доступных задач</string>
+    <string name="home_select_tasks_add">Добавить (%d)</string>
+
+</resources>

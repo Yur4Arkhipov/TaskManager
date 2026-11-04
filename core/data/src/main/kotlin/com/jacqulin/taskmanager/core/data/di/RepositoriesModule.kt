@@ -18,6 +18,8 @@ import com.jacqulin.taskmanager.core.data.repository.UserDataRepository
 import com.jacqulin.taskmanager.core.data.repository.UserDataRepositoryImpl
 import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepository
 import com.jacqulin.taskmanager.core.data.repository.VoiceInputRepositoryImpl
+import com.jacqulin.taskmanager.core.data.repository.language.LanguageRepository
+import com.jacqulin.taskmanager.core.data.repository.language.LanguageRepositoryImpl
 import com.jacqulin.taskmanager.core.data.system.AndroidSystemCapabilitiesCheckerImpl
 import com.jacqulin.taskmanager.core.data.system.SystemCapabilitiesChecker
 import dagger.Binds
@@ -87,5 +89,11 @@ abstract class RepositoriesModule {
     internal abstract fun bindTagRepository(
         impl: TagsRepositoryImpl,
     ): TagsRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLanguageRepository(
+        impl: LanguageRepositoryImpl
+    ): LanguageRepository
 
 }

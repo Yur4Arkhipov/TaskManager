@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task Manager</string>
+
+    // Notes
+    <string name="notes_title">Notes</string>
+    <string name="notes_add_note">New note</string>
+    <string name="notes_edit_note">Edit</string>
+    <string name="notes_view_note">View note</string>
+    <string name="notes_create_note">New note</string>
+    <string name="notes_title_placeholder">Title…</string>
+    <string name="notes_content_placeholder">Note text…</string>
+    <string name="notes_add_from_files">Files</string>
+    <string name="notes_add_from_camera">Camera</string>
+    <string name="notes_search">Search notes…</string>
+    <string name="notes_sort">Sort</string>
+    <string name="notes_empty">No notes yet</string>
+    <string name="notes_count">%d notes</string>
+    <string name="notes_back">Back</string>
+    <string name="notes_save">Save</string>
+    <string name="notes_remove">Delete</string>
+
+    // Tasks
+    <string name="tasks_title">Tasks</string>
+    <string name="tasks_add_task">New task</string>
+    <string name="tasks_add_task_thought">Break down a thought</string>
+    <string name="tasks_add_task_voice">Voice</string>
+    <string name="tasks_add_task_text">Text</string>
+    <string name="tasks_close_add_menu">Close add menu</string>
+    <string name="tasks_close_menu">Close menu</string>
+    <string name="tasks_new_task">New task</string>
+    <string name="tasks_new_task_question">What needs to be done?</string>
+    <string name="tasks_task_name">What are we doing?</string>
+    <string name="tasks_task_title_placeholder">E.g. prepare a presentation</string>
+    <string name="tasks_time_estimate">Time estimate</string>
+    <string name="tasks_optional">Optional</string>
+    <string name="tasks_no_estimate">No estimate</string>
+    <string name="tasks_15_minutes">15 min</string>
+    <string name="tasks_25_minutes">25 min</string>
+    <string name="tasks_45_minutes">45 min</string>
+    <string name="tasks_1_hour">1 h</string>
+    <string name="tasks_other_duration">Other</string>
+    <string name="tasks_time_estimate_hint">This is an estimate for the entire task. Focus session duration is selected separately.</string>
+    <string name="tasks_add_to_today_plan">Add to today\'s plan</string>
+    <string name="tasks_tags">Tags</string>
+    <string name="tasks_add_tag">Add tag</string>
+    <string name="tasks_create_tag">Create tag</string>
+    <string name="tasks_tag_name">Tag name</string>
+    <string name="tasks_suggested_tags">Suggested tags</string>
+    <string name="tasks_today_tag">Today</string>
+    <string name="tasks_tags_empty_title">No tags yet</string>
+    <string name="tasks_tags_empty_description">Create your first tag in Settings → Tags, then you can select it here.</string>
+    <string name="tasks_add">Add</string>
+    <string name="tasks_add_task_submit">Add task</string>
+    <string name="tasks_no_tasks_yet">No tasks yet</string>
+    <string name="tasks_status_summary">%1$d active • %2$d completed</string>
+    <string name="tasks_voice_processing">Sending to AI and processing…</string>
+    <string name="tasks_voice_unknown_error">An unknown error occurred</string>
+    <string name="voice_recognized_text">Recognized: "%1$s"</string>
+    <string name="tasks_naming_label">Task name…</string>
+    <string name="tasks_error">Error</string>
+    <string name="tasks_error_advice">Check your internet connection or try speaking louder</string>
+    <string name="tasks_cancel">Cancel</string>
+    <string name="tasks_retry">Retry</string>
+    <string name="tasks_search">Search tasks…</string>
+    <string name="tasks_sort">Sort</string>
+    <string name="tasks_filter_all">All</string>
+    <string name="tasks_filter_active">Active</string>
+    <string name="tasks_filter_completed">Completed</string>
+    <string name="tasks_no_active_tasks">No active tasks</string>
+    <string name="tasks_no_completed_tasks">No completed tasks</string>
+    <string name="tasks_search_no_results">Nothing found</string>
+    <string name="tasks_list_settings">List settings</string>
+    <string name="tasks_list_view">List view</string>
+    <string name="tasks_show_creation_date">Creation date</string>
+    <string name="tasks_show_tags">Tags</string>
+    <string name="tasks_compact_view">Compact view</string>
+    <string name="tasks_select_tasks">Select tasks</string>
+    <string name="tasks_selected_count">Selected: %d</string>
+    <string name="tasks_select_all">Select all</string>
+    <string name="tasks_deselect_all">Clear</string>
+    <string name="tasks_exit_selection">Exit selection</string>
+    <string name="tasks_delete_selected">Delete (%d)</string>
+    <string name="tasks_processing_wait">This may take a few seconds</string>
+    <string name="tasks_recording">Recording…</string>
+    <string name="tasks_stop_recording">Stop recording</string>
+    <string name="tasks_record_voice">Record voice</string>
+    <string name="tasks_complete">Tap to complete</string>
+    <string name="tasks_successful">Success</string>
+    <string name="tasks_voice_successfully_return">Voice input processed successfully</string>
+    <string name="tasks_ok">OK</string>
+
+    // Settings
+    <string name="settings_title">Settings</string>
+    <string name="settings_reset">Reset settings</string>
+    <string name="settings_color_scheme">Color scheme</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_tokens">Token balance</string>
+    <string name="settings_show_secret">Show entered value</string>
+    <string name="settings_hide_secret">Hide entered value</string>
+    <string name="settings_yandex_tokens_saved">Data saved. To change, enter new values</string>
+    <string name="settings_color_selected">Selected</string>
+    <string name="settings_dark_theme">Dark</string>
+    <string name="settings_light_theme">Light</string>
+    <string name="settings_system_theme">System</string>
+    <string name="settings_voice_input">Voice input</string>
+    <string name="voice_mode_live">Android system service</string>
+    <string name="voice_mode_live_subtitle">No setup required. Quality depends on the device</string>
+    <string name="voice_mode_yandex_speech">Yandex SpeechKit</string>
+    <string name="voice_mode_yandex_subtitle">Cloud recognition</string>
+    <string name="voice_mode_future_title">Coming soon</string>
+    <string name="voice_mode_future_subtitle">Coming soon</string>
+    <string name="voice_recognizer_unavailable_warning">System service is unavailable on this device</string>
+    <string name="yandex_iam_token_label">IAM Token</string>
+    <string name="yandex_folder_id_label">Folder ID</string>
+    <string name="future_api_key_label">API Token</string>
+    <string name="coming_soon_label">Coming soon</string>
+
+    // Language
+    <string name="language_system">System</string>
+    <string name="language_russian">Russian</string>
+    <string name="language_english">English</string>
+
+    // Voice
+    <string name="voice_error_recording_failed">Failed to get audio from microphone. Check audio recording permission</string>
+    <string name="voice_error_recognition_failed">Speech recognition service is unavailable or doesn\'t support the selected language</string>
+    <string name="voice_error_network">Failed to connect to the recognition service</string>
+    <string name="voice_error_unauthorized">No access to the recognition service</string>
+    <string name="voice_error_empty_result">Failed to recognize speech. Try again</string>
+
+    // Icons description
+    <string name="settings_expandable_collapse">Collapse</string>
+    <string name="settings_expandable_expand">Expand</string>
+
+    // Home
+    <string name="home_title">Home</string>
+    <string name="home_empty_plan_title">Build your plan</string>
+    <string name="home_empty_plan_subtitle">Select a few tasks for today. The plan can always be changed.</string>
+    <string name="home_add_first_task">Add the first task</string>
+    <string name="home_today_plan">Today\'s plan</string>
+    <string name="home_task_count">%d %s · %d min</string>
+    <string name="home_task_count_without_minutes">%d %s</string>
+    <string name="home_task_count_word">task|tasks|tasks</string>
+    <string name="home_progress_percentage">%d%%</string>
+    <string name="home_day_plan">Upcoming tasks</string>
+    <string name="home_collapse_plan">Collapse plan ↑</string>
+    <string name="home_expand_plan">Expand plan</string>
+    <string name="home_add_tasks_to_plan">Add tasks</string>
+    <string name="home_today">Today</string>
+    <string name="home_day_plan_title">Today\'s tasks</string>
+    <string name="home_tasks_ahead">%d ahead</string>
+    <string name="home_in_progress">In progress</string>
+    <string name="home_hold_and_drag">Hold and drag</string>
+    <string name="home_completed_today">Done today</string>
+    <string name="home_completed_count">%1$d of %2$d tasks</string>
+    <string name="home_completed_empty_hint">Today\'s progress always in sight</string>
+    <string name="home_completed_hint">Great job! Completed tasks will clear automatically by the next day</string>
+    <string name="home_task_position">%d</string>
+    <string name="home_next_task">Next</string>
+    <string name="home_duration_minutes">%d min</string>
+    <string name="home_quick_capture">Quick capture</string>
+    <string name="home_task">Task</string>
+    <string name="home_note">Note</string>
+    <string name="home_thought_breakdown_title">Break down a thought</string>
+    <string name="home_thought_breakdown_subtitle">Tasks, notes, and plan from one text</string>
+
+    // Add tasks for plan bottom sheet
+    <string name="home_select_tasks_title">Add tasks</string>
+    <string name="home_select_tasks_empty">No tasks available</string>
+    <string name="home_select_tasks_add">Add (%d)</string>
+</resources>

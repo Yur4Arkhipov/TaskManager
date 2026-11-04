@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":core:storage"))
     implementation(project(":core:network"))
     implementation(project(":core:speech"))
+    implementation(project(":core:platform"))
 
 //    implementation(libs.androidx.appcompat)
 //    implementation(libs.androidx.core.ktx)

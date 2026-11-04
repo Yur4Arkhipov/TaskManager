@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,23 +30,28 @@ fun BottomNavigationBar(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        windowInsets = NavigationBarDefaults.windowInsets) {
+        windowInsets = NavigationBarDefaults.windowInsets
+    ) {
         items.forEach { item ->
             NavigationBarItem(
                 selected = item.selected,
                 onClick = item.onClick,
-                icon = {
+                icon =  {
                     Icon(
                         painter = item.icon,
                         contentDescription = item.contentDescription,
-                        modifier = modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
+                        tint = if (item.selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
                 },
-//                enabled = item.enabled
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    indicatorColor = Color.Transparent,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),

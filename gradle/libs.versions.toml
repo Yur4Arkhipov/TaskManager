@@ -28,7 +28,6 @@ mockk = "1.14.11"
 turbine = "1.2.1"
 truth = "1.4.5"
 appcompat = "1.8.0"
-material = "1.14.0"
 reorderable = "3.1.0"
 
 [libraries]
@@ -85,12 +84,13 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 # Reordable
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
+# App Compat
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
 # Testing
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
