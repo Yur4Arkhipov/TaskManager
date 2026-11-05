@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -78,9 +77,7 @@ fun CreateTaskBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = sheetState,
             containerColor = colors.surfaceContainerLow,
-            dragHandle = {
-                BottomSheetDefaults.DragHandle(color = colors.outlineVariant)
-            },
+            dragHandle = null
         ) {
             ModalBottomSheetContent(
                 title = title,
@@ -122,7 +119,7 @@ fun ModalBottomSheetContent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 12.dp),
+            .padding(vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TitleRow(
