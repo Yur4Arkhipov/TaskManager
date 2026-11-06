@@ -17,30 +17,35 @@ enum class TopLevelDestination(
     val icon: Int,
     @StringRes val titleTextId: Int,
     val route: KClass<*>,
-    val baseRoute: KClass<*> = route
+    val baseRoute: KClass<*>,
+    val order: Int
 ) {
     HOME(
         icon = AppIcons.Home,
         titleTextId = R.string.home_title,
         route = HomeRoute::class,
-        baseRoute = HomeBaseRoute::class
+        baseRoute = HomeBaseRoute::class,
+        order = 0
     ),
     TASKS(
         icon = AppIcons.Tasks,
         titleTextId = R.string.tasks_title,
         route = TasksRoute::class,
-        baseRoute = TasksBaseRoute::class
+        baseRoute = TasksBaseRoute::class,
+        order = 1
     ),
     NOTES(
         icon = AppIcons.Notes,
         titleTextId = R.string.notes_title,
         route = NotesRoute::class,
-        baseRoute = NotesBaseRoute::class
+        baseRoute = NotesBaseRoute::class,
+        order = 2
     ),
     SETTINGS(
         icon = AppIcons.Settings,
         titleTextId = R.string.settings_title,
         route = SettingsRoute::class,
-        baseRoute = SettingsBaseRoute::class
+        baseRoute = SettingsBaseRoute::class,
+        order = 3
     )
 }
