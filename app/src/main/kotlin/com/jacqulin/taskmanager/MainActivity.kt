@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.core.domain.settings.InitializeAppLanguageUseCase
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.ui.App
 import com.jacqulin.taskmanager.ui.MainActivityViewModel
@@ -26,21 +27,24 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
 //    @Inject
-//    lateinit var appSettingsRepository: AppSettingsRepository
-//
-//    @Inject
 //    lateinit var voiceRecognizer: VoiceRecognizer
+
+    @Inject
+    lateinit var initializeAppLanguageUseCase: InitializeAppLanguageUseCase
 
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        initializeAppLanguageUseCase()
 
         var themeSettings by mutableStateOf(
             ThemeSettings(

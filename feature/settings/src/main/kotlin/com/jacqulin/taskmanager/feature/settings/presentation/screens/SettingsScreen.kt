@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jacqulin.taskmanager.core.designsystem.component.TopAppBar
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.AppLanguage
 import com.jacqulin.taskmanager.core.model.ColorPalette
@@ -108,7 +107,6 @@ fun SettingsScreen(
     onLangChanged: (AppLanguage) -> Unit = {}
 ) {
     Scaffold(
-        topBar = { TopAppBar(titleRes = titleRes) },
         snackbarHost = { SnackbarHost(snackbar) }
     ) { paddingValues ->
         when (settingsUiState) {
@@ -120,7 +118,16 @@ fun SettingsScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                         .padding(horizontal = 12.dp)
+                        .padding(top = 12.dp)
                 ) {
+                    item {
+                        Text(
+                            text = stringResource(titleRes),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
                     item {
                         SettingsSectionCard(
                             title = stringResource(R.string.settings_theme),
@@ -135,11 +142,11 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Язык интерфейса",
+                            title = "Цветовая схема",
                             content = {
-                                LanguageSelector(
-                                    selectedLanguage = settingsUiState.lang,
-                                    onLanguageSelected = onLangChanged
+                                ColorPaletteRow(
+                                    selectedPalette = settingsUiState.settings.colorPalette,
+                                    onPaletteSelected = onChangeColorPalette
                                 )
                             }
                         )
@@ -147,11 +154,11 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Цветовая схема",
+                            title = "Язык интерфейса",
                             content = {
-                                ColorPaletteRow(
-                                    selectedPalette = settingsUiState.settings.colorPalette,
-                                    onPaletteSelected = onChangeColorPalette
+                                LanguageSelector(
+                                    selectedLanguage = settingsUiState.lang,
+                                    onLanguageSelected = onLangChanged
                                 )
                             }
                         )
