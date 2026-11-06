@@ -7,6 +7,5 @@ import javax.inject.Inject
 class SetLanguageUseCase @Inject constructor(
     private val repository: LanguageRepository
 ) {
-    operator fun invoke(lang: AppLanguage) =
-        repository.setLanguage(lang)
+    operator fun invoke(language: AppLanguage) = repository.setLanguage(language)
 }

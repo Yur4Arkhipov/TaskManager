@@ -8,6 +8,6 @@ sealed interface SettingsUiState {
         val settings: UserEditableSettings,
         val speechRecognizerAvailable: Boolean = true,
         val areYandexTokensConfigured: Boolean = false,
-        val lang: AppLanguage = AppLanguage.SYSTEM
+        val lang: AppLanguage = AppLanguage.ENGLISH
     ) : SettingsUiState
 }

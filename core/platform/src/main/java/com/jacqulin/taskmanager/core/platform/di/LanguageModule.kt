@@ -14,7 +14,7 @@ abstract class PlatformModule {
 
     @Binds
     @Singleton
-    internal abstract fun bindAppLanguageController(
+    internal abstract fun bindAppLanguageManager(
         implementation: AppLanguageManagerImpl
     ): AppLanguageManager
 }

@@ -7,8 +7,12 @@ import javax.inject.Inject
 internal class LanguageRepositoryImpl @Inject constructor(
     private val manager: AppLanguageManager
 ): LanguageRepository {
-    override fun getCurrentLanguage(): AppLanguage =
-        manager.getCurrentLanguage()
+
+    override fun initialize() =
+        manager.initialize()
+
+    override fun getLanguage(): AppLanguage =
+        manager.getLanguage()
 
     override fun setLanguage(language: AppLanguage) =
         manager.setLanguage(language)

@@ -38,7 +38,6 @@ fun LanguageSelector(
             modifier = Modifier.fillMaxWidth(),
         ) {
             listOf(
-                AppLanguage.SYSTEM,
                 AppLanguage.RUSSIAN,
                 AppLanguage.ENGLISH
             ).forEach { lang ->
@@ -70,7 +69,6 @@ fun LanguageSelector(
 @StringRes
 private fun AppLanguage.toStringRes(): Int {
     return when (this) {
-        AppLanguage.SYSTEM -> R.string.language_system
         AppLanguage.RUSSIAN -> R.string.language_russian
         AppLanguage.ENGLISH -> R.string.language_english
     }

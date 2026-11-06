@@ -142,11 +142,11 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Язык интерфейса",
+                            title = "Цветовая схема",
                             content = {
-                                LanguageSelector(
-                                    selectedLanguage = settingsUiState.lang,
-                                    onLanguageSelected = onLangChanged
+                                ColorPaletteRow(
+                                    selectedPalette = settingsUiState.settings.colorPalette,
+                                    onPaletteSelected = onChangeColorPalette
                                 )
                             }
                         )
@@ -154,11 +154,11 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Цветовая схема",
+                            title = "Язык интерфейса",
                             content = {
-                                ColorPaletteRow(
-                                    selectedPalette = settingsUiState.settings.colorPalette,
-                                    onPaletteSelected = onChangeColorPalette
+                                LanguageSelector(
+                                    selectedLanguage = settingsUiState.lang,
+                                    onLanguageSelected = onLangChanged
                                 )
                             }
                         )
