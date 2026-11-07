@@ -81,7 +81,8 @@
     <string name="tasks_deselect_all">Сбросить</string>
     <string name="tasks_exit_selection">Выйти из режима выбора</string>
     <string name="tasks_delete_selected">Удалить (%d)</string>
-    <string name="tasks_add_to_plan">To plan (%d)</string>
+    <string name="tasks_add_to_plan">В план (%d)</string>
+    <string name="tasks_remove_from_plan">Из плана (%d)</string>
     <string name="tasks_processing_wait">Это может занять несколько секунд</string>
     <string name="tasks_recording">Запись…</string>
     <string name="tasks_stop_recording">Остановить запись</string>

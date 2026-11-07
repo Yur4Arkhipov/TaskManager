@@ -15,6 +15,7 @@ sealed interface TasksEvent {
     data object OnSelectAllTasks : TasksEvent
     data object OnDeleteSelectedTasks : TasksEvent
     data object OnAddTasksForPlan : TasksEvent
+    data object OnRemoveTasksFromPlan : TasksEvent
     data class OnShowCreationDateChanged(val enabled: Boolean) : TasksEvent
     data class OnShowTagsChanged(val enabled: Boolean) : TasksEvent
     data object OnCreateTaskByTextClicked : TasksEvent

@@ -95,15 +95,23 @@ class TasksScreenViewModel @Inject constructor(
                         }
                     }
                 }
+
+            val selectedNotPlannedCount = tasks.count { task ->
+                task.id in mainScreenState.selectedTaskIds && !task.isPlannedForToday
+            }
+
+            val selectedPlannedCount = tasks.count { task ->
+                task.id in mainScreenState.selectedTaskIds && task.isPlannedForToday
+            }
+
             TasksUiState(
                 mainScreenState = mainScreenState,
                 taskState = taskState,
                 visibleTasks = visibleTasks,
                 availableTags = tags,
                 voiceState = voiceState,
-                selectedNotPlannedCount = tasks.count { task ->
-                    task.id in mainScreenState.selectedTaskIds && !task.isPlannedForToday
-                },
+                selectedNotPlannedCount = selectedNotPlannedCount,
+                selectedPlannedCount = selectedPlannedCount
             )
         }.stateIn(
             viewModelScope,
@@ -174,6 +182,10 @@ class TasksScreenViewModel @Inject constructor(
             TasksEvent.OnAddTasksForPlan -> {
                 val ids = mainScreenState.value.selectedTaskIds
                 saveTasksForPlan(ids)
+            }
+            TasksEvent.OnRemoveTasksFromPlan -> {
+                val ids = mainScreenState.value.selectedTaskIds
+                removeTasksFromPlan(ids)
             }
             is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
             is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
@@ -338,6 +350,24 @@ class TasksScreenViewModel @Inject constructor(
     }
 
     private fun saveTasksForPlan(taskIds: Set<Int>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                val task = getTaskByIdUseCase(taskId)
+                task?.let {
+                    val updatedTask = it.copy(isPlannedForToday = true)
+                    updateTaskStatusUseCase(updatedTask)
+                }
+            }
+        }
+        mainScreenState.update {
+            it.copy(
+                isDeleteModeEnabled = false,
+                selectedTaskIds = emptySet(),
+            )
+        }
+    }
+
+    private fun removeTasksFromPlan(taskIds: Set<Int>) {
         viewModelScope.launch {
             taskIds.forEach { taskId ->
                 val task = getTaskByIdUseCase(taskId)

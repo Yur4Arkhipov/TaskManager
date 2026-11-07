@@ -10,6 +10,7 @@ data class TasksUiState(
     val voiceState: VoiceState = VoiceState.Idle,
     val availableTags: List<Tag> = emptyList(),
     val selectedNotPlannedCount: Int = 0,
+    val selectedPlannedCount: Int = 0,
 ) {
     val isEmpty: Boolean get() = visibleTasks.isEmpty()
 }
