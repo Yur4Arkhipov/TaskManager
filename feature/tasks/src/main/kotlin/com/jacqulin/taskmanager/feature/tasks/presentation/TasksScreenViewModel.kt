@@ -56,13 +56,14 @@ class TasksScreenViewModel @Inject constructor(
     private val _effects = MutableSharedFlow<TasksEffect>()
     val effects: SharedFlow<TasksEffect> = _effects.asSharedFlow()
 
-    private val tasksUiState: StateFlow<TasksUiState> =
+    val uiState: StateFlow<TasksUiState> =
         combine(
             observeTasksUseCase(),
             observeTagsUseCase(),
             mainScreenState,
             taskState,
-        ) { tasks, tags, mainScreenState, taskState ->
+            voiceState
+        ) { tasks, tags, mainScreenState, taskState, voiceState ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
                 .filter { task ->
@@ -97,25 +98,12 @@ class TasksScreenViewModel @Inject constructor(
                 taskState = taskState,
                 visibleTasks = visibleTasks,
                 availableTags = tags,
+                voiceState = voiceState
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             TasksUiState(),
-        )
-
-    val uiState: StateFlow<TasksUiState> =
-        combine(
-            tasksUiState,
-            voiceState,
-        ) { state, voiceState ->
-            state.copy(
-                voiceState = voiceState,
-            )
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            TasksUiState()
         )
 
     fun onEvent(event: TasksEvent) {
