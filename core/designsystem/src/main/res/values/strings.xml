@@ -200,6 +200,14 @@
     <string name="home_note">Заметка</string>
     <string name="home_thought_breakdown_title">Разобрать мысль</string>
     <string name="home_thought_breakdown_subtitle">Задачи, заметки и план из одного текста</string>
+    <string name="home_plan_remove_from_plan">Убрать из плана</string>
+
+    <plurals name="home_task_count">
+        <item quantity="one">%1$d задача</item>
+        <item quantity="few">%1$d задачи</item>
+        <item quantity="many">%1$d задач</item>
+        <item quantity="other">%1$d задачи</item>
+    </plurals>
 
     // Add tasks for plan bottom sheet
     <string name="home_select_tasks_title">Добавить задачи</string>

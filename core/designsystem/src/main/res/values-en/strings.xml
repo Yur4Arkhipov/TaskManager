@@ -200,6 +200,12 @@
     <string name="home_note">Note</string>
     <string name="home_thought_breakdown_title">Break down a thought</string>
     <string name="home_thought_breakdown_subtitle">Tasks, notes, and plan from one text</string>
+    <string name="home_plan_remove_from_plan">Remove from plan</string>
+
+    <plurals name="home_task_count">
+        <item quantity="one">%1$d task</item>
+        <item quantity="other">%1$d tasks</item>
+    </plurals>
 
     // Add tasks for plan bottom sheet
     <string name="home_select_tasks_title">Add tasks</string>

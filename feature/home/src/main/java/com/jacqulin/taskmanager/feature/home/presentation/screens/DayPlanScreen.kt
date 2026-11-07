@@ -277,7 +277,6 @@ fun DayPlanContentPreview() {
         DayPlanContent(
             state = HomeUiState(
                 mainState = MainState(
-                    dateLabel = "вторник, 23 сентября",
                     tasks = listOf(
                         HomeTaskUi(
                             id = 1,

@@ -72,7 +72,6 @@ fun PlanFilledPreview() {
         FilledPlan(
             uiState = HomeUiState(
                 mainState = MainState(
-                    dateLabel = "Сегодня",
                     tasks = mockTasks,
                 ),
             ),

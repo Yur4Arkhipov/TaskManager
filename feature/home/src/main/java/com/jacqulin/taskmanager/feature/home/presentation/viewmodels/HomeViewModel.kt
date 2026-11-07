@@ -31,10 +31,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,7 +63,6 @@ class HomeViewModel @Inject constructor(
             HomeUiState(
                 mainState =
                     mainState.copy(
-                        dateLabel = dateLabel(),
                         availableTags = tags,
                         tasks =
                             tasks
@@ -303,17 +298,5 @@ class HomeViewModel @Inject constructor(
 
     private fun emitEffect(effect: HomeEffect) {
         viewModelScope.launch { _effects.emit(effect) }
-    }
-
-    private fun dateLabel(): String {
-        val locale = Locale.forLanguageTag("ru")
-        val formatter =
-            DateTimeFormatter
-                .ofLocalizedDate(FormatStyle.LONG)
-                .withLocale(locale)
-        return LocalDate
-            .now()
-            .format(formatter)
-            .replaceFirstChar { it.titlecase(locale) }
     }
 }

@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,16 +37,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jacqulin.taskmanager.core.designsystem.component.CreationDateLabel
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
@@ -180,28 +176,6 @@ fun TaskItem(
             }
         }
     }
-}
-
-@Composable
-private fun CreationDateLabel(createdAtMillis: Long) {
-    val locale = LocalConfiguration.current.locales[0]
-
-    val text = remember(createdAtMillis, locale) {
-        Instant.ofEpochMilli(createdAtMillis)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
-            .format(
-                DateTimeFormatter
-                    .ofLocalizedDate(FormatStyle.LONG)
-                    .withLocale(locale)
-            )
-    }
-
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-    )
 }
 
 @Preview
