@@ -89,6 +89,8 @@
     <string name="tasks_successful">Успешно</string>
     <string name="tasks_voice_successfully_return">Голосовой ввод успешно обработан</string>
     <string name="tasks_ok">Ок</string>
+    <string name="sort_newest_first">От новых к старым</string>
+    <string name="sort_oldest_first">От старых к новых</string>
 
     // Settings
     <string name="settings_title">Настройки</string>

@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
+import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun SortDropdownMenu(
@@ -33,7 +35,7 @@ fun SortDropdownMenu(
         tonalElevation = 3.dp,
     ) {
         SortMenuItem(
-            text = "От новых к старым",
+            text = stringResource(R.string.sort_newest_first),
             selected = sortType == SortType.NEW_TO_OLD,
             onClick = {
                 onSortChanged(SortType.NEW_TO_OLD)
@@ -42,7 +44,7 @@ fun SortDropdownMenu(
         )
 
         SortMenuItem(
-            text = "От старых к новым",
+            text = stringResource(R.string.sort_oldest_first),
             selected = sortType == SortType.OLD_TO_NEW,
             onClick = {
                 onSortChanged(SortType.OLD_TO_NEW)

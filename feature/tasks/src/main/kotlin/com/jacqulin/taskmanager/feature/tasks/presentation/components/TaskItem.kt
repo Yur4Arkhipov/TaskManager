@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +47,7 @@ import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.format.FormatStyle
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
@@ -175,23 +176,32 @@ fun TaskItem(
                 contentAlignment = Alignment.TopEnd,
                 modifier = Modifier.padding(6.dp)
             ) {
-                Text(
-                    text = task.createdAtMillis.toFormattedDate(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                )
+                CreationDateLabel(createdAtMillis = task.createdAtMillis)
             }
         }
     }
 }
 
-private fun Long.toFormattedDate(): String {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy'г.'")
-        .withLocale(Locale.forLanguageTag("ru"))
-    return Instant.ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime()
-        .format(formatter)
+@Composable
+private fun CreationDateLabel(createdAtMillis: Long) {
+    val locale = LocalConfiguration.current.locales[0]
+
+    val text = remember(createdAtMillis, locale) {
+        Instant.ofEpochMilli(createdAtMillis)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+            .format(
+                DateTimeFormatter
+                    .ofLocalizedDate(FormatStyle.LONG)
+                    .withLocale(locale)
+            )
+    }
+
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+    )
 }
 
 @Preview

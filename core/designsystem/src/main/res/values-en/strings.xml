@@ -89,6 +89,8 @@
     <string name="tasks_successful">Success</string>
     <string name="tasks_voice_successfully_return">Voice input processed successfully</string>
     <string name="tasks_ok">OK</string>
+    <string name="sort_newest_first">Newest first</string>
+    <string name="sort_oldest_first">Oldest first</string>
 
     // Settings
     <string name="settings_title">Settings</string>
