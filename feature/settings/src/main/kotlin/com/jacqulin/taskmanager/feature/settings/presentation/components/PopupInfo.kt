@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 
@@ -48,7 +47,6 @@ fun PopupInfo(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             shape = RoundedCornerShape(16.dp),
-            offset = DpOffset(x = 0.dp, y = 8.dp),
             tonalElevation = 3.dp,
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ) {

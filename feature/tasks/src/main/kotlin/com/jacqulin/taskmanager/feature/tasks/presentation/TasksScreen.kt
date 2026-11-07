@@ -151,10 +151,16 @@ fun TasksScreen(
         },
         bottomBar = {
             if (uiState.mainScreenState.isDeleteModeEnabled) {
+                val totalSelected = uiState.mainScreenState.selectedTaskIds.size
+                val notPlannedSelected = uiState.selectedNotPlannedCount
+
                 BottomBar(
-                    onClick = { onEvent(TasksEvent.OnDeleteSelectedTasks) },
-                    enabled = uiState.mainScreenState.selectedTaskIds.isNotEmpty(),
-                    selectedSize = uiState.mainScreenState.selectedTaskIds.size
+                    onAddToDayPlan = { onEvent(TasksEvent.OnAddTasksForPlan) },
+                    onDelete = { onEvent(TasksEvent.OnDeleteSelectedTasks) },
+                    addToPlanEnabled = notPlannedSelected > 0,
+                    deleteEnabled = totalSelected > 0,
+                    addToPlanCount = notPlannedSelected,
+                    deleteCount = totalSelected,
                 )
             }
         }
@@ -331,20 +337,23 @@ fun TasksScreen(
 
 @Composable
 private fun BottomBar(
-    onClick: () -> Unit,
-    enabled: Boolean,
-    selectedSize: Int
+    onAddToDayPlan: () -> Unit,
+    onDelete: () -> Unit,
+    addToPlanEnabled: Boolean,
+    deleteEnabled: Boolean,
+    addToPlanCount: Int,
+    deleteCount: Int,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextButton(
-            onClick = onClick,
-            enabled = enabled,
+            onClick = onAddToDayPlan,
+            enabled = addToPlanEnabled,
             colors = ButtonDefaults.textButtonColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -355,10 +364,25 @@ private fun BottomBar(
             modifier = Modifier.height(36.dp),
         ) {
             Text(
-                text = stringResource(
-                    R.string.tasks_delete_selected,
-                    selectedSize,
-                ),
+                text = stringResource(R.string.tasks_add_to_plan, addToPlanCount),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        TextButton(
+            onClick = onDelete,
+            enabled = deleteEnabled,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            ),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+            modifier = Modifier.height(36.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.tasks_delete_selected, deleteCount),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -370,9 +394,12 @@ private fun BottomBar(
 fun BottomBarPreview() {
     TaskManagerTheme {
         BottomBar(
-            onClick = {},
-            enabled = true,
-            selectedSize = 1
+            onDelete = {},
+            onAddToDayPlan = {},
+            addToPlanEnabled = false,
+            deleteEnabled = false,
+            addToPlanCount = 1,
+            deleteCount = 1,
         )
     }
 }

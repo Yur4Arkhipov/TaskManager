@@ -81,6 +81,7 @@
     <string name="tasks_deselect_all">Clear</string>
     <string name="tasks_exit_selection">Exit selection</string>
     <string name="tasks_delete_selected">Delete (%d)</string>
+    <string name="tasks_add_to_plan">To plan (%d)</string>
     <string name="tasks_processing_wait">This may take a few seconds</string>
     <string name="tasks_recording">Recording…</string>
     <string name="tasks_stop_recording">Stop recording</string>

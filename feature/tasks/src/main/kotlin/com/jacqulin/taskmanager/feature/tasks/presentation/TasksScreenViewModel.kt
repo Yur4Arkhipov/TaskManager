@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.GetTaskByIdUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
@@ -47,6 +48,7 @@ class TasksScreenViewModel @Inject constructor(
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
     private val voiceInputUseCase: VoiceInputUseCase,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
 ) : ViewModel() {
 
     private val mainScreenState = MutableStateFlow(MainScreenState())
@@ -98,7 +100,10 @@ class TasksScreenViewModel @Inject constructor(
                 taskState = taskState,
                 visibleTasks = visibleTasks,
                 availableTags = tags,
-                voiceState = voiceState
+                voiceState = voiceState,
+                selectedNotPlannedCount = tasks.count { task ->
+                    task.id in mainScreenState.selectedTaskIds && !task.isPlannedForToday
+                },
             )
         }.stateIn(
             viewModelScope,
@@ -165,6 +170,10 @@ class TasksScreenViewModel @Inject constructor(
                 val ids = mainScreenState.value.selectedTaskIds.toList()
                 ids.forEach(::deleteTask)
                 mainScreenState.update { it.copy(isDeleteModeEnabled = false, selectedTaskIds = emptySet()) }
+            }
+            TasksEvent.OnAddTasksForPlan -> {
+                val ids = mainScreenState.value.selectedTaskIds
+                saveTasksForPlan(ids)
             }
             is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
             is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
@@ -325,6 +334,24 @@ class TasksScreenViewModel @Inject constructor(
             )
 
             updateTaskStatusUseCase(updatedTask.toDomain())
+        }
+    }
+
+    private fun saveTasksForPlan(taskIds: Set<Int>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                val task = getTaskByIdUseCase(taskId)
+                task?.let {
+                    val updatedTask = it.copy(isPlannedForToday = true)
+                    updateTaskStatusUseCase(updatedTask)
+                }
+            }
+        }
+        mainScreenState.update {
+            it.copy(
+                isDeleteModeEnabled = false,
+                selectedTaskIds = emptySet(),
+            )
         }
     }
 
