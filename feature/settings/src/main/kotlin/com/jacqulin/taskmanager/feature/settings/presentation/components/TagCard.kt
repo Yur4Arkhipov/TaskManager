@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -75,12 +76,12 @@ fun TagCard(
 //                        color = Color(item.tag.color.toInt())
                 )
                 Text(
-                    text = if (item.taskCount == 0) "Пока не используется"
+                    text = if (item.taskCount == 0) stringResource(R.string.tag_card_not_used)
                         else "${item.taskCount} ${pluralize(
                             count = item.taskCount,
-                            one = "задача",
-                            few = "задачи",
-                            many = "задач"
+                            one = stringResource(R.string.tag_card_task_count_one),
+                            few = stringResource(R.string.tag_card_task_count_few),
+                            many = stringResource(R.string.tag_card_task_count_many)
                         )}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -101,7 +102,7 @@ fun TagCard(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_horiz),
-                        contentDescription = "Ещё",
+                        contentDescription = stringResource(R.string.tag_card_more),
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -111,14 +112,14 @@ fun TagCard(
                     onDismissRequest = { expanded = false },
                 ) {
                     StyledDropdownMenuItem(
-                        text = "Переименовать",
+                        text = stringResource(R.string.tag_card_rename),
                         onClick = {
                             expanded = false
                             onRename()
                         }
                     )
                     StyledDropdownMenuItem(
-                        text = "Удалить",
+                        text = stringResource(R.string.settings_tag_delete_button),
                         destructive = true,
                         onClick = {
                             expanded = false

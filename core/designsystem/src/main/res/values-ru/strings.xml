@@ -116,6 +116,42 @@
     <string name="future_api_key_label">API Token</string>
     <string name="coming_soon_label">Скоро</string>
 
+    <string name="settings_language">Язык интерфейса</string>
+    <string name="settings_tags">Метки</string>
+    <string name="settings_tag_management">Управление метками задач</string>
+    <string name="settings_voice_input_hint">Для корректного голосового ввода используйте язык приложения</string>
+
+    // Tags
+    <string name="settings_tags_screen_title">Метки</string>
+    <string name="settings_tags_screen_subtitle">Создайте один раз и используйте во всем приложении</string>
+    <string name="settings_tags_all">Все метки</string>
+    <string name="settings_tags_empty">Нет меток</string>
+    <string name="settings_tags_search">Поиск меток…</string>
+    <string name="settings_tag_rename_title">Новое название:</string>
+    <string name="settings_tag_rename_confirm">Сохранить</string>
+    <string name="settings_tag_rename_cancel">Отмена</string>
+    <string name="settings_tag_delete_title">Удалить метку «%s»?</string>
+    <string name="settings_tag_delete_text">Задачи и заметки сохранятся</string>
+    <string name="settings_tag_delete_button">Удалить</string>
+    <string name="settings_tag_new_tag">Новый тег</string>
+    <string name="settings_tag_placeholder">Например, работа</string>
+    <string name="settings_tag_how_look">Так будет выглядеть тег:</string>
+    <string name="settings_tag_how_look_placeholder">работа</string>
+    <string name="settings_tag_create">Создать</string>
+    <string name="tags_sort_by_name">По названию</string>
+    <string name="tags_sort_by_usage">По использованию</string>
+
+    // Tag card
+    <string name="tag_card_not_used">Пока не используется</string>
+    <string name="tag_card_more">Ещё</string>
+    <string name="tag_card_rename">Переименовать</string>
+    <string name="tag_card_task_count_one">задача</string>
+    <string name="tag_card_task_count_few">задачи</string>
+    <string name="tag_card_task_count_many">задач</string>
+    <string name="tag_count_one">тег</string>
+    <string name="tag_count_few">тега</string>
+    <string name="tag_count_many">тегов</string>
+
     // Language
     <string name="language_system">Системный</string>
     <string name="language_russian">Русский</string>
@@ -168,5 +204,7 @@
     <string name="home_select_tasks_title">Добавить задачи</string>
     <string name="home_select_tasks_empty">Нет доступных задач</string>
     <string name="home_select_tasks_add">Добавить (%d)</string>
+
+    <string name="save">Сохранить</string>
 
 </resources>

@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -44,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jacqulin.taskmanager.core.designsystem.component.BackRow
 import com.jacqulin.taskmanager.core.designsystem.component.SearchField
 import com.jacqulin.taskmanager.core.designsystem.component.TagsSortDropdownMenu
 import com.jacqulin.taskmanager.core.designsystem.component.ToolbarButton
@@ -94,18 +93,23 @@ private fun TagsScreenContent(
                 detectTapGestures(onTap = { focusManager.clearFocus() })
             }
     ) {
-        BackRow(onBackClick)
+        BackRow(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(onClick = onBackClick)
+                .padding(4.dp)
+        )
         Spacer(Modifier.height(10.dp))
 
         Column {
             Text(
-                text = "Теги",
+                text = stringResource(R.string.settings_tags_screen_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Создайте один раз и используйте во всем приложении",
+                text = stringResource(R.string.settings_tags_screen_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary,
                 lineHeight = 14.sp
@@ -133,18 +137,18 @@ private fun TagsScreenContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Все теги",
+                text = stringResource(R.string.settings_tags_all),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             Log.d("TagsScreen", "Count tasks: ${state.visibleTags.size}")
             Text(
-                text = if (state.visibleTags.isEmpty()) "Нет тегов"
+                text = if (state.visibleTags.isEmpty()) stringResource(R.string.settings_tags_empty)
                 else "${state.visibleTags.size} ${pluralize(
                     count = state.visibleTags.size,
-                    one = "тег",
-                    few = "тегов",
-                    many = "тегов"
+                    one = stringResource(R.string.tag_count_one),
+                    few = stringResource(R.string.tag_count_few),
+                    many = stringResource(R.string.tag_count_many)
                 )}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -158,7 +162,7 @@ private fun TagsScreenContent(
         ) {
             SearchField(
                 value = state.tagsState.searchQuery,
-                placeholderText = "Поиск тегов...",
+                placeholderText = stringResource(R.string.settings_tags_search),
                 onValueChange = { query ->
                     onEvent(TagsEvent.OnSearchQueryChanged(query))
                 },
@@ -211,7 +215,7 @@ private fun TagsScreenContent(
         var name by remember(tag.id) { mutableStateOf(tag.name) }
         AlertDialog(
             onDismissRequest = { editing = null },
-            title = { Text("Новое название:") },
+            title = { Text(stringResource(R.string.settings_tag_rename_title)) },
             text = {
                 OutlinedTextField(
                     value = name,
@@ -226,11 +230,11 @@ private fun TagsScreenContent(
                         editing = null
                     }
                 ) {
-                    Text("Сохранить")
+                    Text(stringResource(R.string.settings_tag_rename_confirm))
                 }
             },
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            dismissButton = { TextButton(onClick = { editing = null }) { Text("Отмена") } },
+            dismissButton = { TextButton(onClick = { editing = null }) { Text(stringResource(R.string.settings_tag_rename_cancel)) } },
         )
     }
     deleting?.let { item ->
@@ -238,12 +242,12 @@ private fun TagsScreenContent(
             onDismissRequest = { deleting = null },
             title = {
                 Text(
-                    text = "Удалить метку «${item.tag.name}»?"
+                    text = stringResource(R.string.settings_tag_delete_title, item.tag.name)
                 )
             },
             text = {
                 Text(
-                    text = "Задачи и заметки сохранятся",
+                    text = stringResource(R.string.settings_tag_delete_text),
                 )
             },
             confirmButton = {
@@ -254,7 +258,7 @@ private fun TagsScreenContent(
                     }
                 ) {
                     Text(
-                        text = "Удалить",
+                        text = stringResource(R.string.settings_tag_delete_button),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -264,37 +268,10 @@ private fun TagsScreenContent(
                 TextButton(
                     onClick = { deleting = null }
                 ) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.settings_tag_rename_cancel))
                 }
             },
         )
-    }
-}
-
-@Composable
-private fun BackRow(
-    onBackClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onBackClick)
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_arrow_back),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(16.dp)
-        )
-        Text(
-            text = "Назад",  // Todo: изменить на "в настройки" или "в создание задачи",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
-
     }
 }
 

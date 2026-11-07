@@ -142,7 +142,7 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Цветовая схема",
+                            title = stringResource(R.string.settings_color_scheme),
                             content = {
                                 ColorPaletteRow(
                                     selectedPalette = settingsUiState.settings.colorPalette,
@@ -154,7 +154,7 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Язык интерфейса",
+                            title = stringResource(R.string.settings_language),
                             content = {
                                 LanguageSelector(
                                     selectedLanguage = settingsUiState.lang,
@@ -166,7 +166,7 @@ fun SettingsScreen(
 
                     item {
                         SettingsSectionCard(
-                            title = "Теги",
+                            title = stringResource(R.string.settings_tags),
                             modifier = Modifier
                                 .clip(CardDefaults.shape)
                                 .clickable(
@@ -179,7 +179,7 @@ fun SettingsScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        text = "Управление тегами задач",
+                                        text = stringResource(R.string.settings_tag_management),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -200,7 +200,7 @@ fun SettingsScreen(
                             title = stringResource(R.string.settings_voice_input),
                             isExpanded = isVoiceInputExpanded,
                             onToggleExpanded = { isVoiceInputExpanded = !isVoiceInputExpanded },
-                            infoText = "Для корректного голосового ввода используйте язык приложения",
+                            infoText = stringResource(R.string.settings_voice_input_hint),
                             content = {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),

@@ -72,7 +72,7 @@ internal fun ProviderConfigFields(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                     ) {
-                        Text("Сохранить")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }
@@ -97,7 +97,7 @@ internal fun ProviderConfigFields(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                     ) {
-                        Text("Сохранить")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }

@@ -24,12 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.component.OutlinedTextField
 import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
+import com.jacqulin.taskmanager.designsystem.R
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -53,7 +55,7 @@ fun TagCreateCard(
                 .padding(10.dp)
         ) {
             Text(
-                text = "Новый тег".uppercase(),
+                text = stringResource(R.string.settings_tag_new_tag).uppercase(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -64,7 +66,7 @@ fun TagCreateCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
                     value = value,
-                    placeholderText = "Например, работа",
+                    placeholderText = stringResource(R.string.settings_tag_placeholder),
                     onValueChange = { newName ->
                         onValueChanged(newName)
                     },
@@ -129,7 +131,7 @@ fun TagCreateCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Так будет выглядеть тег:",
+                    text = stringResource(R.string.settings_tag_how_look),
                     style = MaterialTheme.typography.bodySmall
                 )
                 if (value.isNotBlank()) {
@@ -140,7 +142,7 @@ fun TagCreateCard(
                     )
                 } else {
                     TagChip(
-                        text = "работа",
+                        text = stringResource(R.string.settings_tag_how_look_placeholder),
                         textStyle = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                     )
@@ -183,7 +185,7 @@ private fun CreateTagButton(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Создать",
+                text = stringResource(R.string.settings_tag_create),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
             )
