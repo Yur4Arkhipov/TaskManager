@@ -200,6 +200,7 @@ fun SettingsScreen(
                             title = stringResource(R.string.settings_voice_input),
                             isExpanded = isVoiceInputExpanded,
                             onToggleExpanded = { isVoiceInputExpanded = !isVoiceInputExpanded },
+                            infoText = "Для корректного голосового ввода используйте язык приложения",
                             content = {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),

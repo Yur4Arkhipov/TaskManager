@@ -47,9 +47,9 @@ fun ThemeSchemeRow(
                     ) { onThemeConfigChanged(config) },
                 shape = cardShape,
                 color = if (isSelected) {
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                 } else {
-                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 },
                 border = if (isSelected) {
                     BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
