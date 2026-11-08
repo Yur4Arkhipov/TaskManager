@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.speech
+package com.jacqulin.taskmanager.core.platform.speech
 
 /** Listener for results produced by Android's on-device/system speech recognition service. */
 interface SpeechRecognitionListener {

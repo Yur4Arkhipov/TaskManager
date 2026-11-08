@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.speech
+package com.jacqulin.taskmanager.core.platform.speech
 
 import android.content.Context
 import android.content.Intent
@@ -9,10 +9,9 @@ import android.speech.SpeechRecognizer
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlin.collections.orEmpty
 
 /**
- * Thin wrapper around [SpeechRecognizer]. Calls must be made on the main thread.
+ * Thin wrapper around [android.speech.SpeechRecognizer]. Calls must be made on the main thread.
  */
 internal class SystemSpeechRecognizerImpl @Inject constructor(
     @ApplicationContext context: Context,

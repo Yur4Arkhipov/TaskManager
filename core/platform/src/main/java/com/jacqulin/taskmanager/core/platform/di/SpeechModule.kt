@@ -1,7 +1,7 @@
-package com.jacqulin.taskmanager.core.speech.di
+package com.jacqulin.taskmanager.core.platform.di
 
-import com.jacqulin.taskmanager.core.speech.SystemSpeechRecognizer
-import com.jacqulin.taskmanager.core.speech.SystemSpeechRecognizerImpl
+import com.jacqulin.taskmanager.core.platform.speech.SystemSpeechRecognizer
+import com.jacqulin.taskmanager.core.platform.speech.SystemSpeechRecognizerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
