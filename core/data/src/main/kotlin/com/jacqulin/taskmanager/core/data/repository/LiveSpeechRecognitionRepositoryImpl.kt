@@ -6,8 +6,8 @@ import android.speech.SpeechRecognizer
 import android.util.Log
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
-import com.jacqulin.taskmanager.core.speech.SpeechRecognitionListener
-import com.jacqulin.taskmanager.core.speech.SystemSpeechRecognizer
+import com.jacqulin.taskmanager.core.platform.speech.SpeechRecognitionListener
+import com.jacqulin.taskmanager.core.platform.speech.SystemSpeechRecognizer
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

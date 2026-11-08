@@ -29,7 +29,6 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:storage"))
     implementation(project(":core:network"))
-    implementation(project(":core:speech"))
     implementation(project(":core:platform"))
 
 //    implementation(libs.androidx.appcompat)

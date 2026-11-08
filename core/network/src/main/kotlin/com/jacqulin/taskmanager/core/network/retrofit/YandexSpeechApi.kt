@@ -11,7 +11,7 @@ internal interface YandexSpeechApi {
 
     @POST("speech/v1/stt:recognize")
     suspend fun recognize(
-        @Query("lang") language: String = "ru-RU",
+        @Query("lang") language: String,
         @Query("topic") topic: String = "general",
         @Query("format") format: String = "oggopus",
         @Query("folderId") folderId: String,

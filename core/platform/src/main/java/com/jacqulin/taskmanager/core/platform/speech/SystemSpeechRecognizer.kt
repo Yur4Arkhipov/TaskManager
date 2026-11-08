@@ -1,4 +1,4 @@
-package com.jacqulin.taskmanager.core.speech
+package com.jacqulin.taskmanager.core.platform.speech
 
 /** Public contract for system speech recognition. */
 interface SystemSpeechRecognizer {
