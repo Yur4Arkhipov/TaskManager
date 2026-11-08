@@ -7,6 +7,8 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import com.jacqulin.taskmanager.core.model.AppLanguage
+import com.jacqulin.taskmanager.core.platform.language.AppLanguageManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -15,6 +17,7 @@ import javax.inject.Inject
  */
 internal class SystemSpeechRecognizerImpl @Inject constructor(
     @ApplicationContext context: Context,
+    private val languageManager: AppLanguageManager,
 ) : SystemSpeechRecognizer {
     private val appContext = context.applicationContext
     private var recognizer: SpeechRecognizer? = null
@@ -80,11 +83,16 @@ internal class SystemSpeechRecognizerImpl @Inject constructor(
         check(isAvailable) { "No system speech recognition service is available" }
         this.listener = listener
 
+        val languageTag = languageManager.getLanguage().toLanguageTag()
+
         // startListening() must be called from the main thread of app
         getOrCreateRecognizer().startListening(
             Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, partialResults)
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageTag)
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languageTag)
+                putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, false)
             },
         )
     }
@@ -109,6 +117,11 @@ internal class SystemSpeechRecognizerImpl @Inject constructor(
         .createSpeechRecognizer(appContext)
         .also { it.setRecognitionListener(recognitionListener) }
         .also { recognizer = it }
+
+    private fun AppLanguage.toLanguageTag(): String = when (this) {
+        AppLanguage.RUSSIAN -> "ru-RU"
+        AppLanguage.ENGLISH -> "en-US"
+    }
 
     private companion object {
         private const val TAG = "SystemSpeechRecognizer"
