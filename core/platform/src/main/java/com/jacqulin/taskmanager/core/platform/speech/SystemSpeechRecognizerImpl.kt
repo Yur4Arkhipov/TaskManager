@@ -84,6 +84,7 @@ internal class SystemSpeechRecognizerImpl @Inject constructor(
         this.listener = listener
 
         val languageTag = languageManager.getLanguage().toLanguageTag()
+        Log.d("SPEECH", "lang: $languageTag")
 
         // startListening() must be called from the main thread of app
         getOrCreateRecognizer().startListening(
