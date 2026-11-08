@@ -81,6 +81,8 @@
     <string name="tasks_deselect_all">Clear</string>
     <string name="tasks_exit_selection">Exit selection</string>
     <string name="tasks_delete_selected">Delete (%d)</string>
+    <string name="tasks_add_to_plan">To plan (%d)</string>
+    <string name="tasks_remove_from_plan">From plan (%d)</string>
     <string name="tasks_processing_wait">This may take a few seconds</string>
     <string name="tasks_recording">Recording…</string>
     <string name="tasks_stop_recording">Stop recording</string>
@@ -89,12 +91,18 @@
     <string name="tasks_successful">Success</string>
     <string name="tasks_voice_successfully_return">Voice input processed successfully</string>
     <string name="tasks_ok">OK</string>
+    <string name="sort_newest_first">Newest first</string>
+    <string name="sort_oldest_first">Oldest first</string>
 
     // Settings
     <string name="settings_title">Settings</string>
     <string name="settings_reset">Reset settings</string>
     <string name="settings_color_scheme">Color scheme</string>
     <string name="settings_theme">Theme</string>
+    <string name="settings_language">Interface language</string>
+    <string name="settings_tags">Tags</string>
+    <string name="settings_tag_management">Task tag management</string>
+    <string name="settings_voice_input_hint">For correct voice input, use the app language</string>
     <string name="settings_tokens">Token balance</string>
     <string name="settings_show_secret">Show entered value</string>
     <string name="settings_hide_secret">Hide entered value</string>
@@ -115,6 +123,37 @@
     <string name="yandex_folder_id_label">Folder ID</string>
     <string name="future_api_key_label">API Token</string>
     <string name="coming_soon_label">Coming soon</string>
+
+    // Tags
+    <string name="settings_tags_screen_title">Tags</string>
+    <string name="settings_tags_screen_subtitle">Create once and use throughout the app</string>
+    <string name="settings_tags_all">All tags</string>
+    <string name="settings_tags_empty">No tags</string>
+    <string name="settings_tags_search">Search tags…</string>
+    <string name="settings_tag_rename_title">New name:</string>
+    <string name="settings_tag_rename_confirm">Save</string>
+    <string name="settings_tag_rename_cancel">Cancel</string>
+    <string name="settings_tag_delete_title">Delete tag \«%s\»?</string>
+    <string name="settings_tag_delete_text">Tasks and notes will be preserved</string>
+    <string name="settings_tag_delete_button">Delete</string>
+    <string name="settings_tag_new_tag">New tag</string>
+    <string name="settings_tag_placeholder">For example, work</string>
+    <string name="settings_tag_how_look">This is what the tag will look like:</string>
+    <string name="settings_tag_how_look_placeholder">work</string>
+    <string name="settings_tag_create">Create</string>
+    <string name="tags_sort_by_name">By name</string>
+    <string name="tags_sort_by_usage">By usage</string>
+
+    // Tag card
+    <string name="tag_card_not_used">Not used yet</string>
+    <string name="tag_card_more">More</string>
+    <string name="tag_card_rename">Rename</string>
+    <string name="tag_card_task_count_one">task</string>
+    <string name="tag_card_task_count_few">tasks</string>
+    <string name="tag_card_task_count_many">tasks</string>
+    <string name="tag_count_one">tag</string>
+    <string name="tag_count_few">tags</string>
+    <string name="tag_count_many">tags</string>
 
     // Language
     <string name="language_system">System</string>
@@ -163,9 +202,18 @@
     <string name="home_note">Note</string>
     <string name="home_thought_breakdown_title">Break down a thought</string>
     <string name="home_thought_breakdown_subtitle">Tasks, notes, and plan from one text</string>
+    <string name="home_plan_remove_from_plan">Remove from plan</string>
+
+    <plurals name="home_task_count">
+        <item quantity="one">%1$d task</item>
+        <item quantity="other">%1$d tasks</item>
+    </plurals>
 
     // Add tasks for plan bottom sheet
     <string name="home_select_tasks_title">Add tasks</string>
     <string name="home_select_tasks_empty">No tasks available</string>
     <string name="home_select_tasks_add">Add (%d)</string>
+
+    <string name="save">Save</string>
+    
 </resources>

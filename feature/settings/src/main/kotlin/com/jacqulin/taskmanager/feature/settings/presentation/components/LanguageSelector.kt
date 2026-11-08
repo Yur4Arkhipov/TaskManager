@@ -30,7 +30,7 @@ fun LanguageSelector(
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         border = BorderStroke(0.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -46,8 +46,10 @@ fun LanguageSelector(
                         .weight(1f)
                         .clip(RoundedCornerShape(16.dp))
                         .background(
-                            if (selectedLanguage == lang) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                            else Color.Transparent
+                            if (selectedLanguage == lang)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                            else
+                                Color.Transparent
                         )
                         .clickable { onLanguageSelected(lang) }
                         .padding(vertical = 14.dp),
@@ -57,8 +59,10 @@ fun LanguageSelector(
                         text = stringResource(lang.toStringRes()),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = if (selectedLanguage == lang) FontWeight.SemiBold else FontWeight.Normal,
-                        color = if (selectedLanguage == lang) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (selectedLanguage == lang)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

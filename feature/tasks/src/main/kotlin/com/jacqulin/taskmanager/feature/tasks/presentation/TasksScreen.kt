@@ -10,22 +10,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,6 +43,7 @@ import com.jacqulin.taskmanager.core.designsystem.component.VoiceSuccessOverlay
 import com.jacqulin.taskmanager.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.designsystem.R
+import com.jacqulin.taskmanager.feature.tasks.presentation.components.BottomBar
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskBottomSheet
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.CreateTaskMenu
 import com.jacqulin.taskmanager.feature.tasks.presentation.components.TaskItem
@@ -109,7 +103,6 @@ fun TasksScreen(
     )
 }
 
-
 @Composable
 fun TasksScreen(
     uiState: TasksUiState,
@@ -152,10 +145,20 @@ fun TasksScreen(
         },
         bottomBar = {
             if (uiState.mainScreenState.isDeleteModeEnabled) {
+                val totalSelected = uiState.mainScreenState.selectedTaskIds.size
+                val notPlanned = uiState.selectedNotPlannedCount
+                val planned = uiState.selectedPlannedCount
+
                 BottomBar(
-                    onClick = { onEvent(TasksEvent.OnDeleteSelectedTasks) },
-                    enabled = uiState.mainScreenState.selectedTaskIds.isNotEmpty(),
-                    selectedSize = uiState.mainScreenState.selectedTaskIds.size
+                    onAddToPlan = { onEvent(TasksEvent.OnAddTasksForPlan) },
+                    onRemoveFromPlan = { onEvent(TasksEvent.OnRemoveTasksFromPlan) },
+                    onDelete = { onEvent(TasksEvent.OnDeleteSelectedTasks) },
+                    addToPlanEnabled = notPlanned > 0,
+                    removeFromPlanEnabled = planned > 0,
+                    deleteEnabled = totalSelected > 0,
+                    addToPlanCount = notPlanned,
+                    removeFromPlanCount = planned,
+                    deleteCount = totalSelected,
                 )
             }
         }
@@ -327,54 +330,6 @@ fun TasksScreen(
                 onCancel = { onEvent(TasksEvent.VoiceInputCancel) }
             )
         }
-    }
-}
-
-@Composable
-private fun BottomBar(
-    onClick: () -> Unit,
-    enabled: Boolean,
-    selectedSize: Int
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TextButton(
-            onClick = onClick,
-            enabled = enabled,
-            colors = ButtonDefaults.textButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            ),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-            modifier = Modifier.height(36.dp),
-        ) {
-            Text(
-                text = stringResource(
-                    R.string.tasks_delete_selected,
-                    selectedSize,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun BottomBarPreview() {
-    TaskManagerTheme {
-        BottomBar(
-            onClick = {},
-            enabled = true,
-            selectedSize = 1
-        )
     }
 }
 

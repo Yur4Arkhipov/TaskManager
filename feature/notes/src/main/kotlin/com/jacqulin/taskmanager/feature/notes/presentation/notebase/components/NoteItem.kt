@@ -27,12 +27,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.jacqulin.taskmanager.core.designsystem.component.CreationDateLabel
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.notes.presentation.model.NoteListItemUi
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun NoteItem(
@@ -105,11 +102,7 @@ fun NoteItem(
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
-                    Text(
-                        text = note.createdAtMillis.toFormattedDate(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    CreationDateLabel(note.createdAtMillis)
                 }
 
                 if (isDeleteModeEnabled) {
@@ -127,13 +120,4 @@ fun NoteItem(
             }
         }
     }
-}
-
-private fun Long.toFormattedDate(): String {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy'г.'")
-        .withLocale(Locale.forLanguageTag("ru"))
-    return Instant.ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime()
-        .format(formatter)
 }

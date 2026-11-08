@@ -17,12 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
-import com.jacqulin.taskmanager.feature.home.presentation.util.taskCountWord
 
 @Composable
 fun PlanHeader(uiState: HomeUiState) {
@@ -48,22 +48,12 @@ fun PlanHeader(uiState: HomeUiState) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val taskCountText = if (uiState.totalMinutes > 0) {
-                    stringResource(
-                        R.string.home_task_count,
-                        uiState.mainState.tasks.size,
-                        taskCountWord(uiState.mainState.tasks.size),
-                        uiState.totalMinutes,
-                    )
-                } else {
-                    stringResource(
-                        R.string.home_task_count_without_minutes,
-                        uiState.mainState.tasks.size,
-                        taskCountWord(uiState.mainState.tasks.size),
-                    )
-                }
                 Text(
-                    text = taskCountText,
+                    text = pluralStringResource(
+                        R.plurals.home_task_count,
+                        uiState.mainState.tasks.size,
+                        uiState.mainState.tasks.size,
+                    ),
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),
                 )

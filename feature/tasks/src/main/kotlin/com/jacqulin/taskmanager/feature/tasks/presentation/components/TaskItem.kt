@@ -37,16 +37,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jacqulin.taskmanager.core.designsystem.component.CreationDateLabel
 import com.jacqulin.taskmanager.core.designsystem.component.RoundedCheckbox
 import com.jacqulin.taskmanager.core.designsystem.component.TagChip
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.Tag
 import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
@@ -175,23 +172,10 @@ fun TaskItem(
                 contentAlignment = Alignment.TopEnd,
                 modifier = Modifier.padding(6.dp)
             ) {
-                Text(
-                    text = task.createdAtMillis.toFormattedDate(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                )
+                CreationDateLabel(createdAtMillis = task.createdAtMillis)
             }
         }
     }
-}
-
-private fun Long.toFormattedDate(): String {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy'г.'")
-        .withLocale(Locale.forLanguageTag("ru"))
-    return Instant.ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime()
-        .format(formatter)
 }
 
 @Preview

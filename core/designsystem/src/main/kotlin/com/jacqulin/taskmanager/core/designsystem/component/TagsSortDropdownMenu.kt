@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.jacqulin.taskmanager.core.designsystem.model.TagsSortType
+import com.jacqulin.taskmanager.designsystem.R
 
 @Composable
 fun TagsSortDropdownMenu(
@@ -33,7 +35,7 @@ fun TagsSortDropdownMenu(
         tonalElevation = 3.dp,
     ) {
         SortMenuItem(
-            text = "По названию",
+            text = stringResource(R.string.tags_sort_by_name),
             selected = sortType == TagsSortType.BY_NAME,
             onClick = {
                 onSortChanged(TagsSortType.BY_NAME)
@@ -42,7 +44,7 @@ fun TagsSortDropdownMenu(
         )
 
         SortMenuItem(
-            text = "По использованию",
+            text = stringResource(R.string.tags_sort_by_usage),
             selected = sortType == TagsSortType.BY_USAGE,
             onClick = {
                 onSortChanged(TagsSortType.BY_USAGE)

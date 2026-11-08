@@ -100,7 +100,7 @@ fun NotesScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
         ) {
             NotesToolbar(
                 searchQuery = uiState.searchQueryInput,

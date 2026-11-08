@@ -158,8 +158,8 @@ fun NoteEditorScreen(
                 .fillMaxSize()
                 .padding(
                     top = paddingValues.calculateTopPadding() + 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
+                    start = 12.dp,
+                    end = 12.dp,
                 )
         ) {
             NoteTitleField(

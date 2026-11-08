@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -29,6 +31,9 @@ import com.jacqulin.taskmanager.feature.home.presentation.model.HomeTaskUi
 import com.jacqulin.taskmanager.feature.home.presentation.model.HomeUiState
 import com.jacqulin.taskmanager.feature.home.presentation.model.MainState
 import com.jacqulin.taskmanager.feature.home.presentation.viewmodels.HomeViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun HomeScreen(
@@ -64,6 +69,16 @@ private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit,
 ) {
+    val locale = LocalConfiguration.current.locales[0]
+    val today = LocalDate.now()
+    val dateLabel = remember(today, locale) {
+        today.format(
+            DateTimeFormatter
+                .ofLocalizedDate(FormatStyle.LONG)
+                .withLocale(locale)
+        ).replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -73,7 +88,7 @@ private fun HomeContent(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = uiState.mainState.dateLabel,
+            text = dateLabel,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -129,7 +144,6 @@ fun HomeContentPreview() {
         HomeContent(
             uiState = HomeUiState(
                 mainState = MainState(
-                    dateLabel = "вторник, 23 сентября",
                     tasks = listOf(
                         HomeTaskUi(
                             id = 1,

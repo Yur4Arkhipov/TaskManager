@@ -1,19 +1,22 @@
 package com.jacqulin.taskmanager.feature.tasks.presentation.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +46,9 @@ fun CreateTaskMenu(
         Column(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier.padding(bottom = 12.dp),
+            modifier = Modifier
+                .width(IntrinsicSize.Max)
+                .padding(bottom = 12.dp),
         ) {
             CreateTaskMenuItem(
                 iconRes = R.drawable.ic_microphone,
@@ -80,6 +85,7 @@ private fun CreateTaskMenuItem(
 
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .clip(shape)
             .background(containerColor, shape)
             .then(
@@ -100,7 +106,7 @@ private fun CreateTaskMenuItem(
         Text(
             text = text,
             color = contentColor,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
     }

@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,13 +97,13 @@ fun PlanTaskRow(
                     modifier = Modifier.alpha(if (task.isCompleted) 0.5f else 1f),
                     textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
                 )
-                if (task.hasDuration) {
-                    Text(
-                        text = "${task.durationMinutes} мин",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
+//                if (task.hasDuration) {
+//                    Text(
+//                        text = "${task.durationMinutes} мин",
+//                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                        style = MaterialTheme.typography.labelSmall
+//                    )
+//                }
             }
             Box(
                 modifier = Modifier.wrapContentSize(Alignment.TopEnd)
@@ -119,7 +120,7 @@ fun PlanTaskRow(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_horiz),
-                        contentDescription = "Ещё",
+                        contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -129,7 +130,7 @@ fun PlanTaskRow(
                     onDismissRequest = { expanded = false },
                 ) {
                     StyledDropdownMenuItem(
-                        text = "Убрать из плана",
+                        text = stringResource(R.string.home_plan_remove_from_plan),
                         destructive = true,
                         onClick = {
                             expanded = false

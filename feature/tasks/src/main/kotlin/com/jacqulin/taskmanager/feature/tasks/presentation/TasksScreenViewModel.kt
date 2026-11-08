@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.domain.tags.ObserveTagsUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.DeleteTaskUseCase
+import com.jacqulin.taskmanager.core.domain.tasks.GetTaskByIdUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
@@ -47,6 +48,7 @@ class TasksScreenViewModel @Inject constructor(
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
     private val voiceInputUseCase: VoiceInputUseCase,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
 ) : ViewModel() {
 
     private val mainScreenState = MutableStateFlow(MainScreenState())
@@ -56,13 +58,14 @@ class TasksScreenViewModel @Inject constructor(
     private val _effects = MutableSharedFlow<TasksEffect>()
     val effects: SharedFlow<TasksEffect> = _effects.asSharedFlow()
 
-    private val tasksUiState: StateFlow<TasksUiState> =
+    val uiState: StateFlow<TasksUiState> =
         combine(
             observeTasksUseCase(),
             observeTagsUseCase(),
             mainScreenState,
             taskState,
-        ) { tasks, tags, mainScreenState, taskState ->
+            voiceState
+        ) { tasks, tags, mainScreenState, taskState, voiceState ->
             val visibleTasks = tasks
                 .map { it.toUiModel() }
                 .filter { task ->
@@ -92,30 +95,28 @@ class TasksScreenViewModel @Inject constructor(
                         }
                     }
                 }
+
+            val selectedNotPlannedCount = tasks.count { task ->
+                task.id in mainScreenState.selectedTaskIds && !task.isPlannedForToday
+            }
+
+            val selectedPlannedCount = tasks.count { task ->
+                task.id in mainScreenState.selectedTaskIds && task.isPlannedForToday
+            }
+
             TasksUiState(
                 mainScreenState = mainScreenState,
                 taskState = taskState,
                 visibleTasks = visibleTasks,
                 availableTags = tags,
+                voiceState = voiceState,
+                selectedNotPlannedCount = selectedNotPlannedCount,
+                selectedPlannedCount = selectedPlannedCount
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             TasksUiState(),
-        )
-
-    val uiState: StateFlow<TasksUiState> =
-        combine(
-            tasksUiState,
-            voiceState,
-        ) { state, voiceState ->
-            state.copy(
-                voiceState = voiceState,
-            )
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            TasksUiState()
         )
 
     fun onEvent(event: TasksEvent) {
@@ -177,6 +178,14 @@ class TasksScreenViewModel @Inject constructor(
                 val ids = mainScreenState.value.selectedTaskIds.toList()
                 ids.forEach(::deleteTask)
                 mainScreenState.update { it.copy(isDeleteModeEnabled = false, selectedTaskIds = emptySet()) }
+            }
+            TasksEvent.OnAddTasksForPlan -> {
+                val ids = mainScreenState.value.selectedTaskIds
+                saveTasksForPlan(ids)
+            }
+            TasksEvent.OnRemoveTasksFromPlan -> {
+                val ids = mainScreenState.value.selectedTaskIds
+                removeTasksFromPlan(ids)
             }
             is TasksEvent.OnShowCreationDateChanged -> mainScreenState.update { it.copy(showCreationDate = event.enabled) }
             is TasksEvent.OnShowTagsChanged -> mainScreenState.update { it.copy(showTags = event.enabled) }
@@ -337,6 +346,42 @@ class TasksScreenViewModel @Inject constructor(
             )
 
             updateTaskStatusUseCase(updatedTask.toDomain())
+        }
+    }
+
+    private fun saveTasksForPlan(taskIds: Set<Int>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                val task = getTaskByIdUseCase(taskId)
+                task?.let {
+                    val updatedTask = it.copy(isPlannedForToday = true)
+                    updateTaskStatusUseCase(updatedTask)
+                }
+            }
+        }
+        mainScreenState.update {
+            it.copy(
+                isDeleteModeEnabled = false,
+                selectedTaskIds = emptySet(),
+            )
+        }
+    }
+
+    private fun removeTasksFromPlan(taskIds: Set<Int>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                val task = getTaskByIdUseCase(taskId)
+                task?.let {
+                    val updatedTask = it.copy(isPlannedForToday = true)
+                    updateTaskStatusUseCase(updatedTask)
+                }
+            }
+        }
+        mainScreenState.update {
+            it.copy(
+                isDeleteModeEnabled = false,
+                selectedTaskIds = emptySet(),
+            )
         }
     }
 
