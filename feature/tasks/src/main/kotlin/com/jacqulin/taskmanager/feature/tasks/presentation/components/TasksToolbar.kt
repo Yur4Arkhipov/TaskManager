@@ -126,7 +126,7 @@ fun TasksToolbar(
                         },
                         onClick = { onShowTagsChanged(!showTags) },
                     )
-                    HorizontalDivider()
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.tasks_select_tasks)) },
                         leadingIcon = {
