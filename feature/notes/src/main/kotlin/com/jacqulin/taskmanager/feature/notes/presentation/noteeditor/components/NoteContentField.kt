@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -40,6 +41,7 @@ fun NoteContentField(
         modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
+            .requiredHeight(250.dp)
             .border(
                 width = 0.2.dp,
                 color = MaterialTheme.colorScheme.outline,

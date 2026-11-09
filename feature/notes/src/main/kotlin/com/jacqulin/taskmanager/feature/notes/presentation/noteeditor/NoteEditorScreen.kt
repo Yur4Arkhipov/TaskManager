@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -153,9 +156,12 @@ fun NoteEditorScreen(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
 
+        val scrollState = rememberScrollState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(
                     top = paddingValues.calculateTopPadding() + 16.dp,
                     start = 12.dp,
@@ -188,7 +194,8 @@ fun NoteEditorScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
+//                        .height(250.dp)
+                        .requiredHeight(250.dp)
                         .border(
                             width = 0.2.dp,
                             color = MaterialTheme.colorScheme.outline,

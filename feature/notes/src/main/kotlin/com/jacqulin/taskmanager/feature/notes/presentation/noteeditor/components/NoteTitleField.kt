@@ -44,7 +44,7 @@ fun NoteTitleField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
                 .drawBehind {
