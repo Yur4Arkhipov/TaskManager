@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,7 @@ fun OutlinedTextField(
             onNext = { },
             onDone = { },
         ),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,

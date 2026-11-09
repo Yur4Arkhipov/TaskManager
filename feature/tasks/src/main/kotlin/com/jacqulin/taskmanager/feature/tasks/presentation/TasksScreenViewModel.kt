@@ -372,7 +372,7 @@ class TasksScreenViewModel @Inject constructor(
             taskIds.forEach { taskId ->
                 val task = getTaskByIdUseCase(taskId)
                 task?.let {
-                    val updatedTask = it.copy(isPlannedForToday = true)
+                    val updatedTask = it.copy(isPlannedForToday = false)
                     updateTaskStatusUseCase(updatedTask)
                 }
             }

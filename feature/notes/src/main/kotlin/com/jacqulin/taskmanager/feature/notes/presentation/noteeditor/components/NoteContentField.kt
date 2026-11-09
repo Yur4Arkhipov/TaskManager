@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -65,6 +66,7 @@ fun NoteContentField(
                 showKeyboardOnFocus = null,
                 hintLocales = null
             ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(

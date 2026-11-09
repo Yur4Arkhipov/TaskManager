@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,7 @@ fun NoteTitleField(
                 capitalization = KeyboardCapitalization.Sentences,
                 autoCorrectEnabled = true,
             ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier.fillMaxSize(),
