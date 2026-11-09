@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,6 +117,7 @@ fun TasksScreen(
     onEvent: (TasksEvent) -> Unit,
 ) {
     val taskListState = rememberLazyListState()
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = { TopAppBar(titleRes = R.string.tasks_title) },
@@ -168,6 +172,13 @@ fun TasksScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                }
         ) {
             TasksToolbar(
                 searchQuery = uiState.mainScreenState.searchQuery,
