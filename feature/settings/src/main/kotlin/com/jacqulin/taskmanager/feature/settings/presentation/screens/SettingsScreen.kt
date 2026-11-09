@@ -266,7 +266,7 @@ private fun getVoiceModeTitle(mode: VoiceInputMode): String =
     when (mode) {
         VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live)
         VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_speech)
-        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
+//        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
     }
 
 @Composable
@@ -274,7 +274,7 @@ private fun getVoiceModeSubtitle(mode: VoiceInputMode): String =
     when (mode) {
         VoiceInputMode.LIVE -> stringResource(R.string.voice_mode_live_subtitle)
         VoiceInputMode.YANDEX_SPEECH -> stringResource(R.string.voice_mode_yandex_subtitle)
-        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
+//        VoiceInputMode.FUTURE -> stringResource(R.string.coming_soon_label)
     }
 
 @Preview(showBackground = true)
