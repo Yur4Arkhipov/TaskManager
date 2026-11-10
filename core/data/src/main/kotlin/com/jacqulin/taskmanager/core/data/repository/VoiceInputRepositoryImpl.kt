@@ -140,11 +140,11 @@ internal class VoiceInputRepositoryImpl @Inject constructor(
                             ?: throw IllegalStateException("Empty recognition result")
                     }
                 }
-                VoiceInputMode.FUTURE -> {
-                    return Result.failure(
-                        IllegalStateException("Method is not configured")
-                    )
-                }
+//                VoiceInputMode.FUTURE -> {
+//                    return Result.failure(
+//                        IllegalStateException("Method is not configured")
+//                    )
+//                }
             }
         } catch (exception: TimeoutCancellationException) {
             Log.w(TAG, "${System.currentTimeMillis()} [${Thread.currentThread().name}] stop(): timed out waiting for live result after 5 seconds", exception)

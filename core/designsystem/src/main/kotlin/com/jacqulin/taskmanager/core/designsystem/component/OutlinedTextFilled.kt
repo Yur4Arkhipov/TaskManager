@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -34,9 +36,11 @@ fun OutlinedTextField(
     placeholderText: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    imeAction: ImeAction = ImeAction.Next,
+    imeAction: ImeAction = ImeAction.Done,
     onFocusChanged: (FocusState) -> Unit = {},
 ) {
+    val focusManager = LocalFocusManager.current
+
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -60,8 +64,9 @@ fun OutlinedTextField(
         keyboardOptions = KeyboardOptions(imeAction = imeAction),
         keyboardActions = KeyboardActions(
             onNext = { },
-            onDone = { },
+            onDone =  { focusManager.clearFocus() },
         ),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,

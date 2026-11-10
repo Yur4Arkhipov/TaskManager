@@ -3,6 +3,7 @@ package com.jacqulin.taskmanager.core.designsystem.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -32,6 +33,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -101,11 +104,20 @@ fun ModalBottomSheetContent(
     onTagRemoved: (Tag) -> Unit,
     onSaveTaskClick: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(vertical = 12.dp),
+            .padding(vertical = 12.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TitleRow(

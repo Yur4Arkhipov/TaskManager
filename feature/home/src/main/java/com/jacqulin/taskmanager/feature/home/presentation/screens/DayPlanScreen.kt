@@ -80,18 +80,19 @@ private fun DayPlanContent(
 ) {
     val activeTasks = state.mainState.tasks.filterNot { it.isCompleted }
     val completedTasks = state.mainState.tasks.filter { it.isCompleted }
-    val completedCount = state.mainState.tasks.size - activeTasks.size
-    val progress = if (state.mainState.tasks.isEmpty()) 0f else completedCount.toFloat() / state.mainState.tasks.size
-    val taskIdsFromState = state.mainState.tasks.map { it.id }
-    var taskOrderIds by remember { mutableStateOf(emptyList<Int>()) }
-    val knownTaskIds = taskIdsFromState.toSet()
-    val reconciledTaskOrderIds = taskOrderIds.filter { it in knownTaskIds } +
+
+    // Reorderable logic
+    val taskIdsFromState = state.mainState.tasks.map { it.id } // Tasks ids from state
+    var taskOrderIds by remember { mutableStateOf(emptyList<Int>()) } // User task order ids
+    val reconciledTaskOrderIds = taskOrderIds.filter { it in taskIdsFromState } +
         taskIdsFromState.filterNot { it in taskOrderIds }
 
     val activeTaskIdSet = activeTasks.mapTo(mutableSetOf()) { it.id }
     val activeTaskIds = reconciledTaskOrderIds.filter { it in activeTaskIdSet }
     val orderedActiveTasks = activeTaskIds.mapNotNull { id -> activeTasks.find { it.id == id } }
+
     val orderedTasks = orderedActiveTasks + completedTasks
+
     val taskListState = rememberLazyListState()
     val reorderableState = key(activeTaskIdSet) {
         rememberReorderableLazyListState(taskListState) { from, to ->
@@ -114,6 +115,10 @@ private fun DayPlanContent(
             }
         }
     }
+
+    // Other logic
+    val completedCount = state.mainState.tasks.size - activeTasks.size
+    val progress = if (state.mainState.tasks.isEmpty()) 0f else completedCount.toFloat() / state.mainState.tasks.size
 
     Column(
         modifier = Modifier.padding(12.dp)
@@ -194,7 +199,10 @@ private fun DayPlanContent(
                     .fadeScrollableVerticalEdges(taskListState, 24.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(orderedTasks, key = { it.id }) { task ->
+                items(
+                    items = orderedTasks,
+                    key = { it.id }
+                ) { task ->
                     val rowContent: @Composable (Modifier) -> Unit = { rowModifier ->
                         PlanTaskRow(
                             task = task,

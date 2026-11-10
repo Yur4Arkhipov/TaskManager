@@ -88,7 +88,8 @@ fun SettingsSectionCard(
                         painter = painterResource(R.drawable.ic_arrow_up),
                         contentDescription = if (isExpanded) stringResource(R.string.settings_expandable_collapse)
                             else stringResource(R.string.settings_expandable_expand),
-                        modifier = Modifier.rotate(rotation)
+                        modifier = Modifier.rotate(rotation),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

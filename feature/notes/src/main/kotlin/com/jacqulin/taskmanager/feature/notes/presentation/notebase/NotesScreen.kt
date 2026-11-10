@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.feature.notes.presentation.notebase
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,6 +85,7 @@ fun NotesScreen(
     onNoteClick: (Int) -> Unit,
 ) {
     val notesListState = rememberLazyListState()
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -101,6 +105,13 @@ fun NotesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                }
         ) {
             NotesToolbar(
                 searchQuery = uiState.searchQueryInput,

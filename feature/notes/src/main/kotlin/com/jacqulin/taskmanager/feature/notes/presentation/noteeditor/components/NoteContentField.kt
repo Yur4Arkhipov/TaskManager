@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,10 +39,13 @@ fun NoteContentField(
     onVoiceInputClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
+            .requiredHeight(250.dp)
             .border(
                 width = 0.2.dp,
                 color = MaterialTheme.colorScheme.outline,
@@ -60,11 +67,17 @@ fun NoteContentField(
                 capitalization = KeyboardCapitalization.Sentences,
                 autoCorrectEnabled = true,
                 keyboardType = KeyboardType.Unspecified,
-                imeAction = ImeAction.Unspecified,
+                imeAction = ImeAction.Done,
                 platformImeOptions = null,
                 showKeyboardOnFocus = null,
                 hintLocales = null
             ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
