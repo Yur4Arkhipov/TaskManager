@@ -1,11 +1,29 @@
 import java.util.Properties
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
+
 val keystoreProperties = Properties().apply {
     if (keystorePropertiesFile.exists()) {
         load(keystorePropertiesFile.inputStream())
     }
 }
+
+fun getSigningProperty(name: String): String? {
+    return providers.environmentVariable(name).orNull
+        ?: keystoreProperties.getProperty(name)
+}
+
+val releaseStoreFile = getSigningProperty("RELEASE_STORE_FILE")
+val releaseStorePassword = getSigningProperty("RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = getSigningProperty("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = getSigningProperty("RELEASE_KEY_PASSWORD")
+
+val hasReleaseSigningConfig = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword
+).all { !it.isNullOrBlank() }
 
 plugins {
     alias(libs.plugins.android.application)
@@ -32,20 +50,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(
-                keystoreProperties.getProperty("RELEASE_STORE_FILE")
-                    ?: error("RELEASE_STORE_FILE is missing")
-            )
-
-            storePassword = keystoreProperties.getProperty("RELEASE_STORE_PASSWORD")
-                ?: error("RELEASE_STORE_PASSWORD is missing")
-
-            keyAlias = keystoreProperties.getProperty("RELEASE_KEY_ALIAS")
-                ?: error("RELEASE_KEY_ALIAS is missing")
-
-            keyPassword = keystoreProperties.getProperty("RELEASE_KEY_PASSWORD")
-                ?: error("RELEASE_KEY_PASSWORD is missing")
+        if (hasReleaseSigningConfig) {
+            create("release") {
+                storeFile = file(releaseStoreFile!!)
+                storePassword = releaseStorePassword!!
+                keyAlias = releaseKeyAlias!!
+                keyPassword = releaseKeyPassword!!
+            }
         }
     }
 
@@ -60,7 +71,9 @@ android {
         release {
             isDebuggable = false
             isProfileable = true
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             optimization {
                 enable = true
