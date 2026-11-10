@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        load(keystorePropertiesFile.inputStream())
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -24,10 +33,19 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(project.property("RELEASE_STORE_FILE") as String)
-            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
-            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
-            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
+            storeFile = file(
+                keystoreProperties.getProperty("RELEASE_STORE_FILE")
+                    ?: error("RELEASE_STORE_FILE is missing")
+            )
+
+            storePassword = keystoreProperties.getProperty("RELEASE_STORE_PASSWORD")
+                ?: error("RELEASE_STORE_PASSWORD is missing")
+
+            keyAlias = keystoreProperties.getProperty("RELEASE_KEY_ALIAS")
+                ?: error("RELEASE_KEY_ALIAS is missing")
+
+            keyPassword = keystoreProperties.getProperty("RELEASE_KEY_PASSWORD")
+                ?: error("RELEASE_KEY_PASSWORD is missing")
         }
     }
 
