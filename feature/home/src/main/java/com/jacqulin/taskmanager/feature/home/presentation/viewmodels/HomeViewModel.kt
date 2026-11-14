@@ -60,40 +60,50 @@ class HomeViewModel @Inject constructor(
             taskState,
             taskOrder,
         ) { tasks, tags, mainState, taskState, taskOrder ->
+
+            val allTasks = tasks.map { task ->
+                HomeTaskUi(
+                    id = task.id,
+                    title = task.title,
+                    durationMinutes = null,
+                    isCompleted = task.isCompleted,
+                    createdAtMillis = task.createdAtMillis,
+                    tags = task.tags,
+                    isPlannedForToday = task.isPlannedForToday,
+                    dayPlanOrder = task.dayPlanOrder,
+                )
+            }
+
+            val availableTasksForPlan = allTasks.filter {
+                !it.isPlannedForToday && !it.isCompleted
+            }
+
+            val todayTasks = allTasks
+                .filter { it.isPlannedForToday }
+                .let { tasks ->
+                    val pendingOrderIndex = taskOrder
+                        .withIndex()
+                        .associate { (index, id) -> id to index }
+
+                    tasks.sortedWith(
+                        compareBy<HomeTaskUi> { it.isCompleted }
+                            .thenBy {
+                                pendingOrderIndex[it.id]
+                                    ?: it.dayPlanOrder
+                                    ?: Int.MAX_VALUE
+                            }
+                            .thenByDescending { it.createdAtMillis }
+                    )
+                }
+
             HomeUiState(
-                mainState =
-                    mainState.copy(
-                        availableTags = tags,
-                        tasks =
-                            tasks
-                                .filter { it.isPlannedForToday }
-                                .map { task ->
-                                    HomeTaskUi(
-                                        id = task.id,
-                                        title = task.title,
-                                        durationMinutes = null,
-                                        isCompleted = task.isCompleted,
-                                        createdAtMillis = task.createdAtMillis,
-                                        tags = task.tags,
-                                        isPlannedForToday = task.isPlannedForToday,
-                                        dayPlanOrder = task.dayPlanOrder,
-                                    )
-                                }.let { tasks ->
-                                    val pendingOrderIndex =
-                                        taskOrder
-                                            .withIndex()
-                                            .associate { (index, id) -> id to index }
-                                    tasks.sortedWith(
-                                        compareBy<HomeTaskUi> { it.isCompleted }
-                                            .thenBy {
-                                                pendingOrderIndex[it.id]
-                                                    ?: it.dayPlanOrder
-                                                    ?: Int.MAX_VALUE
-                                            }.thenByDescending { it.createdAtMillis },
-                                    )
-                                },
-                    ),
+                mainState = mainState.copy(
+                    availableTags = tags,
+                    availableTasksForPlan = availableTasksForPlan,
+                    tasks = todayTasks,
+                ),
                 taskState = taskState,
+                allTasks = allTasks
             )
         }.stateIn(
             scope = viewModelScope,

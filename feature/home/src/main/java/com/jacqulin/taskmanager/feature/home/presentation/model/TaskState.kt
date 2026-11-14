@@ -5,5 +5,5 @@ import com.jacqulin.taskmanager.core.model.Tag
 data class TaskState(
     val title: String = "",
     val tags: List<Tag> = emptyList(),
-    val isPlannedForToday: Boolean = false,
+    val isPlannedForToday: Boolean = true,
 )

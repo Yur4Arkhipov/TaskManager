@@ -50,7 +50,7 @@ fun PlanTaskList(
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
-        if (!uiState.isEmpty) {
+        if (uiState.mainState.availableTasksForPlan.isNotEmpty()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
