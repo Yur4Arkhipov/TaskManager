@@ -34,8 +34,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jacqulin.taskmanager.core.designsystem.component.AppSnackbar
+import com.jacqulin.taskmanager.core.designsystem.component.AppSnackbarVisuals
 import com.jacqulin.taskmanager.core.designsystem.theme.TaskManagerTheme
 import com.jacqulin.taskmanager.core.model.AppLanguage
+import com.jacqulin.taskmanager.core.model.AppSnackbarType
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
@@ -60,13 +63,30 @@ fun SettingsScreen(
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 
-    val snackbar = remember { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val savedMessage = stringResource(R.string.settings_yandex_tokens_saved)
+    val errorMessage = stringResource(R.string.settings_yandex_tokens_save_error)
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is SettingsEffect.ShowSuccess -> snackbar.showSnackbar(effect.message)
-                is SettingsEffect.ShowError -> snackbar.showSnackbar(effect.message)
+                is SettingsEffect.ShowSuccess ->  {
+                    snackbarHostState.showSnackbar(
+                        AppSnackbarVisuals(
+                            message = savedMessage,
+                            type = AppSnackbarType.SUCCESS
+                        )
+                    )
+                }
+                is SettingsEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        AppSnackbarVisuals(
+                            message = errorMessage,
+                            type = AppSnackbarType.ERROR
+                        )
+                    )
+                }
             }
         }
     }
@@ -74,7 +94,7 @@ fun SettingsScreen(
     SettingsScreen(
         titleRes = R.string.settings_title,
         settingsUiState = settingsUiState,
-        snackbar = snackbar,
+        snackbarHostState = snackbarHostState,
         onChangeDarkThemeConfig = { darkThemeConfig ->
             viewModel.onEvent(SettingsEvent.OnDarkThemeConfigChanged(darkThemeConfig))
         },
@@ -98,7 +118,7 @@ fun SettingsScreen(
 fun SettingsScreen(
     @StringRes titleRes: Int,
     settingsUiState: SettingsUiState,
-    snackbar: SnackbarHostState,
+    snackbarHostState: SnackbarHostState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeColorPalette: (colorPalette: ColorPalette) -> Unit,
     onChangeVoiceInputMode: (VoiceInputMode) -> Unit,
@@ -107,7 +127,14 @@ fun SettingsScreen(
     onLangChanged: (AppLanguage) -> Unit = {}
 ) {
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbar) }
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    AppSnackbar(data = data)
+                }
+            )
+        }
     ) { paddingValues ->
         when (settingsUiState) {
             SettingsUiState.Loading -> { }
@@ -291,7 +318,7 @@ private fun SettingsScreenPreview() {
                 ),
                 speechRecognizerAvailable = true,
             ),
-            snackbar = SnackbarHostState(),
+            snackbarHostState = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},
@@ -314,7 +341,7 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
                 ),
                 speechRecognizerAvailable = false,
             ),
-            snackbar = SnackbarHostState(),
+            snackbarHostState = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
             onChangeColorPalette = {},
             onChangeVoiceInputMode = {},

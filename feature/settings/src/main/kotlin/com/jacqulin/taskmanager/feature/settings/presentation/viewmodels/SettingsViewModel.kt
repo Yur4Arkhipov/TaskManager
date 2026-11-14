@@ -15,6 +15,7 @@ import com.jacqulin.taskmanager.core.model.AppLanguage
 import com.jacqulin.taskmanager.core.model.ColorPalette
 import com.jacqulin.taskmanager.core.model.DarkThemeConfig
 import com.jacqulin.taskmanager.core.model.VoiceInputMode
+import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEffect
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsEvent
 import com.jacqulin.taskmanager.feature.settings.presentation.model.SettingsUiState
@@ -127,9 +128,9 @@ class SettingsViewModel @Inject constructor(
                 setYandexTokensUseCase(iamToken, folderId)
             }.onSuccess {
                 yandexTokensConfigured.value = true
-                _effects.emit(SettingsEffect.ShowSuccess("Данные для Yandex сохранены"))
-            }.onFailure { e ->
-                _effects.emit(SettingsEffect.ShowError(e.message ?: "Не удалось сохранить токены"))
+                _effects.emit(SettingsEffect.ShowSuccess(R.string.settings_yandex_tokens_saved))
+            }.onFailure {
+                _effects.emit(SettingsEffect.ShowError(R.string.settings_yandex_tokens_save_error))
             }
         }
     }
