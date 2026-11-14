@@ -90,7 +90,7 @@ class NoteEditorViewModel @Inject constructor(
                 }
             }
             NoteEditorEvent.CameraPermissionDenied -> {
-                emitEffect(NoteEditorEffect.ShowError(R.string.notes_camera_permission_denied))
+                emitEffect(NoteEditorEffect.ShowError(R.string.camera_permission_denied))
             }
             NoteEditorEvent.ImageRemoved -> {
                 _uiState.update {
@@ -126,7 +126,7 @@ class NoteEditorViewModel @Inject constructor(
             }
             NoteEditorEvent.VoicePermissionDenied -> {
                 log("Voice permission denied")
-                emitEffect(NoteEditorEffect.ShowError(R.string.notes_voice_permission_denied))
+                emitEffect(NoteEditorEffect.ShowError(R.string.voice_permission_denied))
             }
             NoteEditorEvent.VoiceInputCancel -> {
                 log("Cancel voice input clicked")

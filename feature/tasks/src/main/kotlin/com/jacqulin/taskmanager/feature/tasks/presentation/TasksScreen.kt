@@ -90,7 +90,7 @@ fun TasksScreen(
                     voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                 }
                 is TasksEffect.ShowError -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.messageResId, Toast.LENGTH_SHORT).show()
                 }
             }
         }

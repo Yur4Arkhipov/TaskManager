@@ -15,6 +15,7 @@ import com.jacqulin.taskmanager.core.domain.voice.VoiceInputUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
+import com.jacqulin.taskmanager.designsystem.R
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.MainScreenState
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskFilter
 import com.jacqulin.taskmanager.feature.tasks.presentation.model.TaskItemUi
@@ -235,7 +236,7 @@ class TasksScreenViewModel @Inject constructor(
             }
             TasksEvent.VoicePermissionDenied -> {
                 log("Voice permission denied")
-                emitEffect(TasksEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио"))
+                emitEffect(TasksEffect.ShowError(R.string.voice_permission_denied))
             }
             TasksEvent.VoiceInputRetry -> {
                 log("Retry voice input clicked")
