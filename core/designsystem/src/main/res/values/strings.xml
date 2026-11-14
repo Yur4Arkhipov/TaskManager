@@ -18,6 +18,9 @@
     <string name="notes_back">Назад</string>
     <string name="notes_save">Сохранить</string>
     <string name="notes_remove">Удалить</string>
+    <string name="notes_voice_permission_denied">Для распознавания речи необходимо предоставить разрешение на запись аудио</string>
+    <string name="notes_camera_permission_denied">Для использования камеры необходимо предоставить разрешение</string>
+    <string name="notes_note_load_error">Не удалось загрузить заметку</string>
 
     // Tasks
     <string name="tasks_title">Задачи</string>

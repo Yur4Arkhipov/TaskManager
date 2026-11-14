@@ -19,6 +19,9 @@
     <string name="notes_back">Back</string>
     <string name="notes_save">Save</string>
     <string name="notes_remove">Delete</string>
+    <string name="notes_voice_permission_denied">Audio recording permission is required for speech recognition</string>
+    <string name="notes_camera_permission_denied">Camera permission is required to use the camera</string>
+    <string name="notes_note_load_error">Failed to load note</string>
 
     // Tasks
     <string name="tasks_title">Tasks</string>

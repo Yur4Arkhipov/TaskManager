@@ -13,6 +13,7 @@ import com.jacqulin.taskmanager.core.domain.voice.VoiceInputUseCase
 import com.jacqulin.taskmanager.core.model.Note
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionFailure
+import com.jacqulin.taskmanager.designsystem.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -89,11 +90,7 @@ class NoteEditorViewModel @Inject constructor(
                 }
             }
             NoteEditorEvent.CameraPermissionDenied -> {
-                emitEffect(
-                    NoteEditorEffect.ShowError(
-                        "Для использования камеры необходимо предоставить разрешение",
-                    ),
-                )
+                emitEffect(NoteEditorEffect.ShowError(R.string.notes_camera_permission_denied))
             }
             NoteEditorEvent.ImageRemoved -> {
                 _uiState.update {
@@ -129,9 +126,7 @@ class NoteEditorViewModel @Inject constructor(
             }
             NoteEditorEvent.VoicePermissionDenied -> {
                 log("Voice permission denied")
-                emitEffect(
-                    NoteEditorEffect.ShowError("Для распознавания речи необходимо предоставить разрешение на запись аудио")
-                )
+                emitEffect(NoteEditorEffect.ShowError(R.string.notes_voice_permission_denied))
             }
             NoteEditorEvent.VoiceInputCancel -> {
                 log("Cancel voice input clicked")
@@ -238,7 +233,7 @@ class NoteEditorViewModel @Inject constructor(
 
             if (note == null) {
                 _uiState.update { it.copy(isLoading = false) }
-                emitEffect(NoteEditorEffect.ShowError("Не удалось загрузить заметку"))
+                emitEffect(NoteEditorEffect.ShowError(R.string.notes_note_load_error))
                 return@launch
             }
 
@@ -294,9 +289,7 @@ class NoteEditorViewModel @Inject constructor(
 
                 emitEffect(NoteEditorEffect.NavigateBack)
             } catch (_: Exception) {
-                emitEffect(
-                    NoteEditorEffect.ShowError("Не удалось сохранить заметку")
-                )
+                emitEffect(NoteEditorEffect.ShowError(R.string.notes_note_load_error))
             }
         }
     }
