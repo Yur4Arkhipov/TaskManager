@@ -113,6 +113,8 @@ class NoteEditorViewModel @Inject constructor(
                             if (text.isNotBlank()) {
                                 appendRecognizedText(text)
                                 setVoiceState(VoiceState.Success(text))
+                                delay(3_000.milliseconds)
+                                setVoiceState(VoiceState.Idle)
                             }
                         }
                         .onFailure {

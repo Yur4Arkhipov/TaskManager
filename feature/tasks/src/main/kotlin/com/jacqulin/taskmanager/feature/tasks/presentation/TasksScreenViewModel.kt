@@ -10,7 +10,6 @@ import com.jacqulin.taskmanager.core.domain.tasks.GetTaskByIdUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.ObserveTasksUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.SaveTaskUseCase
 import com.jacqulin.taskmanager.core.domain.tasks.UpdateTaskStatusUseCase
-import com.jacqulin.taskmanager.core.domain.voice.CancelVoiceRecordingUseCase
 import com.jacqulin.taskmanager.core.domain.voice.VoiceInputUseCase
 import com.jacqulin.taskmanager.core.model.Task
 import com.jacqulin.taskmanager.core.model.voice.SpeechRecognitionEvent
@@ -47,7 +46,6 @@ class TasksScreenViewModel @Inject constructor(
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveTaskUseCase: SaveTaskUseCase,
     private val updateTaskStatusUseCase: UpdateTaskStatusUseCase,
-    private val cancelVoiceRecordingUseCase: CancelVoiceRecordingUseCase,
     private val voiceInputUseCase: VoiceInputUseCase,
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
 ) : ViewModel() {
@@ -245,7 +243,7 @@ class TasksScreenViewModel @Inject constructor(
             TasksEvent.VoiceInputCancel -> {
                 log("cancel voice recording")
                 viewModelScope.launch {
-                    cancelVoiceRecordingUseCase()
+                    voiceInputUseCase.cancel()
                     setVoiceState(VoiceState.Idle)
                 }
             }
