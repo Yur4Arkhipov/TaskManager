@@ -167,6 +167,7 @@
     <string name="voice_error_network">Не удалось подключиться к службе распознавания</string>
     <string name="voice_error_unauthorized">Нет доступа к службе распознавания</string>
     <string name="voice_error_empty_result">Не удалось распознать речь. Попробуйте ещё раз</string>
+    <string name="voice_recording">Говорите — текст существует здесь</string>
 
     // Icons description
     <string name="settings_expandable_collapse">Скрыть</string>

@@ -168,6 +168,7 @@
     <string name="voice_error_network">Failed to connect to the recognition service</string>
     <string name="voice_error_unauthorized">No access to the recognition service</string>
     <string name="voice_error_empty_result">Failed to recognize speech. Try again</string>
+    <string name="voice_recording">Speak — text will appear here </string>
 
     // Icons description
     <string name="settings_expandable_collapse">Collapse</string>
