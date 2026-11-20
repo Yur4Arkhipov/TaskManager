@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.designsystem.model.SortType
 import com.jacqulin.taskmanager.core.domain.notes.DeleteNoteUseCase
 import com.jacqulin.taskmanager.core.domain.notes.ObserveNotesUseCase
-import com.jacqulin.taskmanager.feature.notes.presentation.mapper.toUiModel
+import com.jacqulin.taskmanager.feature.notes.presentation.model.toNoteListItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +41,7 @@ class NotesScreenViewModel @Inject constructor(
         ) { notes, searchQuery, sortType, isDeleteModeEnabled  ->
 
             val visibleNotes = notes
-                .map { it.toUiModel() }
+                .map { it.toNoteListItemUi() }
                 .filter { note ->
                     val query = searchQuery.trim()
                     query.isBlank() || note.title.contains(query, ignoreCase = true)

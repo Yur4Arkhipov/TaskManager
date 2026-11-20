@@ -85,7 +85,7 @@ fun VoiceRecordingOverlay(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = partialText.ifBlank { "Говорите — текст появится здесь" },
+                text = partialText.ifBlank { stringResource(R.string.voice_recording) },
                 style = MaterialTheme.typography.bodyLarge,
                 color = colorScheme.onSurface,
                 modifier = Modifier.padding(horizontal = 32.dp),

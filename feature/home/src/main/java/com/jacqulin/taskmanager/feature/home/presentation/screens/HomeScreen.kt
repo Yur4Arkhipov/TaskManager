@@ -92,7 +92,12 @@ private fun HomeContent(
 
         if (uiState.isEmpty) {
             EmptyPlanCard(
-                onAddTask = { onEvent(HomeEvent.OnAddTasksForPlanClicked) }
+                onAddTask = {
+                    if (uiState.allTasks.isEmpty()) {
+                        onEvent(HomeEvent.OnCreateTaskClicked)
+                    } else {
+                        onEvent(HomeEvent.OnAddTasksForPlanClicked) }
+                    }
             )
         } else {
             FilledPlan(
