@@ -3,7 +3,8 @@ package com.jacqulin.taskmanager.feature.settings.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.taskmanager.core.domain.settings.AreYandexTokensConfiguredUseCase
-import com.jacqulin.taskmanager.core.domain.settings.CheckSpeechRecognizerAvailabilityUseCase
+import com.jacqulin.taskmanager.core.domain.settings.CheckAndroidSpeechRecognizerAvailabilityUseCase
+import com.jacqulin.taskmanager.core.domain.settings.CheckYandexSpeechRecognizerAvailabilityUseCase
 import com.jacqulin.taskmanager.core.domain.settings.GetLanguageUseCase
 import com.jacqulin.taskmanager.core.domain.settings.ObserveUserDataUseCase
 import com.jacqulin.taskmanager.core.domain.settings.SetColorPaletteUseCase
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,7 +44,8 @@ class SettingsViewModel @Inject constructor(
     private val setVoiceInputModeUseCase: SetVoiceInputModeUseCase,
     private val setYandexTokensUseCase: SetYandexTokensUseCase,
     private val areYandexTokensConfiguredUseCase: AreYandexTokensConfiguredUseCase,
-    checkSpeechRecognizerAvailabilityUseCase: CheckSpeechRecognizerAvailabilityUseCase,
+    checkAndroidSpeechRecognizerAvailabilityUseCase: CheckAndroidSpeechRecognizerAvailabilityUseCase,
+    checkYandexSpeechRecognizerAvailabilityUseCase: CheckYandexSpeechRecognizerAvailabilityUseCase,
     getLanguageUseCase: GetLanguageUseCase,
     private val setLanguageUseCase: SetLanguageUseCase
 ) : ViewModel() {
@@ -58,6 +61,12 @@ class SettingsViewModel @Inject constructor(
 
     private val selectedLanguage = MutableStateFlow(getLanguageUseCase())
 
+    private val yandexSpeechRecognizerAvailable =
+        checkYandexSpeechRecognizerAvailabilityUseCase()
+
+    private val androidSpeechRecognizerAvailable =
+        checkAndroidSpeechRecognizerAvailabilityUseCase()
+
     init {
         viewModelScope.launch {
             yandexTokensConfigured.value = runCatching {
@@ -69,10 +78,11 @@ class SettingsViewModel @Inject constructor(
     val settingsUiState: StateFlow<SettingsUiState> =
         combine(
             observeUserDataUseCase(),
-            checkSpeechRecognizerAvailabilityUseCase.isAvailable,
+            flowOf(androidSpeechRecognizerAvailable),
+            flowOf(yandexSpeechRecognizerAvailable),
             yandexTokensConfigured,
             selectedLanguage
-        ) { userData, speechRecognizerAvailable, areTokensConfigured, lang ->
+        ) { userData, androidSpeechRecognizerAvailable, yandexSpeechRecognizerAvailable, areTokensConfigured, lang ->
             if (areTokensConfigured == null) return@combine SettingsUiState.Loading
             SettingsUiState.Success(
                 settings = UserEditableSettings(
@@ -80,7 +90,8 @@ class SettingsViewModel @Inject constructor(
                     darkThemeConfig = userData.darkThemeConfig,
                     voiceInputMode = userData.voiceInputMode,
                 ),
-                speechRecognizerAvailable = speechRecognizerAvailable,
+                androidSpeechRecognizerAvailable = androidSpeechRecognizerAvailable,
+                yandexSpeechRecognizerAvailable = yandexSpeechRecognizerAvailable,
                 areYandexTokensConfigured = areTokensConfigured,
                 lang = lang
             )

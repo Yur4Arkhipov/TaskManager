@@ -1,5 +1,6 @@
 package com.jacqulin.taskmanager.core.data.system
 
 interface SystemCapabilitiesChecker {
-    fun isSpeechRecognizerAvailable(): Boolean
+    fun isAndroidSpeechRecognizerAvailable(): Boolean
+    fun isOggOpusRecordingAvailable(): Boolean
 }

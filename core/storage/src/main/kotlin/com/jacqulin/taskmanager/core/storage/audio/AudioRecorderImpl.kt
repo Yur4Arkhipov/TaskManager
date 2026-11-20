@@ -19,6 +19,11 @@ internal class AudioRecorderImpl @Inject constructor(
 
     override suspend fun start() = withContext(Dispatchers.IO) {
         Log.d("AudioRecorder", "[start] ${Thread.currentThread().name}")
+
+        check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            "OGG/OPUS recording requires Android 10 or higher"
+        }
+
         if (recorder != null) return@withContext // already recording — ignore duplicate start
 
         val file = File.createTempFile("voice_", ".ogg", context.cacheDir)

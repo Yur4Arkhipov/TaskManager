@@ -114,6 +114,7 @@
     <string name="voice_mode_future_title">Скоро</string>
     <string name="voice_mode_future_subtitle">Скоро</string>
     <string name="voice_recognizer_unavailable_warning">Системный сервис недоступен на текущем устройстве</string>
+    <string name="voice_recognizer_yandex_unavailable_warning">Выбранный сервис недоступен на текущем устройстве</string>
     <string name="yandex_iam_token_label">IAM Token</string>
     <string name="yandex_folder_id_label">Folder ID</string>
     <string name="future_api_key_label">API Token</string>
