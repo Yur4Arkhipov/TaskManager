@@ -23,6 +23,5 @@ internal object DatabaseModule {
         TaskManagerDatabase::class.java,
         "task_manager.db",
     )
-        .fallbackToDestructiveMigration(true)
         .build()
 }
