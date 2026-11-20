@@ -235,6 +235,7 @@ fun SettingsScreen(
                                 ) {
                                     val currentMode = settingsUiState.settings.voiceInputMode
                                     val isSystemVoiceInputSelected = currentMode == VoiceInputMode.LIVE
+                                    val isYandexVoiceInputSelected = currentMode == VoiceInputMode.YANDEX_SPEECH
                                     VoiceInputMode.entries.forEachIndexed { index, mode ->
                                         val isSelected = currentMode == mode
                                         VoiceProviderOptionCard(
@@ -258,7 +259,7 @@ fun SettingsScreen(
                                         }
                                     }
 
-                                    if (!settingsUiState.speechRecognizerAvailable && isSystemVoiceInputSelected) {
+                                    if (!settingsUiState.androidSpeechRecognizerAvailable && isSystemVoiceInputSelected) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
@@ -273,6 +274,27 @@ fun SettingsScreen(
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Text(
                                                 text = stringResource(R.string.voice_recognizer_unavailable_warning),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    }
+
+                                    if (!settingsUiState.yandexSpeechRecognizerAvailable && isYandexVoiceInputSelected) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.ic_info),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error,
+                                                modifier = Modifier.width(16.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = stringResource(R.string.voice_recognizer_yandex_unavailable_warning),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.error
                                             )
@@ -316,7 +338,7 @@ private fun SettingsScreenPreview() {
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     voiceInputMode = VoiceInputMode.LIVE,
                 ),
-                speechRecognizerAvailable = true,
+                androidSpeechRecognizerAvailable = true,
             ),
             snackbarHostState = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
@@ -339,7 +361,7 @@ private fun SettingsScreenPreviewSpeechRecognizerUnavailable() {
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     voiceInputMode = VoiceInputMode.LIVE,
                 ),
-                speechRecognizerAvailable = false,
+                androidSpeechRecognizerAvailable = false,
             ),
             snackbarHostState = SnackbarHostState(),
             onChangeDarkThemeConfig = {},
